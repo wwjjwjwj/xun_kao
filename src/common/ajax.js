@@ -47,23 +47,6 @@ module.exports = {
     *callback:回调函数
     */
   postJson(url: string, data: any, callback: any) {
-    var param = {
-      Finger: getFinger()
-    };
-    for(var index in data){
-      param.index = data[index];
-    };
-    var _data = {
-      RequestBaseData: {
-        SchoolId: getSchoolId(),
-        Token: getToken(),
-        Finger: getFinger(),
-        clientToken: '',
-        Time: ''
-      },
-      ParamData: param
-    }
-    alert(JSON.stringify(_data));
     var fetchOptions = {
       method: 'POST',
       headers: {
@@ -73,7 +56,7 @@ module.exports = {
         'token': getToken(),
         'locale': getLocale()//语言环境
       },
-      body: JSON.stringify(_data)
+      body: JSON.stringify(data)
     };
 
     fetch(serverURL + url, fetchOptions)
@@ -88,6 +71,27 @@ module.exports = {
       *data:参数(Json对象)
       */
   async postJsonAsync(url: string, data: any): any {
+    var param = {
+      Finger: getFinger()
+    };
+    var school = "";
+    for(var index in data){
+      param[index] = data[index];
+      if(index == "SchoolId"){
+        school = data[index];
+      }
+    };
+    var _data = {
+      RequestBaseData: {
+        SchoolId: school || getSchoolId(),
+        Token: getToken(),
+        Finger: getFinger(),
+        clientToken: '',
+        Time: '2018-8-16 16:59:02.2222'
+      },
+      ParamData: param
+    }
+    //alert(JSON.stringify(_data));
     var fetchOptions = {
       method: 'POST',
       headers: {
@@ -97,7 +101,7 @@ module.exports = {
         'token': getToken(),
         'locale': getLocale()//语言环境
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(_data)
     };
 
     try {
@@ -113,6 +117,9 @@ module.exports = {
           //console.log("[postJsonAsync][json]" + json);
           //let now=new Date();
           //console.log("API耗时:"+(now-beginTime)+"ms");
+        }
+        if(json.State == 1){
+          json.result = true;
         }
         return json;
       }

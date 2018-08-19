@@ -7,19 +7,20 @@ import Ajax from '../common/ajax';
 import { Toast } from 'antd-mobile-rn';
 
 //用户登录
-export function loginWithEmail(userName, password) {
+export function loginWithEmail(userName, password, school_id, school_name) {
     return (dispatch) => {
         //管理端登录
-        const promise = Ajax.promisePostJson("AccessManagement/login", { UserName: userName, Password: password });
+        const promise = Ajax.promisePostJson("AccessManagement/login", { UserName: userName, Password: password, SchoolId: school_id, SchoolName: school_name });
         promise.then((result) => {
             const action = {
                 type: 'LOGGED_IN',
                 data: {
-                    token: result.data.token,
-                    id: result.data.uid,
-                    name: result.data.realname,
-                    userInfo: result.data,
-                    login_name: userName  //用于下次登录时，直接在输入框中
+                    token: result.ReData.Token,
+                    id: result.ReData.UserID,
+                    name: result.ReData.RealName,
+                    userInfo: result.ReData,
+                    login_name: userName,  //用于下次登录时，直接在输入框中
+                    schoolInfo: {value: school_id, label: school_name}
                 }
             }
             dispatch(action);
@@ -61,6 +62,15 @@ export function logout() {
                 dispatch(action);
             }
         )
+        const action = {
+            type: 'LOGGED_OUT',
+            data: {
+                token: '',
+                id: '',
+                name: ''
+            }
+        }
+        dispatch(action);
         return promise;
     };
 };

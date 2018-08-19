@@ -20,14 +20,15 @@ function appendAPPMessage(message, list) {
 }
 function user(state = initialState, action) {
     if (action.type === 'LOGGED_IN') {
-        let { token, id, name, userInfo, login_name } = action.data;
+        let { token, id, name, userInfo, login_name, schoolInfo } = action.data;
         return {
             ...state,
             isLoggedIn: true,
             id,
             name,
             userInfo,
-            login_name: login_name
+            login_name: login_name,
+            schoolInfo: schoolInfo
         };
     }
     if (action.type === 'REGGED_IN') {
@@ -50,6 +51,7 @@ function user(state = initialState, action) {
             name: '',
             userInfo: null,
             //email: state.userInfo.user_name,
+            schoolInfo: {}
         }
     }
     if (action.type === 'SKIPPED_AD') {

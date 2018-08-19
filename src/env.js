@@ -44,9 +44,9 @@ module.exports = {
     },
     getSchoolId: function() {
         var user = global.STORE_INSTANCE.getState().user;
-        if (user && user.userInfo) {
+        if (user && user.schoolInfo) {
             //管理端提供用户多应用身份切换
-            return user.schoolId;
+            return user.schoolInfo.value;
         }
         return "";
     },

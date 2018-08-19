@@ -36,6 +36,8 @@ class LoginByEmail extends React.Component {
         this.state = {
             account: props.account,
             password: '',
+            //account: 'lpc',
+            //password: '123123',
 
             school_list: [
               {'value': '1', 'label': '清华大学'},
@@ -44,6 +46,7 @@ class LoginByEmail extends React.Component {
             ],
             school_info: {}
         };
+        this.message = "";
         //扩展方法用于本组件实例
         this.loadBizDictionary = loadBizDictionary.bind(this);
         this.initFormValid = initFormValid.bind(this);
@@ -53,11 +56,10 @@ class LoginByEmail extends React.Component {
     componentWillMount() {
         //表单验证初始化
         this.initFormValid(["account", "password"])
-
+        //test
         var w = Dimensions.get('window').width;
         var h = Dimensions.get('window').height;
         //alert(w + " " + h);
-
         var density = PixelRatio.get()
         //alert(density)
     }
@@ -82,11 +84,15 @@ class LoginByEmail extends React.Component {
     onLogin = () => {
         //隐藏键盘
         dismissKeyboard();
+        let { Toast } = this;
+        this.message = "";
 
         let { account, password } = this.state;
+        var school_id = this.state.school_info.value;
+        var school_name = this.state.school_info.label;
         //登录中...提示，默认3秒
         Toast.loading(YSI18n.get('loginPending'), 3);
-        this.props.loginWithEmail(account, password)
+        this.props.loginWithEmail(account, password, school_id, school_name)
             //api调用成功
             .then((response) => {
                 Toast.success(YSI18n.get('loginSuccess'))
@@ -100,7 +106,7 @@ class LoginByEmail extends React.Component {
     render() {
         var segment = "";
         let block_loading = null;
-        let disable = (this.state.account.trim() === '' || this.state.password.trim() === '')
+        let disable = (this.state.account.trim() === '' || this.state.password.trim() === '' || !this.state.school_info.value)
         if (this.state.isLoading) {
             block_loading = <YSLoading loading_type={1} />
             segment = <YSButton
@@ -182,6 +188,7 @@ class LoginByEmail extends React.Component {
                       {segment}
                     </View>
                 </KeyboardAwareScrollView>
+                <YSToast ref={(toast) => this.Toast = toast} />
             </View>
         );
     }
