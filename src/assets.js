@@ -8,7 +8,10 @@ Assets.loadAssetsGroup('login', {
   img_bg: require('./assets/img_login_bg.png'),
   icon_user: require('./assets/icon_user.png'),
   icon_pwd: require('./assets/icon_pwd.png'),
-  icon_school: require('./assets/icon_school.png')
+  icon_school: require('./assets/icon_school.png'),
+  icon_eye_enable: require('./assets/icon_eye_enable.png'),
+  icon_eye_disable: require('./assets/icon_eye_disable.png'),
+  icon_del: require('./assets/icon_del.png'),
 });
 
 Assets.loadAssetsGroup('sex', {

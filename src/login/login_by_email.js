@@ -35,9 +35,9 @@ class LoginByEmail extends React.Component {
         super(props);
         this.state = {
             account: props.account,
-            password: '',
+            //password: '',
             //account: 'lpc',
-            //password: '123123',
+            password: '123123',
 
             school_list: [
               {'value': '1', 'label': '清华大学'},
@@ -166,6 +166,7 @@ class LoginByEmail extends React.Component {
                         containerStyle={styles.inputContainer}
                         onChangeText={(text) => this.setState({account: text})}
                         value={this.state.account}
+                        enableClear={true}
                       />
                       <YSInput ref="input_pwd"
                         icon={Assets.login.icon_pwd}
@@ -177,6 +178,7 @@ class LoginByEmail extends React.Component {
                         onChangeText={(text) => this.setState({password: text})}
                         value={this.state.password}
                         ispassword="true"
+                        enableEye={true}
                       />
                     </View>
                     <View marginT-12 marginR-47 style={styles.block_forget_wrap}>

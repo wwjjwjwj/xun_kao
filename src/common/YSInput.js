@@ -15,13 +15,12 @@ import {
   TouchableOpacity
 } from 'react-native';
 import React from 'react';
+import { Assets } from 'react-native-ui-lib';
+
 import YSWHs from './YSWHs';
 import YSColors from 'YSColors';
 import YSFontSizes from 'YSFontSizes';
 
-const IMG_CLEAR = require('../login/img/reg_delete.png');
-const IMG_EYE_OPEN = require('../login/img/reg_eye_open.png');
-const IMG_EYE_CLOSE = require('../login/img/reg_eye_close.png');
 export type Props = {
   icon?: number;
   placeholder: string;
@@ -30,7 +29,7 @@ export type Props = {
   ispassword: Boolean;
   //autoFocus: Boolean;
   value?: string;
-  enableClear: string;
+  enableClear: Boolean;
   enableEye: Boolean;
   onChangeText: () => mixed;
 }
@@ -54,7 +53,7 @@ class YSInput extends React.Component {
   }
   clearValue() {
     this.refs.text.clear();
-    this.props.doClearBack()
+    //this.props.doClearBack()
   }
   toggleEye() {
     this.setState({ ispassword: !this.state.ispassword })
@@ -79,7 +78,7 @@ class YSInput extends React.Component {
           secureTextEntry={this.state.ispassword}
           ispassword={this.state.ispassword}
         />
-        {this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? IMG_EYE_CLOSE : IMG_EYE_OPEN} /></TouchableOpacity>}
+        {this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} /></TouchableOpacity>}
       </View>
 
     } else {
@@ -95,7 +94,7 @@ class YSInput extends React.Component {
           onChangeText={(text) => this.props.onChangeText(text)}
           value={this.props.value}
         />
-        {this.props.enableClear && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.clearValue()}><Image source={IMG_CLEAR} /></TouchableOpacity>}
+        {this.props.enableClear && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.clearValue()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
       </View>
     }
     return (
@@ -127,9 +126,10 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   block_touch_wrap: {
-    height: '100%',
+    //height: '100%',
     flexDirection:'column',
-    justifyContent:'center'
+    justifyContent:'center',
+    paddingRight: 36
   }
 })
 
