@@ -74,6 +74,42 @@ export function logout() {
         return promise;
     };
 };
+
+//发送短信
+// type: 1 注册；3 忘记密码
+export function sendSMS(phone: string, type: number, callback: any){
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("", {});
+        promise.then((result) => {
+            const action = {
+                type: 'PHONECODE_SENDED',
+                data: {
+                  phone: phone,
+                }
+            }
+            dispatch(action);
+        });
+        return promise;
+    };
+}
+
+//用手机号来 重置密码
+export function resetPwdByMobile(phone, callback: any){
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("", {});
+        promise.then((result) => {
+            const action = {
+                type: 'PWD_RESETTED',
+                data: {
+                    login_name: phone,  //用于下次登录时，直接在输入框中
+                }
+            }
+            dispatch(action);
+        });
+        return promise;
+    };
+}
+
 //跳过广告
 export function skipAd() {
     return {

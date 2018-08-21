@@ -8,14 +8,14 @@
 
 import {
   View,
-  Text,
+  //Text,
   Image,
   TextInput,
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
 import React from 'react';
-import { Assets } from 'react-native-ui-lib';
+import { Assets, Text } from 'react-native-ui-lib';
 
 import YSWHs from './YSWHs';
 import YSColors from 'YSColors';
@@ -46,13 +46,37 @@ class YSInput extends React.Component {
       text: '',
       ispassword: true,
       isHasBorder: props.isHasBorder == null ? true : props.isHasBorder,
-    }
+    };
+    (this: any).onFocus = this.onFocus.bind(this);
+    (this: any).onBlur = this.onBlur.bind(this);
+    (this: any).onClear = this.onClear.bind(this);
   };
+  componentWillReceiveProps(nextProps) {
+    // Should be a controlled component.
+    if ('value' in nextProps) {
+      if(nextProps.value){
+
+      }
+    }else if('enableClear' in nextProps){
+
+    }
+  }
+  onFocus(){
+    if(this.props.onFocus){
+      this.props.onFocus();
+    }
+  }
   onBlur() {
     this.refs.text.blur();
+    if(this.props.onBlur){
+      this.props.onBlur();
+    }
   }
-  clearValue() {
+  onClear() {
     this.refs.text.clear();
+    if(this.props.onClear){
+      this.props.onClear();
+    }
     //this.props.doClearBack()
   }
   toggleEye() {
@@ -77,6 +101,8 @@ class YSInput extends React.Component {
           value={this.props.value}
           secureTextEntry={this.state.ispassword}
           ispassword={this.state.ispassword}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
         />
         {this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} /></TouchableOpacity>}
       </View>
@@ -93,8 +119,15 @@ class YSInput extends React.Component {
           placeholder={this.props.placeholder}
           onChangeText={(text) => this.props.onChangeText(text)}
           value={this.props.value}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
         />
-        {this.props.enableClear && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.clearValue()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
+        {this.props.enableClear && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
+        {this.props.button &&
+          <TouchableOpacity style={styles.btn} onPress={this.props.button.onPress}>
+            <Text center label_input gray2  >{this.props.button.title}</Text>
+          </TouchableOpacity>
+        }
       </View>
     }
     return (
@@ -114,8 +147,10 @@ var styles = StyleSheet.create({
   },
 
   icon: {
-    width: YSWHs.icoInputTextWidth,
-    resizeMode: 'contain',
+    width: 16,
+    height: 16,
+    resizeMode:'contain',
+    marginRight: 12
   },
   text: {
     flexGrow: 1,
@@ -130,6 +165,15 @@ var styles = StyleSheet.create({
     flexDirection:'column',
     justifyContent:'center',
     paddingRight: 36
+  },
+  btn: {
+    height: 47,
+    width: 110,
+    borderRadius: 99,
+    backgroundColor: '#D6D6D6',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
 

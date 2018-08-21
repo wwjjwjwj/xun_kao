@@ -4,11 +4,18 @@
 
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import LoginInput from './login_by_email';              //邮箱登录
+import LoginByEmail from './login_by_email';              //邮箱登录
+import ResetPassword from './reset_password';              //邮箱登录
 
 const Login = StackNavigator({
-    LoginInput: {
-        screen: LoginInput,
+    loginByEmail: {
+        screen: LoginByEmail,
+        navigationOptions: ({ navigation }) => ({
+            header: null,
+        })
+    },
+    resetPassword: {
+        screen: ResetPassword,
         navigationOptions: ({ navigation }) => ({
             header: null,
         })

@@ -26,6 +26,7 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
+import YSLoading from 'YSLoading';
 //4. action
 import { loginWithEmail } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
@@ -83,10 +84,12 @@ class LoginByEmail extends React.Component {
       });
     }
     _goResetPwd(){
-      this.props.navigation.navigate("ResetPassword");
+      this.props.navigation.navigate("resetPassword");
     }
     onLogin = () => {
         //var uuid = getFinger();
+        //alert(uuid);
+        //return;
 
         //隐藏键盘
         dismissKeyboard();
@@ -134,7 +137,7 @@ class LoginByEmail extends React.Component {
             <View flex style={styles.container}>
                 <Image style={styles.behind_bg} source={Assets.login.img_bg}/>
                 <View style={styles.behind_bottom}>
-                  <Text label gray>默认初始密码为身份证后六位</Text>
+                  <Text label_input gray>默认初始密码为身份证后六位</Text>
                 </View>
                 <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
                     <View centerH paddingT-45 center>
@@ -154,9 +157,9 @@ class LoginByEmail extends React.Component {
                               <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
                                 <Image source={Assets.login.icon_school} style={[styles.iconstyle, {marginLeft: -15}]} resizeMode='contain' />
                                 {this.state.school_info.value ?
-                                  <Text black text>{this.state.school_info.label || '请选择学校'}</Text>
+                                  <Text black label_input>{this.state.school_info.label || '请选择学校'}</Text>
                                   :
-                                  <Text gray label>{this.state.school_info.label || '请选择学校'}</Text>
+                                  <Text gray label_input>{this.state.school_info.label || '请选择学校'}</Text>
                                 }
                               </View>
                             </List.Item>
@@ -165,18 +168,19 @@ class LoginByEmail extends React.Component {
                       </View>
                       <YSInput ref="input_name"
                         icon={Assets.login.icon_user}
-                        iconstyle={styles.iconstyle}
+                        //iconstyle={styles.iconstyle}
                         placeholder={'请输入用户名/手机号'}
                         placeholderTextColor={"#C5C5C5"}
                         style={styles.inputText}
                         containerStyle={styles.inputContainer}
                         onChangeText={(text) => this.setState({account: text})}
                         value={this.state.account}
-                        enableClear={true}
+                        enableClear={this.state.account ? true : false}
+                        onClear={()=>this.setState({account: ''})}
                       />
                       <YSInput ref="input_pwd"
                         icon={Assets.login.icon_pwd}
-                        iconstyle={styles.iconstyle}
+                        //iconstyle={styles.iconstyle}
                         placeholder={'请输入密码'}
                         placeholderTextColor={"#C5C5C5"}
                         style={styles.inputText}
@@ -184,7 +188,7 @@ class LoginByEmail extends React.Component {
                         onChangeText={(text) => this.setState({password: text})}
                         value={this.state.password}
                         ispassword="true"
-                        enableEye={true}
+                        enableEye={this.state.password ? true : false}
                       />
                     </View>
                     <View marginT-12 marginR-47 style={styles.block_forget_wrap}>
