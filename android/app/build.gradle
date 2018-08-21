@@ -164,6 +164,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-schoolearn')
     compile project(':react-native-card-read')
     compile project(':jcore-react-native')
     compile project(':jpush-react-native')

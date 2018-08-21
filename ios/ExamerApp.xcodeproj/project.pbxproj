@@ -48,6 +48,7 @@
 		3C891B3A8C634FE19CAF31B8 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2694EEF25BEE45F5BD2BBCB2 /* libSplashScreen.a */; };
 		489A49D1519E4A05AA008F92 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BF8BE26FE594DFD9D1E7B9D /* Zocial.ttf */; };
 		4BDC40891CB04BACB4093393 /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 596CF9EE7DA14EC8874D31E1 /* libRCTOrientation.a */; };
+		4E21188FF7AE4EE9B750CE2E /* libSchoolearnModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 753C9D9713BB41348C63F2DE /* libSchoolearnModule.a */; };
 		52B2335AB2BD40EA837D0AE9 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EE83BC83EAE40CFAB329E04 /* libz.tbd */; };
 		5C4F8A7D34AB47029369765A /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25A72B665DE34A318F4B3360 /* FontAwesome5_Solid.ttf */; };
 		5D18F6755F8E4F7281D23C7C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9615DC1B1C1E4C4D8B383131 /* CFNetwork.framework */; };
@@ -519,6 +520,13 @@
 			remoteGlobalIDString = 8405E90F1EFE5D7D008C4FE5;
 			remoteInfo = CardModule;
 		};
+		B8D6322D212A57BB00FD1A60 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC85C57DE68A411DA4FF3CA1 /* SchoolearnModule.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8405E90F1EFE5D7D008C4FE5;
+			remoteInfo = SchoolearnModule;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -592,6 +600,7 @@
 		63B9B285B14944D0905E343E /* RNZipArchive.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNZipArchive.xcodeproj; path = "../node_modules/react-native-zip-archive/ios/RNZipArchive.xcodeproj"; sourceTree = "<group>"; };
 		69655DC62E2547F6BABDB8D7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		73116DA8F6464E59AC7BF9E7 /* CoreGraphics.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		753C9D9713BB41348C63F2DE /* libSchoolearnModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSchoolearnModule.a; sourceTree = "<group>"; };
 		75D666E2C6B94A5BBE46D265 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		7799EDDFEAFC4D5594728545 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -627,6 +636,7 @@
 		D06E46D83D1C4532AB67B409 /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D0BD9CE1D66B4DE49F94DE7B /* libRCTJAnalyticsModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTJAnalyticsModule.a; sourceTree = "<group>"; };
 		D30B23F6199A459D98B8EEB6 /* RNAudio.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAudio.xcodeproj; path = "../node_modules/react-native-audio/ios/RNAudio.xcodeproj"; sourceTree = "<group>"; };
+		DC85C57DE68A411DA4FF3CA1 /* SchoolearnModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SchoolearnModule.xcodeproj; path = "../node_modules/react-native-schoolearn/ios/SchoolearnModule.xcodeproj"; sourceTree = "<group>"; };
 		EB6F717CDA344FDF9B83928B /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		ECFA007CFF864CE28E8B96FE /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		F027C48CD15E4C34AA70E529 /* CoreTelephony.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -695,6 +705,7 @@
 				7B159E784CE1439E94438C7D /* libRCTJPushModule.a in Frameworks */,
 				A4A1EE0B22C94BF1ADCA77AB /* UserNotifications.framework in Frameworks */,
 				A1522CEF481745CDA83674E5 /* libRNSearchBar.a in Frameworks */,
+				4E21188FF7AE4EE9B750CE2E /* libSchoolearnModule.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -939,6 +950,7 @@
 				A421D9B1592A41C29FE0D53A /* RCTJPushModule.xcodeproj */,
 				9298A9CB5D234BA3B317CF5F /* RNSearchBar.xcodeproj */,
 				1314A073F2D945D0B943974C /* CardModule.xcodeproj */,
+				DC85C57DE68A411DA4FF3CA1 /* SchoolearnModule.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1011,6 +1023,7 @@
 				598639E1891E4D7787BD8B6B /* libRCTJPushModule.a */,
 				AAA264AB4BCB4CF2B873FEBA /* libRNSearchBar.a */,
 				FBD5ABBE652F467D8EF13AB3 /* CardModule.metallib */,
+				753C9D9713BB41348C63F2DE /* libSchoolearnModule.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1166,6 +1179,14 @@
 			isa = PBXGroup;
 			children = (
 				B8AE116721206E0A00F33AD5 /* libCardModule.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B8D6322A212A57BB00FD1A60 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B8D6322E212A57BB00FD1A60 /* libSchoolearnModule.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1405,6 +1426,10 @@
 				{
 					ProductGroup = B8118623211075C0009C34EC /* Products */;
 					ProjectRef = 63B9B285B14944D0905E343E /* RNZipArchive.xcodeproj */;
+				},
+				{
+					ProductGroup = B8D6322A212A57BB00FD1A60 /* Products */;
+					ProjectRef = DC85C57DE68A411DA4FF3CA1 /* SchoolearnModule.xcodeproj */;
 				},
 				{
 					ProductGroup = B8118619211075C0009C34EC /* Products */;
@@ -1835,6 +1860,13 @@
 			remoteRef = B8AE116621206E0A00F33AD5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		B8D6322E212A57BB00FD1A60 /* libSchoolearnModule.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSchoolearnModule.a;
+			remoteRef = B8D6322D212A57BB00FD1A60 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -2007,12 +2039,14 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = ExamerAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2068,12 +2102,14 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = ExamerAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2140,6 +2176,7 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = ExamerApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2192,6 +2229,7 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = ExamerApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2241,11 +2279,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = "ExamerApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2311,11 +2351,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = "ExamerApp-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2380,11 +2422,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = "ExamerApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2449,11 +2493,13 @@
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
 					"$(SRCROOT)/../node_modules/react-native-search-bar/ios",
 					"$(SRCROOT)/../node_modules/react-native-card-read/ios/CardModule",
+					"$(SRCROOT)/../node_modules/react-native-schoolearn/ios/SchoolearnModule",
 				);
 				INFOPLIST_FILE = "ExamerApp-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

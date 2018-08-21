@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 
 import I18n from 'react-native-i18n'
+
 const deviceLocale = I18n.locale;
 const url = 'http://211.167.76.161:8112/';
 const url2 = 'http://211.167.76.161:8112/';
@@ -51,6 +52,10 @@ module.exports = {
         return "";
     },
     getFinger: function() {
-      return "xxx";
+      var base = global.STORE_INSTANCE.getState().base;
+      if(base && base.deviceInfo){
+        return base.deviceInfo.uuid;
+      }
+      return "";
     }
 };

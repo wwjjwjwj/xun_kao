@@ -18,7 +18,7 @@ import _ from 'lodash';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
-} from 'ComponentExt'
+} from 'ComponentExt';
 //3. 自定义 插件
 import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
@@ -28,7 +28,9 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 //4. action
 import { loginWithEmail } from '../actions/user';
+import { getDeviceUuid } from '../actions/base';
 
+import {getFinger} from '../env';
 
 class LoginByEmail extends React.Component {
     constructor(props) {
@@ -62,6 +64,8 @@ class LoginByEmail extends React.Component {
         //alert(w + " " + h);
         var density = PixelRatio.get()
         //alert(density)
+
+        this.props.getDeviceUuid();
     }
 
     onChangeSchool(val){
@@ -82,6 +86,8 @@ class LoginByEmail extends React.Component {
       this.props.navigation.navigate("ResetPassword");
     }
     onLogin = () => {
+        //var uuid = getFinger();
+
         //隐藏键盘
         dismissKeyboard();
         let { Toast } = this;
@@ -270,10 +276,6 @@ var styles = StyleSheet.create({
     color: YSColors.lightText,
     backgroundColor: 'transparent'
   },
-  border_button: {
-    borderRadius: 99,
-    backgroundColor: 'transparent'
-  },
   text_caption: {
     fontSize: 18
   },
@@ -303,6 +305,7 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
+        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
     };
 }
 module.exports = connect(select, mapDispatchToProps)(LoginByEmail);

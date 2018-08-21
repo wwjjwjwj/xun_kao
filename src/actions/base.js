@@ -3,6 +3,7 @@
 
 //const Parse = require('parse/react-native');
 const { Platform } = require('react-native');
+import DeviceModule from 'react-native-schoolearn';
 
 import Ajax from '../common/ajax';
 import { Toast } from 'antd-mobile-rn';
@@ -56,4 +57,18 @@ export function departmentDelete(id: any) {
         });
         return promise;
     };
+}
+
+export function getDeviceUuid(){
+  return (dispatch) => {
+    DeviceModule.getUuid(function (result) {
+      if (result && result.uuid) {
+        const action = {
+          type: 'GETTED_UUID',
+          data: result
+        }
+        dispatch(action);
+      }
+    })
+  };
 }

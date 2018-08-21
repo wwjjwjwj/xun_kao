@@ -11,10 +11,12 @@ export type Dictionary = {
 
 export type State = {
   dictionarys: Dictionary,
+  deviceInfo: {}
 };
 
 const initialState = {
   dictionarys: [],
+  deviceInfo: {}
 };
 
 function base(state: State = initialState, action: Action): State {
@@ -22,7 +24,7 @@ function base(state: State = initialState, action: Action): State {
    *  应该为每个分组设置一个过期时间，比如1小时，到了就删除，需要重新从服务器获取
   */
 
-  if (action.type == 'LOGGED_OUT') {
+  /*if (action.type == 'LOGGED_OUT') {
     return initialState;
   }
   if(action.type === 'LOAD_DICTIONARY'){
@@ -45,6 +47,12 @@ function base(state: State = initialState, action: Action): State {
       ...state,
       dictionarys: list
     };
+  }*/
+  if(action.type === 'GETTED_UUID'){
+    return {
+      ...state,
+      deviceInfo: action.data
+    }
   }
 
   return state;

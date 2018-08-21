@@ -3,6 +3,7 @@ package com.examerapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.lixl.schoolearn.SchoolearnPackage;
 import com.hc.card.CardPackage;
 import com.rnziparchive.RNZipArchivePackage;
 import com.brentvatne.react.ReactVideoPackage;
@@ -43,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SchoolearnPackage(),
             new CardPackage(),
             new RNZipArchivePackage(),
             new ReactVideoPackage(),
