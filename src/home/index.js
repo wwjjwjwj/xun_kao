@@ -1,8 +1,6 @@
 'use strict';
 
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import {
   View,
   Text,
@@ -12,24 +10,23 @@ import {
   NativeAppEventEmitter,
   Linking
 } from 'react-native';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Button, InputItem, Toast, List,
+  WingBlank, Flex, WhiteSpace, TabBar
+} from 'antd-mobile-rn';
+import { Assets, Image
+} from 'react-native-ui-lib';
+
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSFontSizes from 'YSFontSizes';
-import { Button, InputItem, Toast, List, WingBlank, Flex, WhiteSpace, TabBar } from 'antd-mobile-rn';
 import YSI18n from 'YSI18n';
+import Home from './home';
 import News from './news';
 import Workbench from './workbench';
 import My from './my';
 import Menus from '../demo/menus';
-
-const tab_me_normal = require('../../assets/tab_me_normal.png');
-const tab_me_active = require('../../assets/tab_me_active.png');
-const tab_news_normal = require('../../assets/tab_news_normal.png');
-const tab_news_active = require('../../assets/tab_news_active.png');
-const tab_workbench_normal = require('../../assets/tab_workbench_normal.png');
-const tab_workbench_active = require('../../assets/tab_workbench_active.png');
-const tab_class_normal = require('../../assets/tab_class_normal.png');
-const tab_class_active = require('../../assets/tab_class_active.png');
 
 import { getUserMenus } from '../actions/user';
 
@@ -37,16 +34,11 @@ class Index extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedTab: 'news',
+      selectedTab: 'home',
     };
   }
-
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-
-  }
+  componentDidMount() { }
+  componentWillMount() { }
   renderContent(pageText: any) {
     let block_page = null;
     //避免非可见模式下被加载
@@ -54,6 +46,9 @@ class Index extends React.Component {
       return null;
     }
     switch (pageText) {
+      case 'home':
+        block_page = <Home navigation={this.props.navigation} />
+        break;
       case 'news':
         block_page = <News navigation={this.props.navigation} />
         break;
@@ -95,50 +90,58 @@ class Index extends React.Component {
     const tintColor = YSColors.AppMainColor
 
     let block_content = <TabBar
-      unselectedTintColor={unselectedTintColor}
-      tintColor={tintColor}
-      barTintColor={barTintColor}
+      //unselectedTintColor={unselectedTintColor}
+      //tintColor={tintColor}
+      //barTintColor={barTintColor}
     >
       <TabBar.Item
-        icon={tab_news_normal}
-        selectedIcon={tab_news_active}
-        title={YSI18n.get('news')}
+        icon={Assets.home.icon_home}
+        selectedIcon={Assets.home.icon_home_focus}
+        title={YSI18n.get('首页')}
         badge={2}
-        selected={this.state.selectedTab === 'news'}
-        onPress={() => this.onChangeTab('news')}
+        selected={this.state.selectedTab === 'home'}
+        onPress={() => this.onChangeTab('home')}
       >
-        {this.renderContent('news')}
+        {this.renderContent('home')}
       </TabBar.Item>
-
       <TabBar.Item
-        icon={tab_workbench_normal}
-        selectedIcon={tab_workbench_active}
-        title={YSI18n.get('workbench')}
+        icon={Assets.home.icon_signed_card}
+        selectedIcon={Assets.home.icon_signed_card_focus}
+        title={YSI18n.get('刷卡签到')}
         selected={this.state.selectedTab === 'workbench'}
         onPress={() => this.onChangeTab('workbench')}
       >
         {this.renderContent('workbench')}
       </TabBar.Item>
       <TabBar.Item
-        title={YSI18n.get('课表')}
-        icon={tab_class_normal}
-        selectedIcon={tab_class_active}
+        title={YSI18n.get('考试拍照')}
+        icon={Assets.home.icon_takephoto}
+        selectedIcon={Assets.home.icon_takephoto_focus}
         selected={this.state.selectedTab === 'class'}
         onPress={() => this.onChangeTab('class')}
       >
         {this.renderContent('class')}
       </TabBar.Item>
       <TabBar.Item
-        title={YSI18n.get('my')}
-        icon={tab_me_normal}
-        selectedIcon={tab_me_active}
+        title={YSI18n.get('签到查询')}
+        icon={Assets.home.icon_signed_query}
+        selectedIcon={Assets.home.icon_signed_query_focus}
+        selected={this.state.selectedTab === 'me'}
+        onPress={() => this.onChangeTab('me')}
+      >
+        {this.renderContent('me')}
+      </TabBar.Item>
+      <TabBar.Item
+        title={YSI18n.get('其他签到')}
+        icon={Assets.home.icon_signed_other}
+        selectedIcon={Assets.home.icon_signed_other_focus}
         selected={this.state.selectedTab === 'me'}
         onPress={() => this.onChangeTab('me')}
       >
         {this.renderContent('me')}
       </TabBar.Item>
 
-      <TabBar.Item
+      {/*<TabBar.Item
         title="功能导航"
         icon={tab_me_normal}
         selectedIcon={tab_me_active}
@@ -146,7 +149,7 @@ class Index extends React.Component {
         onPress={() => this.onChangeTab('demo')}
       >
         {this.renderContent('demo')}
-      </TabBar.Item>
+      </TabBar.Item>*/}
 
 
     </TabBar>
@@ -162,7 +165,7 @@ var styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor: YSColors.whiteBackground,
+    backgroundColor: YSColors.home.bg,
   },
 })
 

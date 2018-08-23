@@ -22,6 +22,27 @@ Assets.loadAssetsGroup('login', {
   icon_back_white: require('./assets/back-icon_white.png'),
   icon_back: require('./assets/back-icon.png'),
 });
+Assets.loadAssetsGroup('home', {
+  img_bg: require('./assets/img_home_bg.png'),
+  img_avatar_jk: require('./assets/img_avatar_jk.png'),
+
+  icon_home_focus: require('./assets/icon_home_focus.png'),
+  icon_home: require('./assets/icon_home.png'),
+  icon_signed_card_focus: require('./assets/icon_signed_card_focus.png'),
+  icon_signed_card: require('./assets/icon_signed_card.png'),
+  icon_takephoto_focus: require('./assets/icon_takephoto_focus.png'),
+  icon_takephoto: require('./assets/icon_takephoto.png'),
+  icon_signed_query_focus: require('./assets/icon_signed_query_focus.png'),
+  icon_signed_query: require('./assets/icon_signed_query.png'),
+  icon_signed_other_focus: require('./assets/icon_signed_other_focus.png'),
+  icon_signed_other: require('./assets/icon_signed_other.png'),
+
+  icon_branch: require('./assets/icon_branch.png'),
+  icon_branch_focus: require('./assets/icon_branch_focus.png'),
+  icon_addr: require('./assets/icon_addr.png'),
+  icon_addr_focus: require('./assets/icon_addr_focus.png'),
+  icon_contact: require('./assets/icon_contact.png'),
+})
 
 Assets.loadAssetsGroup('sex', {
     ico1: require('../assets/small_boy.png'),

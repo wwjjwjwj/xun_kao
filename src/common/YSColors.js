@@ -54,6 +54,10 @@ module.exports = {
   login: {
     bg: 'rgba(251, 251, 251, 1.0)',
     border: '#000000'
+  },
+  home: {
+    bg: 'rgba(241, 241, 241, 1.0)',
+    border: '#000000'
   }
 
 };

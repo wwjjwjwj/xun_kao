@@ -41,31 +41,7 @@ class YSButton extends React.Component {
             icon = <Image source={this.props.icon} style={styles.icon}/>;
         }
         let content;
-        if (this.props.type === 'linear') {
-            content = (
-                <LinearGradient
-                    start={[0.5, 1]} end={[1, 1]}
-                    colors={['#6A6AD5', '#6F86D9']}
-                    style={[styles.button, styles.linearButton]}>
-                    {icon}
-                    <Text style={[styles.caption, styles.linearCaption]}>
-                        {caption}
-                    </Text>
-                </LinearGradient>
-            );
-        }
-        if (this.props.type === 'primary') {
-            content = (
-                <View style={[styles.primary_wrap, this.props.style]}>
-                    <View style={styles.primary_button}>
-                        <Text style={[styles.primary_caption,this.props.text_style]}>
-                            {caption}
-                        </Text>
-                    </View>
-                </View>
-            );
-        }
-        else {
+
             var border = this.props.type === 'bordered' && styles.border;
             content = (
                 <View style={[styles.button, border, this.props.style]}>
@@ -75,7 +51,6 @@ class YSButton extends React.Component {
                     </Text>
                 </View>
             );
-        }
         let block_button;
 
         if (!this.props.disable) {
@@ -95,18 +70,19 @@ class YSButton extends React.Component {
             </TouchableOpacity>
         }
 
-        return block_button
-
-            ;
+        return block_button;
     }
 }
 
 var styles = StyleSheet.create({
     container: {
         height: YSWHs.buttonHeight,
-        borderRadius: YSWHs.scale_rx* 9,
-        backgroundColor: YSColors.AppMainColor,
+        //borderRadius: YSWHs.scale_rx* 9,
+        //backgroundColor: YSColors.AppMainColor,
         width:'100%',
+
+        borderRadius: 99,
+        backgroundColor: '#4B9FFF'
     },
     button: {
         flex: 1,
@@ -147,7 +123,7 @@ var styles = StyleSheet.create({
     },
     primary_caption: {
         color: 'white',
-        
+
     },
     secondaryCaption: {
         color: YSColors.lightText,
