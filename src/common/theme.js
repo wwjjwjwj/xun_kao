@@ -9,6 +9,7 @@ Colors.loadColors({
   white2: '#E7E7E7', //首页
   black: '#333333',
   black2: '#666666',
+
 });
 
 Typography.loadTypographies({
@@ -18,5 +19,5 @@ Typography.loadTypographies({
   text_title: {fontSize: 24},
   text_title2: {fontSize: 19},
   font_16: {fontSize: 16},
-  font_18_black: {fontSize: 18, color: Colors.black},
+  font_18: {fontSize: 18},
 });

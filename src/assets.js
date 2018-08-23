@@ -25,6 +25,8 @@ Assets.loadAssetsGroup('login', {
 Assets.loadAssetsGroup('home', {
   img_bg: require('./assets/img_home_bg.png'),
   img_avatar_jk: require('./assets/img_avatar_jk.png'),
+  img_otg: require('./assets/img_otg.png'),
+  img_blueteeth: require('./assets/img_blueteeth.png'),
 
   icon_home_focus: require('./assets/icon_home_focus.png'),
   icon_home: require('./assets/icon_home.png'),
@@ -42,6 +44,7 @@ Assets.loadAssetsGroup('home', {
   icon_addr: require('./assets/icon_addr.png'),
   icon_addr_focus: require('./assets/icon_addr_focus.png'),
   icon_contact: require('./assets/icon_contact.png'),
+  icon_close: require('./assets/icon_close.png'),
 })
 
 Assets.loadAssetsGroup('sex', {

@@ -27,6 +27,7 @@ import News from './news';
 import Workbench from './workbench';
 import My from './my';
 import Menus from '../demo/menus';
+import _Modal from './modal';
 
 import { getUserMenus } from '../actions/user';
 

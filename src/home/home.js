@@ -3,14 +3,15 @@
 //
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground
+  ImageBackground, ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Modal, Button, Assets, Image
+  Button, Assets, Image
 } from 'react-native-ui-lib';
-import { List, WhiteSpace, DatePicker, Picker
+import { List, WhiteSpace, DatePicker, Picker,
+  Modal, WingBlank
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -38,6 +39,9 @@ class Home extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      //connect_show: false,
+connect_show: true,
+
       university: '吉林大学',
       name: '李老师',
       mobile: '13511112222',
@@ -49,11 +53,20 @@ class Home extends React.Component {
       exam_addr: '重庆大学A区8号教学楼',
       exam_contact: '李斯',
     };
-    (this: any).onConnect = this.onConnect.bind(this);
+    (this: any).onShowConnectModal = this.onShowConnectModal.bind(this);
+    (this: any).onCloseConnectModal = this.onCloseConnectModal.bind(this);
   }
 
-  onConnect(){
-
+  onShowConnectModal(e){
+    //e.preventDefault();
+    this.setState({
+      connect_show: true
+    })
+  }
+  onCloseConnectModal(){
+    this.setState({
+      connect_show: false
+    })
   }
 
   render(){
@@ -78,10 +91,10 @@ class Home extends React.Component {
             style={styles.btn}
             caption={"点击连接读卡器"}
             text_style={styles.text_caption}
-            onPress={this.onConnect}/>
+            onPress={this.onShowConnectModal}/>
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18_black marginL-15>{this.state.batch}</Text>
+              <Text font_18 black marginL-15>{this.state.batch}</Text>
               <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.state.exam_num}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
@@ -120,36 +133,37 @@ class Home extends React.Component {
               </View>
             </View>
           </View>
-
-          <View>
-            <View centerV row marginT-15>
-              <Image source={Assets.home.icon_branch} style={styles.icon} />
-              <Text marginL-11 gray2 label_input>考点</Text>
-              <View right style={styles.bottom_right}>
-                <Text black label_input>{this.state.exam_place}</Text>
-              </View>
-            </View>
-            <View centerV row marginT-10 paddingL-15>
-              <Image source={Assets.home.icon_addr} style={styles.icon} />
-              <Text marginL-11 gray2 label_input>考点地址</Text>
-              <View right style={styles.bottom_right}>
-                <Text black label_input>{this.state.exam_addr}</Text>
-              </View>
-            </View>
-            <View centerV row marginT-10 paddingL-15>
-              <Image source={Assets.home.icon_contact} style={styles.icon} />
-              <Text marginL-11 gray2 label_input>考点联系人</Text>
-            </View>
-
-          </View>
         </View>
 
-        {/*<View style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
-          <View centerH paddingT-35 center>
-            <Image source={Assets.logo.app_logo} style={styles.logo} />
-          </View>
-        </View>*/}
 
+        <Modal
+          popup
+          visible={this.state.connect_show}
+          onClose={()=>this.onCloseConnectModal()}
+          animationType="slide-up"
+          maskClosable={true}
+        >
+          <View centerH style={styles.modal}>
+            <Text font_18 black2 marginT-17>请选择设备连接方式</Text>
+            <TouchableOpacity style={styles.close} onPress={()=>this.onCloseConnectModal()}>
+              <Image source={Assets.home.icon_close} style={styles.icon} />
+            </TouchableOpacity>
+            <View marginT-17 style={styles.line}/>
+            <View left row marginT-15>
+              <Image source={Assets.home.img_otg} style={styles.img}/>
+              <Image source={Assets.home.img_blueteeth} style={styles.img}/>
+            </View>
+            <View left style={styles.intro_title}>
+              <Text marginT-25 black2 font_16>读卡器操作说明</Text>
+              <Text marginT-19 black2 label_input>开关机:</Text>
+              <Text gray2 label_input>长按开关机键2秒，开机。长按2秒，关机。开机后工作灯绿灯闪烁，蓝牙灯闪烁，等待配对连接。</Text>
+              <Text marginT-19 black2 label_input>有线连接:</Text>
+              <Text gray2 label_input>使用数据线与手机连接。</Text>
+              <Text marginT-19 black2 label_input>蓝牙连接:</Text>
+              <Text gray2 label_input>使开机后，设备蓝牙开启搜索，蓝牙指示灯闪烁，打开手机蓝牙连接设备，蓝牙指示灯每次闪烁两下表示蓝牙处于已连接状态。</Text>
+            </View>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -281,6 +295,36 @@ var styles = StyleSheet.create({
     height: 25,
   },
 
+  modal: {
+    width: YSWHs.width_window,
+    height: 480,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  close: {
+    position: 'absolute',
+    right: 15,
+    top: 15
+  },
+  line: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#F1F1F1'
+  },
+  img: {
+    width: 164,
+    height: 100,
+    borderRadius: 5,
+    resizeMode: 'contain',
+    marginRight: 10
+  },
+  intro_title: {
+    width: YSWHs.width_window,
+    paddingLeft: 16,
+    paddingRight: 16,
+  }
 
 
 })
