@@ -55,6 +55,8 @@ connect_show: true,
     };
     (this: any).onShowConnectModal = this.onShowConnectModal.bind(this);
     (this: any).onCloseConnectModal = this.onCloseConnectModal.bind(this);
+    (this: any).goto_otg = this.goto_otg.bind(this);
+    (this: any).goto_blueteeth = this.goto_blueteeth.bind(this);
   }
 
   onShowConnectModal(e){
@@ -67,6 +69,15 @@ connect_show: true,
     this.setState({
       connect_show: false
     })
+  }
+
+  goto_otg(){
+    this.onCloseConnectModal();
+    this.props.navigation.navigate('otgTest');
+  }
+  goto_blueteeth(){
+    this.onCloseConnectModal();
+    this.props.navigation.navigate('blueteethTest');
   }
 
   render(){
@@ -150,8 +161,12 @@ connect_show: true,
             </TouchableOpacity>
             <View marginT-17 style={styles.line}/>
             <View left row marginT-15>
-              <Image source={Assets.home.img_otg} style={styles.img}/>
-              <Image source={Assets.home.img_blueteeth} style={styles.img}/>
+              <TouchableOpacity onPress={this.goto_otg}>
+                <Image source={Assets.home.img_otg} style={styles.img}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.goto_blueteeth}>
+                <Image source={Assets.home.img_blueteeth} style={styles.img}/>
+              </TouchableOpacity>
             </View>
             <View left style={styles.intro_title}>
               <Text marginT-25 black2 font_16>读卡器操作说明</Text>

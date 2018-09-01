@@ -1,6 +1,9 @@
+/**
+ * otg 有线 测试
+ * @providesModule OtgTest
+ * @flow
+ */
 
-
-//
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio
 } from 'react-native';
@@ -33,7 +36,7 @@ import { getDeviceUuid } from '../actions/base';
 
 import {getFinger} from '../env';
 
-class Home extends React.Component {
+class OtgTest extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -45,16 +48,33 @@ class Home extends React.Component {
   }
 
   onTest(){
+    this.props.navigation.navigate('readCardTest');
 
   }
   render(){
-
     return (
       <View flex style={styles.container}>
-        <Image style={styles.behind_bg} source={Assets.home.img_bg}/>
-        <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
-          <View centerH paddingT-45 center>
-            <Image source={Assets.logo.app_logo} style={styles.logo} />
+        <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
+          <View centerH paddingT-26 center>
+            <Image source={Assets.home.icon_connect_otg} style={styles.logo} />
+          </View>
+          <View left marginT-30 marginL-15 marginR-17>
+            <Text font_18 black2 marginT-15>有线连接说明</Text>
+            <View left marginT-21>
+              <Text black2 font_16>第一步：连接设备</Text>
+              <Text black2 font_14 marginT-5>将连接线接入手机和读卡器两端，如接入后读卡器充电灯不亮，则表示连接失败，请更换为蓝牙连接方式。</Text>
+              <Text black2 font_16 marginT-20>第二步：开始测试</Text>
+              <Text black2 font_14 marginT-5>当连接成功后，开始测试按钮可点击。</Text>
+            </View>
+          </View>
+          <View centerH marginT-50 marginL-48 marginR-48 center>
+            <YSButton
+                type={'bordered'}
+                style={styles.border_button}
+                caption={YSI18n.get('读卡器测试')}
+                text_style={styles.text_caption}
+                disable={false}
+                onPress={this.onTest} />
           </View>
 
         </KeyboardAwareScrollView>
@@ -70,88 +90,15 @@ var styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor: YSColors.home.bg
-  },
-  behind_bg: {
-    //height: '75%'
-  },
-  behind_bottom: {
-    position: 'absolute',
-    bottom: 47,
-    left: 97
-
-  },
-  front: {
-    position: 'absolute',
-    backgroundColor: YSColors.whiteBackground,
-    width: '91.5%',
-    height: '78%',
-    top: YSWHs.login.front_top,
-    left: YSWHs.login.front_left,
-    right: YSWHs.login.front_left,
-    //borderWidth: 0.5,
-    //borderColor: YSColors.login.border,
-    //box-shadow:0 5 5 0 rgba(0,0,0,0.05);
-    borderRadius: 5,
-    elevation: 20,
-    shadowOffset: {width: 0, height: 10},
-    shadowColor: '#000000',
-    shadowOpacity: 1,
-    shadowRadius: 5
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
-  },
-  iconstyle:{
-    width: 16,
-    height: 16,
-    resizeMode:'contain',
-    marginRight: 12
-  },
-  inputText: {
-    color: '#333333',
-    borderRadius: 99,
-  },
-  inputContainer: {
-    marginLeft: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    borderWidth: 1,
-    borderColor: "#D6D6D6",
-    marginTop: 18,
-    height: 47,
-
-    borderRadius: 99,
-    paddingLeft: 17,
-    paddingRight: 18
-  },
-
-  block_forget_wrap: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    //alignItems: 'center',
-    height: 20,
-  },
-  forgetwrap: {
-    textAlign: 'center',
-    color: YSColors.lightText,
-    backgroundColor: 'transparent'
+    backgroundColor: YSColors.whiteBackground
   },
   text_caption: {
     fontSize: 18
   },
-
   border_button: {
     borderRadius: 99,
     //backgroundColor: 'transparent'
     backgroundColor: '#4B9FFF'
-  },
-  logininput_margin: {
-    marginTop: 47,
-    marginLeft: 32,
-    marginRight: 32
   },
 
 })
@@ -171,4 +118,4 @@ function mapDispatchToProps(dispatch) {
         getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
     };
 }
-module.exports = connect(select, mapDispatchToProps)(Home);
+module.exports = connect(select, mapDispatchToProps)(OtgTest);

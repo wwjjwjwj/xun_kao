@@ -18,6 +18,9 @@ Typography.loadTypographies({
   text_btn: {fontSize: 18, lineHeight: 25},
   text_title: {fontSize: 24},
   text_title2: {fontSize: 19},
+  font_12: {fontSize: 12},
+  font_14: {fontSize: 14},
   font_16: {fontSize: 16},
   font_18: {fontSize: 18},
+  font_20: {fontSize: 20},
 });

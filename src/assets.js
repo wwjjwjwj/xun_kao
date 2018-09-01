@@ -45,6 +45,13 @@ Assets.loadAssetsGroup('home', {
   icon_addr_focus: require('./assets/icon_addr_focus.png'),
   icon_contact: require('./assets/icon_contact.png'),
   icon_close: require('./assets/icon_close.png'),
+
+  icon_connect_otg: require('./assets/icon_connect_otg.png'),
+  icon_connect_blueteeth: require('./assets/icon_connect_blueteeth.png'),
+  icon_read_card: require('./assets/icon_read_card.png'),
+  icon_card: require('./assets/icon_card.png'),
+  icon_read_card_fail: require('./assets/icon_read_card_fail.png'),
+
 })
 
 Assets.loadAssetsGroup('sex', {

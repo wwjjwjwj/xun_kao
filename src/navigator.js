@@ -22,7 +22,43 @@ const navigator = StackNavigator(
                 header: null
             })
         },
+        //OTG test
+        otgTest: {
+            screen: require('OtgTest'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('有线连接'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        //Blueteeth test
+        blueteethTest: {
+            screen: require('BlueteethTest'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('无线连接'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        //read card test
+        readCardTest: {
+            screen: require('ReadCardTest'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('读卡测试'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
 
+
+
+/*
         //员工管理
         employeeIndex: {
             screen: require('EmployeeIndex'),
@@ -379,7 +415,7 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 1, borderColor: YSColors.splitlineColor, backgroundColor: YSColors.whiteBackground }
             })
         }
-
+*/
     });
 
 module.exports = navigator;

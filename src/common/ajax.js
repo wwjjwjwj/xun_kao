@@ -76,7 +76,11 @@ module.exports = {
     };
     var school = "";
     for(var index in data){
-      param[index] = data[index];
+      if(data[index] instanceof Array){
+        param[index] = JSON.stringify(data[index]);
+      }else {
+        param[index] = data[index];
+      }
       if(index == "SchoolId"){
         school = data[index];
       }

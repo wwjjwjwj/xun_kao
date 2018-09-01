@@ -180,7 +180,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
   return {
     //各业务接口
-    getUserMenus: bindActionCreators(getUserMenus, dispatch),
+    //getUserMenus: bindActionCreators(getUserMenus, dispatch),
   };
 }
 //redux 组件 封装

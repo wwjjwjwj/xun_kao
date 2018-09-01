@@ -28,22 +28,6 @@ export function loginWithEmail(userName, password, school_id, school_name) {
         return promise;
     };
 }
-//获取用户功能权限清单
-export function getUserMenus() {
-    return (dispatch) => {
-        const promise = Ajax.promisePostJson("user/GetUserMenus");
-        promise.then(
-            (result) => {
-                const action = {
-                    type: 'GET_ALL_MENU',
-                    data: result.data
-                }
-                dispatch(action);
-            }
-        )
-        return promise;
-    };
-}
 
 //退出登录
 export function logout() {
