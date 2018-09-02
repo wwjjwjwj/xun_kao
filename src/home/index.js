@@ -22,7 +22,10 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSFontSizes from 'YSFontSizes';
 import YSI18n from 'YSI18n';
+
 import Home from './home';
+import SignedByCard from './signed_by_card';
+
 import News from './news';
 import Workbench from './workbench';
 import My from './my';
@@ -35,7 +38,8 @@ class Index extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedTab: 'home',
+      //selectedTab: 'home',
+      selectedTab: 'signedByCard',
     };
   }
   componentDidMount() { }
@@ -50,6 +54,10 @@ class Index extends React.Component {
       case 'home':
         block_page = <Home navigation={this.props.navigation} />
         break;
+      case 'signedByCard':
+        block_page = <SignedByCard navigation={this.props.navigation} />
+        break;
+
       case 'news':
         block_page = <News navigation={this.props.navigation} />
         break;
@@ -109,10 +117,10 @@ class Index extends React.Component {
         icon={Assets.home.icon_signed_card}
         selectedIcon={Assets.home.icon_signed_card_focus}
         title={YSI18n.get('刷卡签到')}
-        selected={this.state.selectedTab === 'workbench'}
-        onPress={() => this.onChangeTab('workbench')}
+        selected={this.state.selectedTab === 'signedByCard'}
+        onPress={() => this.onChangeTab('signedByCard')}
       >
-        {this.renderContent('workbench')}
+        {this.renderContent('signedByCard')}
       </TabBar.Item>
       <TabBar.Item
         title={YSI18n.get('考试拍照')}

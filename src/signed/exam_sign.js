@@ -1,6 +1,6 @@
 /**
- * 读卡测试
- * @providesModule ReadCardTest
+ * 本场考试签到
+ * @providesModule ExamSign
  * @flow
  */
 
@@ -20,6 +20,7 @@ import Dimensions from 'Dimensions';
 import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import CardModule from 'react-native-card-read';
+import ImagePicker from 'react-native-image-crop-picker';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -35,6 +36,7 @@ import YSLoading from 'YSLoading';
 //4. action
 import { loginWithEmail } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
+import { GetStudentByCard } from '../actions/exam';
 
 import {getFinger} from '../env';
 
@@ -43,22 +45,51 @@ const ds = new ListView.DataSource({
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-class ReadCardTest extends React.Component {
+class ExamSign extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
         read_status: 0,   //0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+        check_status: 2,  //0 初始；  2 验证成功； 3 验证失败
+        need_follow: true,  //需要重点关注
 
         blues: [],
         cardInfo: {}
       };
-      (this: any).onTest = this.onTest.bind(this);
+      (this: any).onRead = this.onRead.bind(this);
       (this: any).onReturn = this.onReturn.bind(this);
       (this: any).initDevice = this.initDevice.bind(this);
       (this: any).onTestFind = this.onTestFind.bind(this);
+      (this: any).onCheckUserInfo = this.onCheckUserInfo.bind(this);
+      (this: any).onTakePhoto = this.onTakePhoto.bind(this);
   };
   componentWillMount() {
     this.initDevice();
+  }
+
+  onCheckUserInfo(cardInfo){
+    let { Toast } = this;
+    if(!cardInfo || !cardInfo.cardNo){
+      Toast.fail('未获取到学生身份证');
+      return;
+    }
+    var examId = 1;
+    var stationId = 1;
+    var placeId = 1;
+    this.props.GetStudentByCard(examId, stationId, placeId, cardInfo.cardNo)
+        .then((response) => {
+          alert(JSON.stringify(response));
+          if(response.State == 1){
+            this.setState({
+              check_status: 2,    //验证成功
+
+            })
+            //response.data
+          }
+        })
+        .catch((response) => {
+          Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        })
   }
 
   initDevice(){
@@ -128,6 +159,7 @@ class ReadCardTest extends React.Component {
             cardInfo: c,
             read_status: 2, //读卡成功
           })
+          this.onCheckUserInfo(cardInfo);
       }else if(type == "30"){
           //ios 读取身份证信息
           if(typeof data == 'string'){
@@ -147,6 +179,7 @@ class ReadCardTest extends React.Component {
                 cardInfo: c,
                 read_status: 2, //成功
               })
+              this.onCheckUserInfo(cardInfo);
             }
 
           }
@@ -167,7 +200,7 @@ class ReadCardTest extends React.Component {
       name: item.name,
     })
   }
-  onTest(){
+  onRead(){
     let { Toast } = this;
     if(this.state.read_status == 0 || this.state.read_status == 3){
       this.setState({
@@ -189,6 +222,26 @@ class ReadCardTest extends React.Component {
   onReturn(){
     //this.props.navigation.goBack(this.props.navigation.state.params.keys.home_key);
     this.props.navigation.popToTop();
+  }
+  onTakePhoto(){
+    var that = this;
+    Util.checkPermissionCamera(function(isPermit: boolean){
+      if(isPermit){
+        ImagePicker.openCamera({
+          width: 640,
+          height: 640,
+          cropping: true,
+          mediaType:'photo',
+          includeBase64: true,
+        }).then(image => {
+            that.doUploadPhoto(image.data)
+        });
+      }else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
   }
 
   renderRow(row, id) {
@@ -221,12 +274,15 @@ class ReadCardTest extends React.Component {
     return (
       <View flex style={this.state.read_status <= 1 ? styles.container : styles.container_result}>
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
+          {this.state.read_status == 0 && <View flex-1 bg-blue3 center row style={styles.tip}>
+              <Image source={Assets.signed.icon_error}/>
+              <Text font_14 blue>请放身份证，点击开始读卡</Text>
+            </View>
+          }
           {this.state.read_status <= 1 &&
-            <View centerH marginT-56 center>
+            <View centerH marginT-46>
               <Image source={Assets.home.icon_read_card} />
-              <Text font_16 black2 marginT-50>请将身份证置于读卡器上进行读卡测试</Text>
-              { this.state.read_status == 0 && <View marginT-39 style={styles.load_progress}/>}
-              { this.state.read_status == 0 && <Text font_12 gray2 marginT-10>等待读卡中……</Text> }
+              <Text font_16 black2 marginT-50>请将身份证置于读卡器上</Text>
               { this.state.read_status == 1 && <View marginT-39 style={styles.load_progress} row>
                 <View style={styles.load_progress_left} />
                 <View style={styles.load_progress_right} />
@@ -234,16 +290,9 @@ class ReadCardTest extends React.Component {
               { this.state.read_status == 1 && <Text font_12 white3 marginT-10>读卡中……</Text> }
             </View>
           }
-          {this.state.read_status == 3 &&
-            <View centerH marginT-56 center>
-              <Image source={Assets.home.icon_read_card_fail} />
-              <Text font_20 black marginT-22>读取失败</Text>
-              <Text font_14 black2 marginT-15>请重新连接读卡器后重试测试</Text>
-            </View>
-          }
           {this.state.read_status == 2 &&
             <View centerH marginT-26 marginL-28 marginR-28 bg-white style={styles.result}>
-              <Text font_18 blue marginT-18>身份证信息</Text>
+              <Text font_18 blue marginT-18>考生身份证信息</Text>
               <Image source={{uri: this.state.cardInfo.avatar}} style={styles.photo}/>
               <Text font_14 gray2 marginT-15>姓名</Text>
               <Text font_20 black marginT-10>{this.state.cardInfo.name}</Text>
@@ -251,32 +300,52 @@ class ReadCardTest extends React.Component {
               <Text font_20 black marginT-10>{this.state.cardInfo.cardNo}</Text>
             </View>
           }
-          <View centerH marginT-120 marginL-48 marginR-48 center>
-            {this.state.read_status == 2 ? <YSButton
+          //读身份证成功 但验证失败
+          {this.state.check_status == 3 &&
+            <View centerH marginT-15 center row>
+              <Image source={Assets.signed.icon_error_r} />
+              <Text font_14 red marginL-6>非本场考生，信息有误</Text>
+            </View>
+          }
+          {this.state.check_status == 2 && this.state.need_follow &&
+            <View centerH marginT-15 center row>
+              <Image source={Assets.signed.icon_error_y} />
+              <Text font_14 red marginL-6>该考生需要重点关注</Text>
+            </View>
+          }
+          {this.state.read_status == 2 && this.state.check_status == 3 &&
+            <View centerH marginT-65 marginL-48 marginR-48 center>
+             <YSButton
                 type={'bordered'}
                 style={styles.border_button}
-                caption={'测试完成 返回首页'}
+                caption={'读卡有误 返回签到'}
                 text_style={styles.text_caption}
                 disable={false}
                 onPress={this.onReturn} />
-                :
-            <YSButton
+            </View>
+          }
+          {this.state.read_status == 2 && this.state.check_status == 2 &&
+            <View centerH marginT-65 marginL-48 marginR-48 center>
+             <YSButton
+                type={'bordered'}
+                style={styles.border_button}
+                caption={'拍照验证'}
+                text_style={styles.text_caption}
+                disable={false}
+                onPress={this.onTakePhoto} />
+            </View>
+          }
+          {this.state.read_status <= 1 && <View centerH marginT-120 marginL-48 marginR-48 center>
+              <YSButton
                 type={'bordered'}
                 style={this.state.read_status == 1 ? styles.border_button_ing : styles.border_button}
-                caption={this.state.read_status == 3 ? '再次测试' : '开始测试'}
+                caption={'开始读卡'}
                 text_style={styles.text_caption}
                 disable={this.state.read_status == 1 ? true : false}
-                onPress={this.onTest} />
-            }
-          </View>
+                onPress={this.onRead} />
+            </View>
+          }
           <View centerH marginT-20 marginL-48 marginR-48 center>
-            {this.state.read_status == 3 && <YSButton
-                type={'bordered'}
-                style={styles.border_button_return}
-                caption={'返回首页'}
-                text_style={styles.text_caption_return}
-                disable={false}
-                onPress={this.onReturn} /> }
             {this.state.read_status <= 1 && <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -286,7 +355,7 @@ class ReadCardTest extends React.Component {
                 onPress={this.onTestFind} /> }
 
           </View>
-          {this.state.read_status <= 1 && <View style={{width: '75%', borderWidth: 1, borderColor: '#2E66E7', marginLeft: 45, marginRight: 45}}>
+          {this.state.read_status <= 1 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
@@ -310,6 +379,11 @@ var styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: YSColors.whiteBackground
   },
+  tip: {
+    width: '100%',
+    height: 60,
+  },
+
   container_result: {
     flex: 1,
     flexDirection: 'column',
@@ -387,7 +461,8 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
+        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
+        GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
     };
 }
-module.exports = connect(select, mapDispatchToProps)(ReadCardTest);
+module.exports = connect(select, mapDispatchToProps)(ExamSign);

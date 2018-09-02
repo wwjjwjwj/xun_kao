@@ -39,7 +39,7 @@
     "react-native-video": "git+https://github.com/murzhang/react-native-video.git",
     "react-native-zip-archive": "2.2.6",
     "react-native-schoolearn": "git+https://github.com/leeshare/react-native-schoolearn.git",
-    "react-navigation": "git+https://github.com/leeshare/react-navigation.git",
+    "react-navigation": "2.12.1",
     "react-redux": "~5.0.3",
     "react-sticky": "^6.0.3",
     "redux": "~3.6.0",

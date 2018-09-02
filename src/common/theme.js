@@ -5,11 +5,13 @@ Colors.loadColors({
   gray2: '#999999',
   blue: '#2E66E7',
   blue2: '#A5CFFF', //首页字体
+  blue3: '#CCE2FF',
   white: '#FFFFFF',
   white2: '#E7E7E7', //首页
+  white3: '#4B9FFF',
   black: '#333333',
   black2: '#666666',
-
+  red: '#F43530',
 });
 
 Typography.loadTypographies({
@@ -21,6 +23,7 @@ Typography.loadTypographies({
   font_12: {fontSize: 12},
   font_14: {fontSize: 14},
   font_16: {fontSize: 16},
+  font_17: {fontSize: 17},
   font_18: {fontSize: 18},
   font_20: {fontSize: 20},
 });

@@ -48,7 +48,7 @@ class BlueteethTest extends React.Component {
   }
 
   onTest(){
-    //alert("hello");
+    //this.props.navigation.navigate('readCardTest', { keys: {...this.props.navigation.state.params.keys, blue_key: this.props.navigation.state.key} });
     this.props.navigation.navigate('readCardTest');
   }
 

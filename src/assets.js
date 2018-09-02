@@ -54,6 +54,14 @@ Assets.loadAssetsGroup('home', {
 
 })
 
+Assets.loadAssetsGroup('signed', {
+  icon_time_exam: require('./assets/icon_time_exam.png'),
+  icon_time_signed: require('./assets/icon_time_signed.png'),
+  icon_error: require('./assets/icon_error.png'),
+  icon_error_r: require('./assets/icon_error_r.png'),
+  icon_error_y: require('./assets/icon_error_y.png'),
+})
+
 Assets.loadAssetsGroup('sex', {
     ico1: require('../assets/small_boy.png'),
     ico2: require('../assets/small_girl.png'),

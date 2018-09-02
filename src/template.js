@@ -58,6 +58,7 @@ class Home extends React.Component {
           </View>
 
         </KeyboardAwareScrollView>
+        <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
   }

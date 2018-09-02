@@ -99,6 +99,10 @@ class LoginByEmail extends React.Component {
         let { account, password } = this.state;
         var school_id = this.state.school_info.value;
         var school_name = this.state.school_info.label;
+        if(!account || !password || !school_id){
+          Toast.info('请输入登录信息');
+          return;
+        }
         //登录中...提示，默认3秒
         Toast.loading(YSI18n.get('loginPending'), 3);
         this.props.loginWithEmail(account, password, school_id, school_name)
@@ -115,7 +119,8 @@ class LoginByEmail extends React.Component {
     render() {
         var segment = "";
         let block_loading = null;
-        let disable = (this.state.account.trim() === '' || this.state.password.trim() === '' || !this.state.school_info.value)
+        //let disable = (this.state.account.trim() === '' || this.state.password.trim() === '' || !this.state.school_info.value)
+        let disable = false;
         if (this.state.isLoading) {
             block_loading = <YSLoading loading_type={1} />
             segment = <YSButton

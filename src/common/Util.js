@@ -5,6 +5,7 @@
 */
 
 import YSI18n from 'YSI18n';
+import SchoolearnModule from 'react-native-schoolearn';
 
 export function getDictionaryTitle(dic, value, defaultTitle) {
   dic = dic || [];
@@ -246,3 +247,49 @@ export function formatMsgTime (comparedateTime:string) {
 
   return timeSpanStr;
 };
+
+// permissionType: 1 语音； 2 摄像头
+function _checkPermissionIOS(permissionType: number, callback: any){
+  if (permissionType == 2) {
+    SchoolearnModule.checkPermissionCamera(function (result) {
+      if (result && result.is_success) {
+        if (callback) {
+          callback(true);
+        }
+      } else {
+        if (callback) {
+          callback(false);
+        }
+        //toast("请您在设置中，允许我们使用您手机的摄像头.");
+      }
+    })
+  }
+};
+// permissionType: 1 语音； 2 摄像头
+function _checkPermissionAndroid(permissionType: number, callback: any){
+  //在低于Android 6.0的设备上，权限只要写在AndroidManifest.xml里就会自动获得，此情形下check和request 方法将始终返回true。
+  //6.0以后的可以正确读取到是否有权限
+  if (permissionType == 2) {
+    SchoolearnModule.checkPermissionCamera(function (result) {
+      //alert(JSON.stringify(result))
+      if (result && result.is_success) {
+        if (callback) {
+          callback(true);
+        }
+      } else {
+        if (callback) {
+          callback(false);
+        }
+        //toast("请您在设置中，允许我们使用您手机的摄像头.");
+      }
+    })
+  }
+
+};
+export function checkPermissionCamera(callback: any){
+  if (Platform.OS == 'ios') {
+    this._checkPermissionIOS(2, callback);
+  } else {
+    this._checkPermissionAndroid(2, callback);
+  }
+}

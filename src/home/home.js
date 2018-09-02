@@ -40,7 +40,6 @@ class Home extends React.Component {
     super(props);
     this.state = {
       //connect_show: false,
-connect_show: true,
 
       university: '吉林大学',
       name: '李老师',
@@ -73,10 +72,12 @@ connect_show: true,
 
   goto_otg(){
     this.onCloseConnectModal();
+    //this.props.navigation.navigate('otgTest', {keys: { home_key: this.props.navigation.state.key }});
     this.props.navigation.navigate('otgTest');
   }
   goto_blueteeth(){
     this.onCloseConnectModal();
+    //this.props.navigation.navigate('blueteethTest', {keys: { home_key: this.props.navigation.state.key }});
     this.props.navigation.navigate('blueteethTest');
   }
 
@@ -179,6 +180,7 @@ connect_show: true,
             </View>
           </View>
         </Modal>
+        <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
   }
