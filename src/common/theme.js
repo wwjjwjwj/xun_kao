@@ -14,6 +14,7 @@ Colors.loadColors({
   black3: '#888888',
   red: '#F43530',
   orange: '#EE9500',
+  yellow: '#FFF4D5',
 });
 
 Typography.loadTypographies({

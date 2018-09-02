@@ -64,6 +64,8 @@ Assets.loadAssetsGroup('signed', {
   icon_valid_pass: require('./assets/icon_valid_pass.png'),
   icon_valid_fail: require('./assets/icon_valid_fail.png'),
   icon_valid_fail2: require('./assets/icon_valid_fail2.png'),
+
+  icon_photo_valid_pass: require('./assets/icon_photo_valid_pass.png'),
 })
 
 Assets.loadAssetsGroup('sex', {

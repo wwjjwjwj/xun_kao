@@ -25,6 +25,7 @@ import YSI18n from 'YSI18n';
 
 import Home from './home';
 import SignedByCard from './signed_by_card';
+import ExamTakePhoto from './exam_take_photo';
 
 import News from './news';
 import Workbench from './workbench';
@@ -39,7 +40,7 @@ class Index extends React.Component {
     super();
     this.state = {
       //selectedTab: 'home',
-      selectedTab: 'signedByCard',
+      selectedTab: 'examTakePhoto',
     };
   }
   componentDidMount() { }
@@ -56,6 +57,9 @@ class Index extends React.Component {
         break;
       case 'signedByCard':
         block_page = <SignedByCard navigation={this.props.navigation} />
+        break;
+      case 'examTakePhoto':
+        block_page = <ExamTakePhoto navigation={this.props.navigation} />
         break;
 
       case 'news':
@@ -126,10 +130,10 @@ class Index extends React.Component {
         title={YSI18n.get('考试拍照')}
         icon={Assets.home.icon_takephoto}
         selectedIcon={Assets.home.icon_takephoto_focus}
-        selected={this.state.selectedTab === 'class'}
-        onPress={() => this.onChangeTab('class')}
+        selected={this.state.selectedTab === 'examTakePhoto'}
+        onPress={() => this.onChangeTab('examTakePhoto')}
       >
-        {this.renderContent('class')}
+        {this.renderContent('examTakePhoto')}
       </TabBar.Item>
       <TabBar.Item
         title={YSI18n.get('签到查询')}

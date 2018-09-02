@@ -77,6 +77,27 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
             })
         },
+        //-------------------3 考场拍照
+        examTakePhoto: {
+            screen: require('./home/exam_take_photo'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('考场拍照'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        placeTakePhoto: {
+            screen: require('PlaceTakePhoto'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('本场考场拍照'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
 
 
 
