@@ -11,9 +11,9 @@ import { StyleSheet, TouchableOpacity, PixelRatio,
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Modal, Button, Assets, Image, ListItem
+  Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
-import { List, WhiteSpace, DatePicker, Picker
+import { List, WhiteSpace, DatePicker, Picker, Modal
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -33,9 +33,8 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
+import { checkPermissionCamera } from 'Util';
 //4. action
-import { loginWithEmail } from '../actions/user';
-import { getDeviceUuid } from '../actions/base';
 import { GetStudentByCard } from '../actions/exam';
 
 import {getFinger} from '../env';
@@ -49,12 +48,14 @@ class ExamSign extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        read_status: 0,   //0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
-        check_status: 2,  //0 初始；  2 验证成功； 3 验证失败
-        need_follow: true,  //需要重点关注
+        read_status: 0,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+        check_status: 2,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）
+        //need_follow: false,  //需要重点关注
+        valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
 
         blues: [],
-        cardInfo: {}
+        cardInfo: {},
+        image: {}   //拍照图片
       };
       (this: any).onRead = this.onRead.bind(this);
       (this: any).onReturn = this.onReturn.bind(this);
@@ -62,6 +63,11 @@ class ExamSign extends React.Component {
       (this: any).onTestFind = this.onTestFind.bind(this);
       (this: any).onCheckUserInfo = this.onCheckUserInfo.bind(this);
       (this: any).onTakePhoto = this.onTakePhoto.bind(this);
+      (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
+      (this: any).onReScan = this.onReScan.bind(this);
+      (this: any).onUpload = this.onUpload.bind(this);
+      (this: any).onReValid = this.onReValid.bind(this);
+      (this: any).onValidFail = this.onValidFail.bind(this);
   };
   componentWillMount() {
     this.initDevice();
@@ -225,7 +231,7 @@ class ExamSign extends React.Component {
   }
   onTakePhoto(){
     var that = this;
-    Util.checkPermissionCamera(function(isPermit: boolean){
+    checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
@@ -233,8 +239,11 @@ class ExamSign extends React.Component {
           cropping: true,
           mediaType:'photo',
           includeBase64: true,
+          cropperChooseText: '选择',
+          cropperCancelText: '取消'
         }).then(image => {
-            that.doUploadPhoto(image.data)
+            //that.doUploadPhoto(image.data)
+            that.onChoosePhoto(image);
         });
       }else {
         that.setState({
@@ -242,6 +251,51 @@ class ExamSign extends React.Component {
         })
       }
     })
+  }
+  onChoosePhoto(image){
+    this.setState({
+      image: image
+    })
+    this.onModalShow();
+  }
+  onModalShow(){
+    this.setState({
+      modal_show: true
+    })
+  }
+  onModalHide(){
+    this.setState({
+      modal_show: false
+    })
+  }
+  onReScan(){
+    this.onModalHide();
+    var that = this;
+    setTimeout(function(){
+      that.onTakePhoto();
+    }, 500);
+  }
+  onUpload(){
+    //上传拍照 返回 验证 结果
+    this.onModalHide();
+    var that = this;
+    setTimeout(function(){
+      //alert('上传');
+      that.setState({
+        valid_status: 4
+      })
+    }, 1000);
+
+  }
+
+  onReValid(){
+    //再次验证
+    this.onUpload();
+  }
+  onValidFail(){
+    //确认不通过
+    alert('不通过操作');
+    this.onReturn();
   }
 
   renderRow(row, id) {
@@ -274,12 +328,12 @@ class ExamSign extends React.Component {
     return (
       <View flex style={this.state.read_status <= 1 ? styles.container : styles.container_result}>
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
-          {this.state.read_status == 0 && <View flex-1 bg-blue3 center row style={styles.tip}>
+          {this.state.read_status == 0 && this.state.check_status == 0 && <View flex-1 bg-blue3 center row style={styles.tip}>
               <Image source={Assets.signed.icon_error}/>
               <Text font_14 blue>请放身份证，点击开始读卡</Text>
             </View>
           }
-          {this.state.read_status <= 1 &&
+          {this.state.read_status <= 1 && this.state.check_status == 0 &&
             <View centerH marginT-46>
               <Image source={Assets.home.icon_read_card} />
               <Text font_16 black2 marginT-50>请将身份证置于读卡器上</Text>
@@ -307,12 +361,73 @@ class ExamSign extends React.Component {
               <Text font_14 red marginL-6>非本场考生，信息有误</Text>
             </View>
           }
-          {this.state.check_status == 2 && this.state.need_follow &&
+          {this.state.check_status == 1 &&
             <View centerH marginT-15 center row>
               <Image source={Assets.signed.icon_error_y} />
-              <Text font_14 red marginL-6>该考生需要重点关注</Text>
+              <Text font_14 orange marginL-6>该考生需要重点关注</Text>
             </View>
           }
+          {this.state.valid_status == 2 &&
+            <View centerH marginT-56>
+              <Image source={Assets.signed.icon_valid_pass} />
+              <Text font_20 black marginT-22>验证通过</Text>
+              <Text font_14 black3 marginT-15>考试拍照签到成功</Text>
+            </View>
+          }
+          {this.state.valid_status == 2 &&
+            <View centerH marginT-50 marginL-48 marginR-48 center>
+             <YSButton
+                type={'bordered'}
+                style={styles.border_button}
+                caption={'返回签到'}
+                text_style={styles.text_caption}
+                disable={false}
+                onPress={this.onReturn} />
+            </View>
+          }
+          {this.state.valid_status == 3 &&
+            <View centerH marginT-56>
+              <Image source={Assets.signed.icon_valid_fail} />
+              <Text font_20 black marginT-22>验证不通过</Text>
+              <View centerH marginT-15 center row>
+                <Image source={Assets.signed.icon_error_r} />
+                <Text font_14 red marginL-6>非本人考试，验证不通过</Text>
+              </View>
+            </View>
+          }
+          {this.state.valid_status == 4 &&
+            <View centerH marginT-56>
+              <Image source={Assets.signed.icon_valid_fail2} />
+              <Text font_20 black marginT-22>验证不通过</Text>
+              <View centerH marginT-15 center row>
+                <Image source={Assets.signed.icon_error_r} />
+                <Text font_14 red marginL-6>拍照地点不在考试范围内，验证不通过！</Text>
+              </View>
+            </View>
+          }
+          {(this.state.valid_status == 3 || this.state.valid_status == 4) &&
+            <View centerH marginT-50 marginL-48 marginR-48 center>
+             <YSButton
+                type={'bordered'}
+                style={styles.border_button}
+                caption={'再次验证'}
+                text_style={styles.text_caption}
+                disable={false}
+                onPress={this.onReValid} />
+            </View>
+          }
+          {(this.state.valid_status == 3 || this.state.valid_status == 4) &&
+            <View centerH marginT-50 marginL-48 marginR-48 center>
+             <YSButton
+                type={'bordered'}
+                style={styles.border_button_return}
+                caption={'确认不通过'}
+                text_style={styles.text_caption_return}
+                disable={false}
+                onPress={this.onValidFail} />
+            </View>
+          }
+
           {this.state.read_status == 2 && this.state.check_status == 3 &&
             <View centerH marginT-65 marginL-48 marginR-48 center>
              <YSButton
@@ -324,7 +439,7 @@ class ExamSign extends React.Component {
                 onPress={this.onReturn} />
             </View>
           }
-          {this.state.read_status == 2 && this.state.check_status == 2 &&
+          {this.state.check_status == 2 &&
             <View centerH marginT-65 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
@@ -335,7 +450,7 @@ class ExamSign extends React.Component {
                 onPress={this.onTakePhoto} />
             </View>
           }
-          {this.state.read_status <= 1 && <View centerH marginT-120 marginL-48 marginR-48 center>
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-120 marginL-48 marginR-48 center>
               <YSButton
                 type={'bordered'}
                 style={this.state.read_status == 1 ? styles.border_button_ing : styles.border_button}
@@ -345,25 +460,67 @@ class ExamSign extends React.Component {
                 onPress={this.onRead} />
             </View>
           }
-          <View centerH marginT-20 marginL-48 marginR-48 center>
-            {this.state.read_status <= 1 && <YSButton
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
+             <YSButton
                 type={'bordered'}
                 style={styles.border_button}
                 caption={'获取蓝牙列表'}
                 text_style={styles.text_caption}
                 disable={false}
-                onPress={this.onTestFind} /> }
-
-          </View>
-          {this.state.read_status <= 1 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
+                onPress={this.onTestFind} />
+          </View> }
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
           </View> }
 
-
         </KeyboardAwareScrollView>
+
+        {this.state.image.data && this.state.valid_status == 0 &&
+            <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
+        }
+
+        <Modal
+          popup
+          visible={this.state.modal_show}
+          onClose={()=>this.onModalHide()}
+          animationType="slide-up"
+          maskClosable={true}
+        >
+          <View centerH style={styles.modal}>
+            <Text font_18 black2 marginT-18>请确认照片是否符合要求</Text>
+            <TouchableOpacity style={styles.close} onPress={()=>this.onModalHide()}>
+              <Image source={Assets.home.icon_close} style={styles.icon} />
+            </TouchableOpacity>
+            <View marginT-17 style={styles.line}/>
+            <View left marginT-15>
+              <Text font_14 black2>请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
+            </View>
+            <View marginT-21 style={styles.line2}/>
+            <View>
+              <YSButton
+                type={'bordered'}
+                style={styles.btn_upload}
+                caption={'确认上传'}
+                text_style={styles.btn_upload_text}
+                disable={false}
+                onPress={this.onUpload} />
+            </View>
+            <View style={styles.line3}/>
+            <View>
+              <YSButton
+                type={'bordered'}
+                style={styles.btn_upload}
+                caption={'重新拍摄'}
+                text_style={styles.btn_scan_text}
+                disable={false}
+                onPress={this.onReScan} />
+            </View>
+
+          </View>
+        </Modal>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
@@ -391,7 +548,8 @@ var styles = StyleSheet.create({
     backgroundColor: '#F1F1F1'
   },
   text_caption: {
-    fontSize: 18
+    fontSize: 18,
+    color: '#FFFFFF'
   },
   text_caption_return: {
     fontSize: 18,
@@ -445,23 +603,68 @@ var styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#C5C5C5',
     marginTop: 33
-  }
+  },
+
+  image: {
+    //flex: 1,
+    //width: YSWHs.width,
+    //height: YSWHs.height,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+
+  modal: {
+    width: YSWHs.width_window,
+    //height: 292,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    paddingLeft: 15,
+    paddingRight: 12,
+  },
+  close: {
+    position: 'absolute',
+    right: 15,
+    top: 15
+  },
+  line: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#F1F1F1'
+  },
+  line2: {
+    width: YSWHs.width_window,
+    height: 10,
+    backgroundColor: '#F1F1F1'
+  },
+  line3: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#D6D6D6'
+  },
+  btn_upload: {
+    backgroundColor: '#FFFFFF',
+  },
+  btn_upload_text: {
+    fontSize: 18,
+    color: '#2E66E7'
+  },
+  btn_scan_text: {
+    fontSize: 18,
+    color: '#666666'
+  },
 
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
-    }
     return {
-        account: account,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
         GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
     };
 }

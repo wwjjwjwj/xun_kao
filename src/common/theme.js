@@ -11,7 +11,9 @@ Colors.loadColors({
   white3: '#4B9FFF',
   black: '#333333',
   black2: '#666666',
+  black3: '#888888',
   red: '#F43530',
+  orange: '#EE9500',
 });
 
 Typography.loadTypographies({
@@ -26,4 +28,5 @@ Typography.loadTypographies({
   font_17: {fontSize: 17},
   font_18: {fontSize: 18},
   font_20: {fontSize: 20},
+  font_22: {fontSize: 22},
 });

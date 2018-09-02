@@ -60,6 +60,10 @@ Assets.loadAssetsGroup('signed', {
   icon_error: require('./assets/icon_error.png'),
   icon_error_r: require('./assets/icon_error_r.png'),
   icon_error_y: require('./assets/icon_error_y.png'),
+
+  icon_valid_pass: require('./assets/icon_valid_pass.png'),
+  icon_valid_fail: require('./assets/icon_valid_fail.png'),
+  icon_valid_fail2: require('./assets/icon_valid_fail2.png'),
 })
 
 Assets.loadAssetsGroup('sex', {

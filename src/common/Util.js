@@ -5,6 +5,11 @@
 */
 
 import YSI18n from 'YSI18n';
+import {
+  Platform,
+  InteractionManager,
+  PermissionsAndroid
+} from 'react-native';
 import SchoolearnModule from 'react-native-schoolearn';
 
 export function getDictionaryTitle(dic, value, defaultTitle) {
@@ -288,8 +293,8 @@ function _checkPermissionAndroid(permissionType: number, callback: any){
 };
 export function checkPermissionCamera(callback: any){
   if (Platform.OS == 'ios') {
-    this._checkPermissionIOS(2, callback);
+    _checkPermissionIOS(2, callback);
   } else {
-    this._checkPermissionAndroid(2, callback);
+    _checkPermissionAndroid(2, callback);
   }
 }

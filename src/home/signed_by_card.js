@@ -90,7 +90,7 @@ class SignedByCard extends React.Component {
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
   onSign(row: any){
