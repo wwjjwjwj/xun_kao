@@ -29,10 +29,7 @@ import ExamTakePhoto from './exam_take_photo';
 import SignedStat from './signed_stat';
 import SignedByOther from './signed_by_other';
 
-import News from './news';
-import Workbench from './workbench';
 import My from './my';
-import Menus from '../demo/menus';
 import _Modal from './modal';
 
 import { getUserMenus } from '../actions/user';
@@ -43,7 +40,8 @@ class Index extends React.Component {
     this.state = {
       //selectedTab: 'home',
       //selectedTab: 'examTakePhoto',
-      selectedTab: 'signedStat',
+      //selectedTab: 'signedStat',
+      selectedTab: 'signedByOther',
     };
   }
   componentDidMount() { }
@@ -71,22 +69,9 @@ class Index extends React.Component {
         block_page = <SignedByOther navigation={this.props.navigation} />
         break;
 
-      case 'news':
-        block_page = <News navigation={this.props.navigation} />
-        break;
-      case 'workbench':
-        block_page = <Workbench navigation={this.props.navigation} />
-        break;
       case 'me':
         block_page = <My navigation={this.props.navigation} />
         break;
-      case 'class':
-        block_page = <View navigation={this.props.navigation} />
-        break;
-      case 'demo':
-        block_page = <Menus navigation={this.props.navigation} />
-        break;
-
     }
 
     return (
@@ -162,17 +147,6 @@ class Index extends React.Component {
       >
         {this.renderContent('signedByOther')}
       </TabBar.Item>
-
-      {/*<TabBar.Item
-        title="功能导航"
-        icon={tab_me_normal}
-        selectedIcon={tab_me_active}
-        selected={this.state.selectedTab === 'demo'}
-        onPress={() => this.onChangeTab('demo')}
-      >
-        {this.renderContent('demo')}
-      </TabBar.Item>*/}
-
 
     </TabBar>
 

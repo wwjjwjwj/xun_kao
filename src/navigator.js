@@ -127,11 +127,20 @@ const navigator = StackNavigator(
         signedByOther: {
             screen: require('./home/signed_by_other'),
             navigationOptions: ({ navigation }) => ({
-                title: YSI18n.get('其他签到'),
+              //header: null
+            })
+        },
+        otherSignedDetail: {
+            screen: require('OtherSignedDetail'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('本场其他签到'),
                 gesturesEnabled: true,
                 gestureResponseDistance: { horizontal: 20 },
-                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
-                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19,
+                  //flex: 1, textAlign: 'center'
+                },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' },
+                //headerBackTitle: null,
             })
         },
 

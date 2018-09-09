@@ -2,8 +2,9 @@
 
 //
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView, ListView
+import { TouchableOpacity, PixelRatio,
+  ImageBackground, ScrollView, ListView,
+  Keyboard
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -22,6 +23,7 @@ import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
 } from 'ComponentExt';
 //3. 自定义 插件
+const StyleSheet = require('../common/YSStyleSheet');
 import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
@@ -43,6 +45,9 @@ const DATA = [
     examTime: '9月20日 09:00-10:30',
     status: 1,
     statusName: '签到中',
+    numStu: 29,
+    numTotal: 29,
+    percent: ((29 - 29) * 100 / 29).toFixed(2),
   },
   {
     examId: 2,
@@ -50,7 +55,10 @@ const DATA = [
     signTime: '9月21日 08:20-08:59',
     examTime: '9月21日 09:00-10:30',
     status: 0,
-    statusName: '未开始'
+    statusName: '未开始',
+    numStu: 28,
+    numTotal: 29,
+    percent: ((29 - 28) * 100 / 29).toFixed(2),
   }
 ];
 
@@ -71,6 +79,8 @@ class SignedByOther extends React.Component {
       data_list: DATA,
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
   }
   componentDidMount() {
     this.getPlaceInfo();
@@ -80,7 +90,7 @@ class SignedByOther extends React.Component {
     let { Toast } = this;
     this.props.GetPlace()
       .then((response) => {
-        alert(JSON.stringify(response));
+//        alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
 
@@ -107,7 +117,9 @@ class SignedByOther extends React.Component {
       });
       switch (op) {
           case 'View':
-              this.props.navigation.navigate('CourseDetail', { currentDataModel: item });
+              this.props.navigation.navigate('otherSignedDetail', {
+                currentDataModel: item
+              });
               break;
       }
   };
@@ -127,7 +139,7 @@ class SignedByOther extends React.Component {
               activeBackgroundColor={Colors.dark60}
               activeOpacity={0.3}
               height={120}
-              onPress={(item) => this.onLookView('View', item)}
+              onPress={(item) => this.onLookView('View', row)}
               animation="fadeIn"
               easing="ease-out-expo"
               duration={1000}
@@ -179,7 +191,7 @@ class SignedByOther extends React.Component {
     return (
       <View flex style={styles.container}>
         <View centerH bg-blue>
-          <Text marginT-35 style={styles.modalTitle}>其他签到</Text>
+          <Text marginT-15 style={styles.modalTitle}>其他签到</Text>
           <View row>
             <YSInput ref="input_name"
                 icon={Assets.signed.icon_search}
@@ -194,7 +206,7 @@ class SignedByOther extends React.Component {
                 clearStyle={styles.clearStyle}
                 onClear={()=>this.setState({search_text: ''})}
             />
-            {this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
+            {!!this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
               <Text font_14 white marginT-19>取消</Text>
             </TouchableOpacity>}
           </View>
@@ -236,6 +248,12 @@ var styles = StyleSheet.create({
   modalTitle: {
     fontSize: 19,
     color: YSColors.whiteBackground,
+    android: {
+      marginTop: 15
+    },
+    ios: {
+      marginTop: 35
+    }
   },
   inputText: {
     color: '#999999',
@@ -246,34 +264,44 @@ var styles = StyleSheet.create({
     marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
-    height: 28,
+    ios: {
+      height: 28,
+      paddingTop: 7,
+      paddingBottom: 7,
+    },
+    android: {
+      height: 40
+    },
     width: 345,
     backgroundColor: '#FFFFFF',
 
     borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
   },
   inputContainer2: {
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
-    height: 28,
+    ios: {
+      height: 28,
+      paddingTop: 7,
+      paddingBottom: 7,
+    },
+    android: {
+      height: 40
+    },
     width: 300,
     backgroundColor: '#FFFFFF',
 
     borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
   },
   clearStyle: {
     width: 13,
     height: 13,
     resizeMode: 'contain',
-    marginRight: 69,
+    paddingRight: 9,
   },
   //------------考试场次部分
   list_wrap: {

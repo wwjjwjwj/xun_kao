@@ -2,7 +2,7 @@
 
 //
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
+import { TouchableOpacity, PixelRatio,
   ImageBackground, ScrollView, ListView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -22,6 +22,7 @@ import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
 } from 'ComponentExt';
 //3. 自定义 插件
+const StyleSheet = require('../common/YSStyleSheet');
 import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
@@ -201,7 +202,7 @@ class SignedStat extends React.Component {
     return (
       <View flex style={styles.container}>
         <View centerH bg-blue>
-          <Text marginT-35 marginB-9 style={styles.modalTitle}>签到场次统计</Text>
+          <Text marginB-9 style={styles.modalTitle}>签到场次统计</Text>
         </View>
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
@@ -240,6 +241,12 @@ var styles = StyleSheet.create({
   modalTitle: {
     fontSize: 19,
     color: YSColors.whiteBackground,
+    android: {
+      marginTop: 15
+    },
+    ios: {
+      marginTop: 35
+    }
   },
   inputText: {
     color: '#999999',

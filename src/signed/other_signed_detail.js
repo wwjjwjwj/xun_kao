@@ -1,13 +1,14 @@
 /**
- * 按类型显示学生列表
- * @providesModule StatDetailByType
+ * 其他签到详情 显示学生列表
+ * @providesModule OtherSignedDetail
  * @flow
  */
 
 //
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView, ListView
+import { TouchableOpacity, PixelRatio,
+  ImageBackground, ScrollView, ListView,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -27,6 +28,7 @@ import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
 } from 'ComponentExt';
 //3. 自定义 插件
+const StyleSheet = require('../common/YSStyleSheet');
 import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
@@ -55,7 +57,6 @@ const DATA = [
     seat: '01',
     specialty: '工程管理',
     course: '建筑施工技术',
-    type: 1,
     need_notice: true,
     need_repair: true,
   },
@@ -67,7 +68,6 @@ const DATA = [
     seat: '02',
     specialty: '工程管理',
     course: '建筑施工技术',
-    type: 2,
     need_repair: false,
   },
   {
@@ -78,7 +78,6 @@ const DATA = [
     seat: '03',
     specialty: '工程管理',
     course: '建筑施工技术',
-    type: 3,
     need_repair: false,
   },
   {
@@ -89,39 +88,21 @@ const DATA = [
     seat: '04',
     specialty: '工程管理',
     course: '建筑施工技术',
-    type: 4,
     need_repair: false,
   },
 ];
 
-class StatDetailByType extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-      return {
-          title: navigation.state.params.title,
-          gesturesEnabled: true,
-          gestureResponseDistance: { horizontal: 20 },
-          headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
-          headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' },
-          /*headerRight: (
-              <TouchableOpacity activeOpacity={1} onPress={() => {
-                  navigation.state.params.onEdit()
-              }}>
-                  <Image source={Assets.icons.edit} />
-              </TouchableOpacity>
-          ),*/
-      }
-  }
+class OtherSignedDetail extends React.Component {
   constructor(props){
     super(props);
     var params = props.navigation.state.params;
     this.state = {
       currentDataModel: params.currentDataModel,
-      type: params.type,
-      title: params.title,
 
       all_data_list: DATA,
       data_list: DATA,
 
+      valid_status: 0,  //验证是否本考点： 0 未验证； 2 通过； 3 失败（非考场范围）
       image: {},
       modal_show: false,
     };
@@ -130,6 +111,7 @@ class StatDetailByType extends React.Component {
     (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
     (this: any).onReScan = this.onReScan.bind(this);
     (this: any).onUpload = this.onUpload.bind(this);
+    (this: any).onReturn = this.onReturn.bind(this);
   }
   componentDidMount() {
     this.getPlaceInfo();
@@ -139,7 +121,7 @@ class StatDetailByType extends React.Component {
     let { Toast } = this;
     this.props.GetPlace()
       .then((response) => {
-        alert(JSON.stringify(response));
+        //alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
 
@@ -172,6 +154,10 @@ class StatDetailByType extends React.Component {
       data_list: _list
     });
 
+  }
+  onReturn(){
+    //this.props.navigation.goBack(this.props.navigation.state.params.keys.home_key);
+    this.props.navigation.popToTop();
   }
   onTakePhoto(row){
     //alert(JSON.stringify(row));
@@ -227,7 +213,8 @@ class StatDetailByType extends React.Component {
     setTimeout(function(){
       //alert('上传');
       that.setState({
-        valid_status: 4
+        //valid_status: 2   //通过
+        valid_status: 3   //验证失败
       })
     }, 1000);
 
@@ -271,10 +258,7 @@ class StatDetailByType extends React.Component {
               <ListItem.Part column>
                   <ListItem.Part containerStyle={[styles.list_item, styles.list_view_head]}>
                       <View row centerV>
-                        {row.type == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
-                        {row.type == 2 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
-                        {row.type == 3 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
-                        {row.type == 4 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
+                        <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>
                         <Text black font_17 marginL-30 numberOfLines={1}>{row.name}</Text>
                         {row.need_notice &&
                           <View marginL-9 bg-yellow center style={styles.list_view_notice}>
@@ -311,7 +295,7 @@ class StatDetailByType extends React.Component {
                     {row.need_repair && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
-                          <Text font_13 white>拍照补签</Text>
+                          <Text font_13 white>拍照签到</Text>
                         </View>
                       </TouchableOpacity>
                     </View>}
@@ -331,7 +315,7 @@ class StatDetailByType extends React.Component {
 
     return (
       <View flex style={styles.container}>
-        <View centerH style={styles.bottom}>
+        {this.state.valid_status == 0 && <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View row>
               <YSInput ref="input_name"
@@ -361,25 +345,52 @@ class StatDetailByType extends React.Component {
               <Text font_14 gray2>签到人数</Text>
               <Text font_14 blue marginL-15>{row.numStu}</Text>
               <Text font_14 gray2 >/{row.numTotal}人</Text>
-              <View right marginL-36 row>
-                <Image source={Assets.signed.icon_error_gray}/>
-                <Text font_14 gray2 marginL-6>缺考率</Text>
-                <Text font_14 blue marginL-15 marginR-36>{row.percent}%</Text>
-              </View>
             </View>
           </View>
-        </View>
+        </View>}
 
-        {this.state.data_list.length > 0 && block_list_view}
-        {this.state.data_list.length == 0 &&
+        {this.state.valid_status == 0 && this.state.data_list.length == 0 &&
           <View marginT-91 centerH column>
             <Image source={Assets.signed.img_no_result}/>
             <Text black3 font_14>暂无搜索结果</Text>
           </View>
         }
+        {this.state.valid_status == 0 && this.state.data_list.length > 0 && block_list_view}
 
-        {this.state.image.data && this.state.modal_show &&
-            <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
+        {this.state.valid_status == 2 &&
+          <View centerH marginT-56>
+            <Image source={Assets.signed.icon_valid_pass} />
+            <Text font_20 black marginT-22>提交通过</Text>
+            <Text font_14 black3 marginT-15>考试地点验证成功</Text>
+          </View>
+        }
+
+        {this.state.valid_status == 3 &&
+          <View centerH marginT-56>
+            <Image source={Assets.signed.icon_valid_fail2} />
+            <Text font_20 black marginT-22>验证不通过</Text>
+            <View centerH marginT-15 center row>
+              <Image source={Assets.signed.icon_error_r} />
+              <Text font_14 red marginL-6>拍照地点不在考试范围内，验证不通过！</Text>
+            </View>
+          </View>
+        }
+        {(this.state.valid_status == 2 || this.state.valid_status == 3) &&
+          <View centerH marginT-50 marginL-48 marginR-48 center>
+           <YSButton
+              type={'bordered'}
+              style={styles.border_button}
+              caption={'返回签到'}
+              text_style={styles.text_caption}
+              disable={false}
+              onPress={this.onReturn} />
+          </View>
+        }
+
+        {this.state.image.data && this.state.valid_status == 0 &&
+          <TouchableOpacity style={styles.full_image_touch} onPress={()=>{this.setState({modal_show:true})}}>
+            <Image style={styles.full_image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
+          </TouchableOpacity>
         }
 
         <Modal
@@ -396,7 +407,7 @@ class StatDetailByType extends React.Component {
             </TouchableOpacity>
             <View marginT-17 style={styles.line}/>
             <View left marginT-15>
-              <Text font_16 black2>拍照补签说明</Text>
+              <Text font_16 black2>其他拍照说明</Text>
               <Text font_14 black2 marginT-23>1.请持有效证件和当场考试试卷进行补签拍照认证； </Text>
               <Text font_14 black2 marginT-23>2.请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
             </View>
@@ -448,34 +459,49 @@ var styles = StyleSheet.create({
     marginRight: 15,
     marginBottom: 10,
     marginTop: 10,
-    height: 30,
     width: 345,
     backgroundColor: '#F1F1F1',
 
     borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
+    ios: {
+      height: 30,
+      paddingTop: 7,
+      paddingBottom: 7,
+    },
+    android: {
+      height: 40
+    },
   },
   inputContainer2: {
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
-    height: 28,
     width: 300,
     backgroundColor: '#F1F1F1',
 
     borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
+    ios: {
+      height: 30,
+      paddingTop: 7,
+      paddingBottom: 7,
+    },
+    android: {
+      height: 40
+    },
   },
   clearStyle: {
     width: 13,
     height: 13,
     resizeMode: 'contain',
-    marginRight: 69,
+    android: {
+      paddingRight: 9,
+    },
+    ios: {
+      paddingRight: 9,
+    }
   },
   //------------考试场次部分
   list_wrap: {
@@ -553,7 +579,12 @@ var styles = StyleSheet.create({
   },
   bottom_1: {
     width: YSWHs.width_window,
-    height: 145,
+    ios: {
+      height: 145,
+    },
+    android: {
+      height: 155,
+    }
   },
   bottom_2: {
     width: YSWHs.width_window,
@@ -644,10 +675,14 @@ var styles = StyleSheet.create({
     height: 44,
   },
 
-  image: {
+  full_image_touch: {
     position: 'absolute',
     left: 0,
     top: 0,
+    width: '100%',
+    height: '100%',
+  },
+  full_image: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
@@ -709,4 +744,4 @@ function mapDispatchToProps(dispatch) {
         GetPlace: bindActionCreators(GetPlace, dispatch),
     };
 }
-module.exports = connect(select, mapDispatchToProps)(StatDetailByType);
+module.exports = connect(select, mapDispatchToProps)(OtherSignedDetail);

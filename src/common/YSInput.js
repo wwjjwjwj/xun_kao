@@ -104,26 +104,25 @@ class YSInput extends React.Component {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
         />
-        {this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} /></TouchableOpacity>}
+        {!!this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} /></TouchableOpacity>}
       </View>
 
     } else {
       input = <View style={styles.block_wrap}>
         <TextInput
           ref="text"
-          selectionColor={this.props.selectionColor || ''}
+          selectionColor={this.props.selectionColor || '#000000'}
           style={[styles.text, this.props.style]}
-          // style={[ this.props.style]}
           underlineColorAndroid='transparent'
-          placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : '#999'}
+          placeholderTextColor={this.props.placeholderTextColor ? this.props.placeholderTextColor : '#999999'}
           placeholder={this.props.placeholder}
           onChangeText={(text) => this.props.onChangeText(text)}
           value={this.props.value}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
         />
-        {this.props.enableClear && <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
-        {this.props.button &&
+        {!!this.props.enableClear && <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
+        {!!this.props.button &&
           <TouchableOpacity style={styles.btn} onPress={this.props.button.onPress}>
             <Text center label_input gray2  >{this.props.button.title}</Text>
           </TouchableOpacity>
@@ -165,7 +164,7 @@ var styles = StyleSheet.create({
     flexDirection:'column',
     justifyContent:'center',
     marginRight: 36,
-    
+
   },
   btn: {
     height: 47,
