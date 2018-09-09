@@ -80,7 +80,7 @@ class ExamTakePhoto extends React.Component {
     let { Toast } = this;
     this.props.GetPlace()
       .then((response) => {
-        alert(JSON.stringify(response));
+        //alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
 

@@ -49,7 +49,8 @@ class PlaceTakePhoto extends React.Component {
       this.state = {
         status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
 
-        image: {}   //拍照图片
+        image_list: [],
+        //image: {}   //拍照图片
       };
       (this: any).onReturn = this.onReturn.bind(this);
       (this: any).onCheckUserInfo = this.onCheckUserInfo.bind(this);
@@ -122,6 +123,11 @@ class PlaceTakePhoto extends React.Component {
     this.props.navigation.popToTop();
   }
   onTakePhoto(){
+    let { Toast } = this;
+    if(this.state.image_list.length >= 5){
+      Toast.info('最多上传5张照片');
+      return;
+    }
     var that = this;
     checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
@@ -145,8 +151,10 @@ class PlaceTakePhoto extends React.Component {
     })
   }
   onChoosePhoto(image){
+    var _list = this.state.image_list;
+    _list.push(image);
     this.setState({
-      image: image,
+      image_list: _list,
       status: 1,
     })
   }
@@ -175,14 +183,29 @@ class PlaceTakePhoto extends React.Component {
               <Text font_14 orange>请拍摄考场全景照片、试卷袋照片、缺考签到表上传</Text>
             </View>
           }
-          {this.state.status == 1 &&
+          {/*this.state.status == 1 &&
             <View centerH marginT-46>
               <Image source={Assets.home.icon_read_card} />
 
             </View>
+          */}
+          {this.state.image_list.length && this.state.status == 1 &&
+            <View style={styles.image_view}>
+              {this.state.image_list.map(image => {
+                  if(image){
+                    return <Image style={styles.image_photo} source={{uri: `data:${image.mime};base64,${image.data}`}} />
+                  }
+
+                })
+              }
+              <TouchableOpacity style={styles.image_bg} onPress={()=>this.onTakePhoto()}>
+              <Image style={styles.image_add} source={Assets.signed.img_add}/>
+              </TouchableOpacity>
+            </View>
           }
+
           {this.state.status == 1 &&
-            <View centerH marginT-235 marginL-48 marginR-48>
+            <View centerH marginT-115 marginL-48 marginR-48>
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -247,9 +270,9 @@ class PlaceTakePhoto extends React.Component {
 
         </KeyboardAwareScrollView>
 
-        {this.state.image.data && this.state.valid_status == 0 &&
+        {/*this.state.image.data && this.state.valid_status == 0 &&
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
-        }
+        */}
 
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
@@ -385,6 +408,37 @@ var styles = StyleSheet.create({
   btn_scan_text: {
     fontSize: 18,
     color: '#666666'
+  },
+
+  image_view: {
+    width: '100%',
+    height: 225,
+    marginTop: 31,
+    paddingLeft: 16,
+    paddingRight: 2,
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+
+  },
+  image_photo: {
+    width: 105,
+    height: 105,
+    resizeMode: 'cover',
+    marginTop: 15,
+    marginRight: 14,
+  },
+  image_add: {
+    width: 32,
+    height: 32,
+  },
+  image_bg: {
+    marginTop: 15,
+    width: 105,
+    height: 105,
+    backgroundColor: '#F1F1F1',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
 })
