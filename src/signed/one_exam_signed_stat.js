@@ -95,39 +95,45 @@ class OneExamSignedStat extends React.Component {
             <Text marginL-6 font_14 gray2>签到统计</Text>
           </View>
           <TouchableOpacity onPress={()=>this.gotoDetail(1, '未通过')}>
-          <View bg-white centerV row style={styles.center1}>
-            <Image source={Assets.signed.icon_f} style={styles.icon2}/>
-            <Text marginL-10 font_17 black>未通过</Text>
-            <View flex-1 right row centerV>
-              <Text marginR-8 font_14 gray2>{row.numF}人</Text>
-              <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+            <View bg-white centerV row style={styles.center1}>
+              <Image source={Assets.signed.icon_f} style={styles.icon2}/>
+              <Text marginL-10 font_17 black>未通过</Text>
+              <View flex-1 right row centerV>
+                <Text marginR-8 font_14 gray2>{row.numF}人</Text>
+                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+              </View>
             </View>
-          </View>
           </TouchableOpacity>
-          <View bg-white centerV row style={styles.center1}>
-            <Image source={Assets.signed.icon_un_sign} style={styles.icon2}/>
-            <Text marginL-10 font_17 black>未到</Text>
-            <View flex-1 right row centerV>
-              <Text marginR-8 font_14 gray2>{row.numUnSign}人</Text>
-              <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+          <TouchableOpacity onPress={()=>this.gotoDetail(2, '未到')}>
+            <View bg-white centerV row style={styles.center1}>
+              <Image source={Assets.signed.icon_un_sign} style={styles.icon2}/>
+              <Text marginL-10 font_17 black>未到</Text>
+              <View flex-1 right row centerV>
+                <Text marginR-8 font_14 gray2>{row.numUnSign}人</Text>
+                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+              </View>
             </View>
-          </View>
-          <View bg-white centerV row style={styles.center1}>
-            <Image source={Assets.signed.icon_pass} style={styles.icon2}/>
-            <Text marginL-10 font_17 black>通过</Text>
-            <View flex-1 right row centerV>
-              <Text marginR-8 font_14 gray2>{row.numPass}人</Text>
-              <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this.gotoDetail(3, '通过')}>
+            <View bg-white centerV row style={styles.center1}>
+              <Image source={Assets.signed.icon_pass} style={styles.icon2}/>
+              <Text marginL-10 font_17 black>通过</Text>
+              <View flex-1 right row centerV>
+                <Text marginR-8 font_14 gray2>{row.numPass}人</Text>
+                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+              </View>
             </View>
-          </View>
-          <View bg-white centerV row style={styles.center1}>
-            <Image source={Assets.signed.icon_repair} style={styles.icon2}/>
-            <Text marginL-10 font_17 black>补签</Text>
-            <View flex-1 right row centerV>
-              <Text marginR-8 font_14 gray2>{row.numRepair}人</Text>
-              <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this.gotoDetail(4, '补签')}>
+            <View bg-white centerV row style={styles.center1}>
+              <Image source={Assets.signed.icon_repair} style={styles.icon2}/>
+              <Text marginL-10 font_17 black>补签</Text>
+              <View flex-1 right row centerV>
+                <Text marginR-8 font_14 gray2>{row.numRepair}人</Text>
+                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
           <View row marginT-30>
             <View bg-orange marginL-1 style={styles.center0}/>
             <Text marginL-6 font_14 orange>重点关注</Text>

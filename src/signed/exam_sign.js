@@ -495,6 +495,7 @@ class ExamSign extends React.Component {
             </TouchableOpacity>
             <View marginT-17 style={styles.line}/>
             <View left marginT-15>
+              <Text font_16 black2>拍照签到说明</Text>
               <Text font_14 black2>请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
             </View>
             <View marginT-21 style={styles.line2}/>

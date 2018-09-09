@@ -79,6 +79,7 @@ Assets.loadAssetsGroup('signed', {
   icon_repair: require('./assets/icon_repair.png'),
   icon_user_num: require('./assets/icon_user_num.png'),
 
+  img_no_result: require('./assets/img_no_result.png'),
 })
 
 Assets.loadAssetsGroup('sex', {

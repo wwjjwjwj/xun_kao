@@ -12,15 +12,16 @@ import { StyleSheet, TouchableOpacity, PixelRatio,
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Button, Assets, Image, Modal, ListItem
+  Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker,
-  WingBlank
+  WingBlank, Modal
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
 import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
+import ImagePicker from 'react-native-image-crop-picker';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -33,6 +34,7 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
+import { checkPermissionCamera } from 'Util';
 //4. action
 import { GetPlace } from '../actions/exam';
 import { getDeviceUuid } from '../actions/base';
@@ -117,9 +119,17 @@ class StatDetailByType extends React.Component {
       type: params.type,
       title: params.title,
 
-      data_list: DATA
+      all_data_list: DATA,
+      data_list: DATA,
+
+      image: {},
+      modal_show: false,
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
+    (this: any).onTakePhoto = this.onTakePhoto.bind(this);
+    (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
+    (this: any).onReScan = this.onReScan.bind(this);
+    (this: any).onUpload = this.onUpload.bind(this);
   }
   componentDidMount() {
     this.getPlaceInfo();
@@ -144,8 +154,83 @@ class StatDetailByType extends React.Component {
   }
 
   onSearchChange(text){
-    this.setState({search_text: text});
+    if(!this.state.all_data_list.length){
+      return;
+    }
+    if(!text){
+      this.setState({
+        search_text: '',
+        data_list: this.state.all_data_list
+      });
+      return;
+    }
     //触发搜索
+    var _list = this.state.all_data_list.filter(a => a.name.indexOf(text) >= 0);
+
+    this.setState({
+      search_text: text,
+      data_list: _list
+    });
+
+  }
+  onTakePhoto(row){
+    //alert(JSON.stringify(row));
+    var that = this;
+    checkPermissionCamera(function(isPermit: boolean){
+      if(isPermit){
+        ImagePicker.openCamera({
+          width: 640,
+          height: 640,
+          cropping: true,
+          mediaType:'photo',
+          includeBase64: true,
+          cropperChooseText: '选择',
+          cropperCancelText: '取消'
+        }).then(image => {
+            //that.doUploadPhoto(image.data)
+            that.onChoosePhoto(image);
+        });
+      }else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
+  }
+  onChoosePhoto(image){
+    this.setState({
+      image: image
+    })
+    this.onModalShow();
+  }
+  onModalShow(){
+    this.setState({
+      modal_show: true
+    })
+  }
+  onModalHide(){
+    this.setState({
+      modal_show: false
+    })
+  }
+  onReScan(){
+    this.onModalHide();
+    var that = this;
+    setTimeout(function(){
+      that.onTakePhoto();
+    }, 500);
+  }
+  onUpload(){
+    //上传拍照 返回 验证 结果
+    this.onModalHide();
+    var that = this;
+    setTimeout(function(){
+      //alert('上传');
+      that.setState({
+        valid_status: 4
+      })
+    }, 1000);
+
   }
 
   //浏览视图
@@ -175,18 +260,21 @@ class StatDetailByType extends React.Component {
           <ListItem
               activeBackgroundColor={Colors.dark60}
               activeOpacity={0.3}
-              height={185}
-              onPress={(item) => this.onLookView('View', item)}
+              height={200}
+              //onPress={(item) => this.onLookView('View', item)}
               animation="fadeIn"
               easing="ease-out-expo"
               duration={1000}
               useNativeDriver
               containerStyle={styles.list_wrap}
           >
-              <ListItem.Part middle column>
-                  <ListItem.Part>
+              <ListItem.Part column>
+                  <ListItem.Part containerStyle={[styles.list_item, styles.list_view_head]}>
                       <View row centerV>
-                        <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>
+                        {row.type == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
+                        {row.type == 2 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
+                        {row.type == 3 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
+                        {row.type == 4 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
                         <Text black font_17 marginL-30 numberOfLines={1}>{row.name}</Text>
                         {row.need_notice &&
                           <View marginL-9 bg-yellow center style={styles.list_view_notice}>
@@ -201,23 +289,32 @@ class StatDetailByType extends React.Component {
                   <ListItem.Part>
                     <View style={styles.list_line}/>
                   </ListItem.Part>
-                  <ListItem.Part>
-                    <View row marginT-23 marginL-22>
-                      <Image source={Assets.signed.icon_time_signed}/>
-                      <Text font_14 gray2>签到</Text>
-                      <Text font_14 gray2 marginL-15>{row.signTime}</Text>
-                      <View right flex-1>
-                        <Image source={Assets.signed.icon_next}/>
+                  <ListItem.Part containerStyle={styles.list_item}>
+                    <View column>
+                      <View row marginT-17>
+                        <Text font_14 gray2>证件号</Text>
+                        <Text font_14 gray2 marginL-13>{row.card}</Text>
+                      </View>
+                      <View row marginT-17>
+                        <Text font_14 gray2>学号</Text>
+                        <Text font_14 gray2 marginL-13>{row.stuNo}</Text>
+                      </View>
+                      <View row marginT-17>
+                        <Text font_14 gray2>专业</Text>
+                        <Text font_14 gray2 marginL-13>{row.specialty}</Text>
+                      </View>
+                      <View row marginT-17>
+                        <Text font_14 gray2>课程</Text>
+                        <Text font_14 gray2 marginL-13>{row.course}</Text>
                       </View>
                     </View>
-
-                  </ListItem.Part>
-                  <ListItem.Part>
-                    <View row flex-1 centerV marginT-2 marginL-22>
-                      <Image source={Assets.signed.icon_time_exam}/>
-                      <Text font_14 gray2>考试</Text>
-                      <Text font_14 gray2 marginL-15>{row.examTime}</Text>
-                    </View>
+                    {row.need_repair && <View right flex-1 centerV>
+                      <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
+                        <View bg-blue style={styles.list_view_touch}>
+                          <Text font_13 white>拍照补签</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>}
                   </ListItem.Part>
               </ListItem.Part>
           </ListItem>
@@ -248,7 +345,7 @@ class StatDetailByType extends React.Component {
                   value={this.state.search_text}
                   enableClear={this.state.search_text ? true : false}
                   clearStyle={styles.clearStyle}
-                  onClear={()=>this.setState({search_text: ''})}
+                  onClear={()=>this.onSearchChange('')}
               />
               {this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
                 <Text font_14 blue marginT-19>取消</Text>
@@ -273,7 +370,59 @@ class StatDetailByType extends React.Component {
           </View>
         </View>
 
-        {block_list_view}
+        {this.state.data_list.length > 0 && block_list_view}
+        {this.state.data_list.length == 0 &&
+          <View marginT-91 centerH column>
+            <Image source={Assets.signed.img_no_result}/>
+            <Text black3 font_14>暂无搜索结果</Text>
+          </View>
+        }
+
+        {this.state.image.data && this.state.modal_show &&
+            <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
+        }
+
+        <Modal
+          popup
+          visible={this.state.modal_show}
+          onClose={()=>this.onModalHide()}
+          animationType="slide-up"
+          maskClosable={true}
+        >
+          <View centerH style={styles.modal}>
+            <Text font_18 black2 marginT-18>请确认照片是否符合要求</Text>
+            <TouchableOpacity style={styles.close} onPress={()=>this.onModalHide()}>
+              <Image source={Assets.home.icon_close} style={styles.icon} />
+            </TouchableOpacity>
+            <View marginT-17 style={styles.line}/>
+            <View left marginT-15>
+              <Text font_16 black2>拍照补签说明</Text>
+              <Text font_14 black2 marginT-23>1.请持有效证件和当场考试试卷进行补签拍照认证； </Text>
+              <Text font_14 black2 marginT-23>2.请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
+            </View>
+            <View marginT-21 style={styles.line2}/>
+            <View>
+              <YSButton
+                type={'bordered'}
+                style={styles.btn_upload}
+                caption={'确认上传'}
+                text_style={styles.btn_upload_text}
+                disable={false}
+                onPress={this.onUpload} />
+            </View>
+            <View style={styles.line3}/>
+            <View>
+              <YSButton
+                type={'bordered'}
+                style={styles.btn_upload}
+                caption={'重新拍摄'}
+                text_style={styles.btn_scan_text}
+                disable={false}
+                onPress={this.onReScan} />
+            </View>
+
+          </View>
+        </Modal>
 
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
@@ -335,9 +484,19 @@ var styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
     borderRadius: 5,
+    //paddingLeft: 15,
+    //paddingTop: 12,
+    //paddingRight: 15,
+    //paddingBottom: 15,
+  },
+  list_item: {
     paddingLeft: 15,
-    paddingTop: 12,
     paddingRight: 15,
+  },
+  list_view_head: {
+    height: 50,
+    width: '100%',
+    //backgroundColor: '#332244'
   },
   list_line: {
     height: 1,
@@ -352,6 +511,13 @@ var styles = StyleSheet.create({
     borderRadius: 10,
     width: 70,
     height: 20,
+  },
+  list_view_touch: {
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 6,
+    paddingBottom: 6,
+    borderRadius: 15,
   },
 
   sign_status: {
@@ -481,11 +647,11 @@ var styles = StyleSheet.create({
 
   modal: {
     width: YSWHs.width_window,
-    height: 480,
+    //height: 292,
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingLeft: 15,
+    paddingRight: 12,
   },
   close: {
     position: 'absolute',
@@ -497,18 +663,27 @@ var styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F1F1F1'
   },
-  img: {
-    width: 164,
-    height: 100,
-    borderRadius: 5,
-    resizeMode: 'contain',
-    marginRight: 10
-  },
-  intro_title: {
+  line2: {
     width: YSWHs.width_window,
-    paddingLeft: 16,
-    paddingRight: 16,
-  }
+    height: 10,
+    backgroundColor: '#F1F1F1'
+  },
+  line3: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#D6D6D6'
+  },
+  btn_upload: {
+    backgroundColor: '#FFFFFF',
+  },
+  btn_upload_text: {
+    fontSize: 18,
+    color: '#2E66E7'
+  },
+  btn_scan_text: {
+    fontSize: 18,
+    color: '#666666'
+  },
 
 
 })

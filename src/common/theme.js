@@ -25,6 +25,7 @@ Typography.loadTypographies({
   text_title: {fontSize: 24},
   text_title2: {fontSize: 19},
   font_12: {fontSize: 12},
+  font_13: {fontSize: 13},
   font_14: {fontSize: 14},
   font_16: {fontSize: 16},
   font_17: {fontSize: 17},

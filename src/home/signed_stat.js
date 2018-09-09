@@ -1,4 +1,4 @@
-//签到场次统计
+//4 签到场次统计
 
 //
 import React from 'react';
@@ -8,10 +8,10 @@ import { StyleSheet, TouchableOpacity, PixelRatio,
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Button, Assets, Image, Modal, ListItem
+  Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker,
-  WingBlank
+  WingBlank,
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -349,6 +349,46 @@ var styles = StyleSheet.create({
   },
 
 
+  //拍照后 确认modal
+  modal: {
+    width: YSWHs.width_window,
+    //height: 292,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    paddingLeft: 15,
+    paddingRight: 12,
+  },
+  close: {
+    position: 'absolute',
+    right: 15,
+    top: 15
+  },
+  line: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#F1F1F1'
+  },
+  line2: {
+    width: YSWHs.width_window,
+    height: 10,
+    backgroundColor: '#F1F1F1'
+  },
+  line3: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: '#D6D6D6'
+  },
+  btn_upload: {
+    backgroundColor: '#FFFFFF',
+  },
+  btn_upload_text: {
+    fontSize: 18,
+    color: '#2E66E7'
+  },
+  btn_scan_text: {
+    fontSize: 18,
+    color: '#666666'
+  },
 
 
 
