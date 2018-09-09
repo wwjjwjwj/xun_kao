@@ -11,6 +11,7 @@ import {
   PermissionsAndroid
 } from 'react-native';
 import SchoolearnModule from 'react-native-schoolearn';
+import Geolocation from 'Geolocation';
 
 export function getDictionaryTitle(dic, value, defaultTitle) {
   dic = dic || [];
@@ -176,12 +177,15 @@ export function isValidMobile(phone: string, countryCode: number) {
   countryCode = !countryCode ? 86 : countryCode;
   var ipRegExp = '';
   if (countryCode == 86) {
-    ipRegExp = /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/;
+    //ipRegExp = /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/;
+    ipRegExp = /^[1][3,4,5,7,8][0-9]{9}$/;
   } else if (countryCode == 1) {
     //ipRegExp = /^(\s*\+?\s*(?<leftp>\()?\s*\d+\s*(?(leftp)\)))(\s*-\s*(\(\s*\d+\s*\)|\s*\d+\s*))*\s*$/;
     ipRegExp = /^(\+?1)?[2-9]\d{2}[2-9](?!11)\d{6}$/
   }
-  if (ipRegExp.exec(phone)) {
+  //if (ipRegExp.exec(phone))
+  if (ipRegExp.test(phone)) 
+  {
     return true;
   } else {
     return false;
@@ -297,4 +301,24 @@ export function checkPermissionCamera(callback: any){
   } else {
     _checkPermissionAndroid(2, callback);
   }
+}
+
+export function getGeolocation(callback){
+  var result = {};
+  Geolocation.getCurrentPosition(val => {
+        let ValInfo = "速度：" + val.coords.speed +
+            "\n经度：" + val.coords.longitude +
+            "\n纬度：" + val.coords.latitude +
+            "\n准确度：" + val.coords.accuracy +
+            "\n行进方向：" + val.coords.heading +
+            "\n海拔：" + val.coords.altitude +
+            "\n海拔准确度：" + val.coords.altitudeAccuracy +
+            "\n时间戳：" + val.timestamp;
+        result = {result: true, x: val.coords.longitude, y: val.coords.latitude}
+        callback(result);
+    }, val => {
+        let ValInfo = '获取坐标失败：' + JSON.stringify(val);
+        result = {result: false, msg : ValInfo};
+        callback(result);
+    });
 }

@@ -60,12 +60,25 @@ Assets.loadAssetsGroup('signed', {
   icon_error: require('./assets/icon_error.png'),
   icon_error_r: require('./assets/icon_error_r.png'),
   icon_error_y: require('./assets/icon_error_y.png'),
+  icon_error_gray: require('./assets/icon_error_gray.png'),
 
   icon_valid_pass: require('./assets/icon_valid_pass.png'),
   icon_valid_fail: require('./assets/icon_valid_fail.png'),
   icon_valid_fail2: require('./assets/icon_valid_fail2.png'),
 
   icon_photo_valid_pass: require('./assets/icon_photo_valid_pass.png'),
+  icon_search: require('./assets/icon_search.png'),
+  //右箭头
+  icon_next: require('./assets/icon_next.png'),
+  icon_next_orange: require('./assets/icon_next_orange.png'),
+  //重点关注
+  icon_notice: require('./assets/icon_notice.png'),
+  icon_pass: require('./assets/icon_pass.png'),
+  icon_un_sign: require('./assets/icon_un_sign.png'),
+  icon_f: require('./assets/icon_f.png'),
+  icon_repair: require('./assets/icon_repair.png'),
+  icon_user_num: require('./assets/icon_user_num.png'),
+
 })
 
 Assets.loadAssetsGroup('sex', {

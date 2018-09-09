@@ -26,6 +26,8 @@ import YSI18n from 'YSI18n';
 import Home from './home';
 import SignedByCard from './signed_by_card';
 import ExamTakePhoto from './exam_take_photo';
+import SignedStat from './signed_stat';
+import SignedByOther from './signed_by_other';
 
 import News from './news';
 import Workbench from './workbench';
@@ -40,7 +42,8 @@ class Index extends React.Component {
     super();
     this.state = {
       //selectedTab: 'home',
-      selectedTab: 'examTakePhoto',
+      //selectedTab: 'examTakePhoto',
+      selectedTab: 'signedStat',
     };
   }
   componentDidMount() { }
@@ -60,6 +63,12 @@ class Index extends React.Component {
         break;
       case 'examTakePhoto':
         block_page = <ExamTakePhoto navigation={this.props.navigation} />
+        break;
+      case 'signedStat':
+        block_page = <SignedStat navigation={this.props.navigation} />
+        break;
+      case 'signedByOther':
+        block_page = <SignedByOther navigation={this.props.navigation} />
         break;
 
       case 'news':
@@ -136,22 +145,22 @@ class Index extends React.Component {
         {this.renderContent('examTakePhoto')}
       </TabBar.Item>
       <TabBar.Item
-        title={YSI18n.get('签到查询')}
+        title={YSI18n.get('签到统计')}
         icon={Assets.home.icon_signed_query}
         selectedIcon={Assets.home.icon_signed_query_focus}
-        selected={this.state.selectedTab === 'me'}
-        onPress={() => this.onChangeTab('me')}
+        selected={this.state.selectedTab === 'signedStat'}
+        onPress={() => this.onChangeTab('signedStat')}
       >
-        {this.renderContent('me')}
+        {this.renderContent('signedStat')}
       </TabBar.Item>
       <TabBar.Item
         title={YSI18n.get('其他签到')}
         icon={Assets.home.icon_signed_other}
         selectedIcon={Assets.home.icon_signed_other_focus}
-        selected={this.state.selectedTab === 'me'}
-        onPress={() => this.onChangeTab('me')}
+        selected={this.state.selectedTab === 'signedByOther'}
+        onPress={() => this.onChangeTab('signedByOther')}
       >
-        {this.renderContent('me')}
+        {this.renderContent('signedByOther')}
       </TabBar.Item>
 
       {/*<TabBar.Item

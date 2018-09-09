@@ -26,7 +26,6 @@ import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
-import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
@@ -96,8 +95,8 @@ class Home extends React.Component {
             <Text center marginT-13 blue font_16>{this.state.university}</Text>
             <Text center marginT-12 black2 font_16>{this.state.name} {this.state.mobile}</Text>
           </View>
-
         </View>
+
         <View centerH marginT-20 style={styles.bottom}>
           <YSButton type={'bordered'}
             style={styles.btn}

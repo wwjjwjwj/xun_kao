@@ -1,4 +1,4 @@
-//刷卡签到
+//其他签到
 
 //
 import React from 'react';
@@ -26,6 +26,7 @@ import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
+import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
@@ -58,7 +59,7 @@ const ds = new ListView.DataSource({
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-class SignedByCard extends React.Component {
+class SignedByOther extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -92,19 +93,41 @@ class SignedByCard extends React.Component {
         //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
-  onSign(row: any){
-    if(row.status == 1){
-      this.props.navigation.navigate('examSign', {info: row});
-    }
+
+  onSearchChange(text){
+    this.setState({search_text: text});
+    //触发搜索
   }
 
+  //浏览视图
+  onLookView = (op, item) => {
+      this.setState({
+          editMode: op,//编辑模式
+          currentDataModel: item,//编辑对象
+      });
+      switch (op) {
+          case 'View':
+              this.props.navigation.navigate('CourseDetail', { currentDataModel: item });
+              break;
+      }
+  };
+  //视图回调
+  viewCallback = (dataModel) => {
+      if (dataModel) {
+          //如果需要更新，则刷新
+          if (dataModel.is_changed) {
+              this.getPlaceInfo();
+          }
+      }
+      this.setState({ editMode: 'Manage' });
+  }
   renderRow(row, id) {
       return (
           <ListItem
-              //activeBackgroundColor={Colors.dark60}
-              //activeOpacity={0.3}
+              activeBackgroundColor={Colors.dark60}
+              activeOpacity={0.3}
               height={120}
-              //onPress={(item) => this.onLookView('View', item)}
+              onPress={(item) => this.onLookView('View', item)}
               animation="fadeIn"
               easing="ease-out-expo"
               duration={1000}
@@ -118,12 +141,7 @@ class SignedByCard extends React.Component {
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.status == 1 &&
                             <View style={styles.sign_status} center>
-                              <Text font_12 white3 style={styles.sign_status_text}>{row.statusName}</Text>
-                            </View>
-                          }
-                          {row.status == 0 &&
-                            <View style={styles.sign_status0} center>
-                              <Text font_12 white3 style={styles.sign_status_text0}>{row.statusName}</Text>
+                              <Text font_12 orange style={styles.sign_status_text}>重点关注考生：2人</Text>
                             </View>
                           }
                         </View>
@@ -135,14 +153,7 @@ class SignedByCard extends React.Component {
                       <Text font_14 gray2>签到</Text>
                       <Text font_14 gray2 marginL-15>{row.signTime}</Text>
                       <View right flex-1>
-                        {row.status == 1 && <YSButton
-                              type={'bordered'}
-                              style={styles.btn_sign}
-                              caption={'读卡签到'}
-                              text_style={styles.btn_sign_text}
-                              disable={false}
-                              onPress={() => this.onSign(row)} />
-                        }
+                        <Image source={Assets.signed.icon_next}/>
                       </View>
                     </View>
 
@@ -168,7 +179,25 @@ class SignedByCard extends React.Component {
     return (
       <View flex style={styles.container}>
         <View centerH bg-blue>
-          <Text marginT-35 marginB-9 style={styles.modalTitle}>考试刷卡签到</Text>
+          <Text marginT-35 style={styles.modalTitle}>其他签到</Text>
+          <View row>
+            <YSInput ref="input_name"
+                icon={Assets.signed.icon_search}
+                //iconstyle={styles.iconstyle}
+                placeholder={'请输入考生信息查询'}
+                placeholderTextColor={"#999999"}
+                style={styles.inputText}
+                containerStyle={this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
+                onChangeText={(text) => this.onSearchChange(text)}
+                value={this.state.search_text}
+                enableClear={this.state.search_text ? true : false}
+                clearStyle={styles.clearStyle}
+                onClear={()=>this.setState({search_text: ''})}
+            />
+            {this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
+              <Text font_14 white marginT-19>取消</Text>
+            </TouchableOpacity>}
+          </View>
         </View>
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
@@ -208,6 +237,44 @@ var styles = StyleSheet.create({
     fontSize: 19,
     color: YSColors.whiteBackground,
   },
+  inputText: {
+    color: '#999999',
+    fontSize: 14,
+  },
+  inputContainer: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    marginTop: 12,
+    height: 28,
+    width: 345,
+    backgroundColor: '#FFFFFF',
+
+    borderRadius: 14,
+    paddingLeft: 11,
+    paddingTop: 7,
+    paddingBottom: 7,
+  },
+  inputContainer2: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    marginTop: 12,
+    height: 28,
+    width: 300,
+    backgroundColor: '#FFFFFF',
+
+    borderRadius: 14,
+    paddingLeft: 11,
+    paddingTop: 7,
+    paddingBottom: 7,
+  },
+  clearStyle: {
+    width: 13,
+    height: 13,
+    resizeMode: 'contain',
+    marginRight: 69,
+  },
   //------------考试场次部分
   list_wrap: {
     backgroundColor: YSColors.whiteBackground,
@@ -218,25 +285,14 @@ var styles = StyleSheet.create({
   },
   sign_status: {
     borderRadius: 10,
-    backgroundColor: '#EEF5FF',
-    borderWidth: 1,
-    borderColor: '#4B9FFF',
-    width: 60,
-    height: 20
+    backgroundColor: '#FFF4D5',
   },
   sign_status_text: {
-    color: '#4B9FFF',
     fontSize: 12,
-  },
-  sign_status0: {
-    borderRadius: 10,
-    backgroundColor: '#D6D6D6',
-    width: 60,
-    height: 20
-  },
-  sign_status_text0: {
-    color: '#FFFFFF',
-    fontSize: 12,
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: 14,
+    marginRight: 13
   },
   btn_sign: {
     borderRadius: 15,
@@ -338,29 +394,6 @@ var styles = StyleSheet.create({
     height: 73,
     resizeMode: 'contain',
   },
-  iconstyle:{
-    width: 16,
-    height: 16,
-    resizeMode:'contain',
-    marginRight: 12
-  },
-  inputText: {
-    color: '#333333',
-    borderRadius: 99,
-  },
-  inputContainer: {
-    marginLeft: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    borderWidth: 1,
-    borderColor: "#D6D6D6",
-    marginTop: 18,
-    height: 47,
-
-    borderRadius: 99,
-    paddingLeft: 17,
-    paddingRight: 18
-  },
   text_caption: {
     fontSize: 16
   },
@@ -423,4 +456,4 @@ function mapDispatchToProps(dispatch) {
         GetPlace: bindActionCreators(GetPlace, dispatch),
     };
 }
-module.exports = connect(select, mapDispatchToProps)(SignedByCard);
+module.exports = connect(select, mapDispatchToProps)(SignedByOther);

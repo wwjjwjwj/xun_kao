@@ -1,4 +1,4 @@
-//刷卡签到
+//签到场次统计
 
 //
 import React from 'react';
@@ -26,6 +26,7 @@ import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
+import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
@@ -39,17 +40,33 @@ const DATA = [
     examId: 1,
     examName: '第一次月考',
     signTime: '9月20日 08:20-08:59',
-    examTime: '9月20日 09:00-10:30',
+    //examTime: '9月20日 09:00-10:30',
+    numStu: 28,
+    numTotal: 29,
+    percent: ((29 - 28) * 100 / 29).toFixed(2),
     status: 1,
     statusName: '签到中',
+    numPass: 19,
+    numF: 3,
+    numUnSign: 1,
+    numRepair: 5,
+    numNotice: 3,
   },
   {
     examId: 2,
     examName: '第四场',
     signTime: '9月21日 08:20-08:59',
-    examTime: '9月21日 09:00-10:30',
+    //examTime: '9月21日 09:00-10:30',
+    numStu: 29,
+    numTotal: 29,
+    percent: ((29 - 29) * 100 / 29).toFixed(2),
     status: 0,
-    statusName: '未开始'
+    statusName: '未开始',
+    numPass: 19,
+    numF: 3,
+    numUnSign: 1,
+    numRepair: 5,
+    numNotice: 3,
   }
 ];
 
@@ -58,7 +75,7 @@ const ds = new ListView.DataSource({
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-class SignedByCard extends React.Component {
+class SignedStat extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -92,19 +109,41 @@ class SignedByCard extends React.Component {
         //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
-  onSign(row: any){
-    if(row.status == 1){
-      this.props.navigation.navigate('examSign', {info: row});
-    }
+
+  onSearchChange(text){
+    this.setState({search_text: text});
+    //触发搜索
   }
 
+  //浏览视图
+  onLookView = (op, item) => {
+      this.setState({
+          editMode: op,//编辑模式
+          currentDataModel: item,//编辑对象
+      });
+      switch (op) {
+          case 'View':
+              this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: item });
+              break;
+      }
+  };
+  //视图回调
+  viewCallback = (dataModel) => {
+      if (dataModel) {
+          //如果需要更新，则刷新
+          if (dataModel.is_changed) {
+              this.getPlaceInfo();
+          }
+      }
+      this.setState({ editMode: 'Manage' });
+  }
   renderRow(row, id) {
       return (
           <ListItem
-              //activeBackgroundColor={Colors.dark60}
-              //activeOpacity={0.3}
+              activeBackgroundColor={Colors.dark60}
+              activeOpacity={0.3}
               height={120}
-              //onPress={(item) => this.onLookView('View', item)}
+              onPress={(item) => this.onLookView('View', row)}
               animation="fadeIn"
               easing="ease-out-expo"
               duration={1000}
@@ -118,12 +157,7 @@ class SignedByCard extends React.Component {
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.status == 1 &&
                             <View style={styles.sign_status} center>
-                              <Text font_12 white3 style={styles.sign_status_text}>{row.statusName}</Text>
-                            </View>
-                          }
-                          {row.status == 0 &&
-                            <View style={styles.sign_status0} center>
-                              <Text font_12 white3 style={styles.sign_status_text0}>{row.statusName}</Text>
+                              <Text font_12 orange style={styles.sign_status_text}>重点关注考生：2人</Text>
                             </View>
                           }
                         </View>
@@ -135,14 +169,7 @@ class SignedByCard extends React.Component {
                       <Text font_14 gray2>签到</Text>
                       <Text font_14 gray2 marginL-15>{row.signTime}</Text>
                       <View right flex-1>
-                        {row.status == 1 && <YSButton
-                              type={'bordered'}
-                              style={styles.btn_sign}
-                              caption={'读卡签到'}
-                              text_style={styles.btn_sign_text}
-                              disable={false}
-                              onPress={() => this.onSign(row)} />
-                        }
+                        <Image source={Assets.signed.icon_next}/>
                       </View>
                     </View>
 
@@ -150,8 +177,14 @@ class SignedByCard extends React.Component {
                   <ListItem.Part>
                     <View row flex-1 centerV marginT-2 marginL-22>
                       <Image source={Assets.signed.icon_time_exam}/>
-                      <Text font_14 gray2>考试</Text>
-                      <Text font_14 gray2 marginL-15>{row.examTime}</Text>
+                      <Text font_14 gray2>签到人数</Text>
+                      <Text font_14 blue marginL-15>{row.numStu}</Text>
+                      <Text font_14 gray2>/{row.numTotal}人</Text>
+                      <View right marginL-36 row>
+                        <Image source={Assets.signed.icon_error_gray}/>
+                        <Text font_14 gray2 marginL-6>缺考率</Text>
+                        <Text font_14 blue marginL-15>{row.percent}%</Text>
+                      </View>
                     </View>
                   </ListItem.Part>
               </ListItem.Part>
@@ -168,7 +201,7 @@ class SignedByCard extends React.Component {
     return (
       <View flex style={styles.container}>
         <View centerH bg-blue>
-          <Text marginT-35 marginB-9 style={styles.modalTitle}>考试刷卡签到</Text>
+          <Text marginT-35 marginB-9 style={styles.modalTitle}>签到场次统计</Text>
         </View>
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
@@ -208,6 +241,44 @@ var styles = StyleSheet.create({
     fontSize: 19,
     color: YSColors.whiteBackground,
   },
+  inputText: {
+    color: '#999999',
+    fontSize: 14,
+  },
+  inputContainer: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    marginTop: 12,
+    height: 28,
+    width: 345,
+    backgroundColor: '#FFFFFF',
+
+    borderRadius: 14,
+    paddingLeft: 11,
+    paddingTop: 7,
+    paddingBottom: 7,
+  },
+  inputContainer2: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 10,
+    marginTop: 12,
+    height: 28,
+    width: 300,
+    backgroundColor: '#FFFFFF',
+
+    borderRadius: 14,
+    paddingLeft: 11,
+    paddingTop: 7,
+    paddingBottom: 7,
+  },
+  clearStyle: {
+    width: 13,
+    height: 13,
+    resizeMode: 'contain',
+    marginRight: 69,
+  },
   //------------考试场次部分
   list_wrap: {
     backgroundColor: YSColors.whiteBackground,
@@ -218,25 +289,14 @@ var styles = StyleSheet.create({
   },
   sign_status: {
     borderRadius: 10,
-    backgroundColor: '#EEF5FF',
-    borderWidth: 1,
-    borderColor: '#4B9FFF',
-    width: 60,
-    height: 20
+    backgroundColor: '#FFF4D5',
   },
   sign_status_text: {
-    color: '#4B9FFF',
     fontSize: 12,
-  },
-  sign_status0: {
-    borderRadius: 10,
-    backgroundColor: '#D6D6D6',
-    width: 60,
-    height: 20
-  },
-  sign_status_text0: {
-    color: '#FFFFFF',
-    fontSize: 12,
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: 14,
+    marginRight: 13
   },
   btn_sign: {
     borderRadius: 15,
@@ -290,121 +350,6 @@ var styles = StyleSheet.create({
 
 
 
-  behind_bg: {
-    //height: '75%'
-  },
-  front0: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    //backgroundColor: YSColors.AppMainColor,
-    width: YSWHs.width_window,
-    height: 257,
-    top: 0,
-    left: 0,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  front_user: {
-    width: '85%',
-    height: 120,
-    //backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-  },
-
-  front: {
-    position: 'absolute',
-    backgroundColor: YSColors.whiteBackground,
-    width: 320,
-    height: 156,
-    top: 101,
-    left: 28,
-    right: 28,
-    //borderWidth: 0.5,
-    //borderColor: YSColors.login.border,
-    //box-shadow:0 5 5 0 rgba(0,0,0,0.05);
-    borderRadius: 5,
-    elevation: 20,
-    shadowOffset: {width: 0, height: 10},
-    shadowColor: '#000000',
-    shadowOpacity: 1,
-    shadowRadius: 5
-  },
-  logo_outside: {
-    marginTop: -36,
-  },
-  logo: {
-    width: 73,
-    height: 73,
-    resizeMode: 'contain',
-  },
-  iconstyle:{
-    width: 16,
-    height: 16,
-    resizeMode:'contain',
-    marginRight: 12
-  },
-  inputText: {
-    color: '#333333',
-    borderRadius: 99,
-  },
-  inputContainer: {
-    marginLeft: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    borderWidth: 1,
-    borderColor: "#D6D6D6",
-    marginTop: 18,
-    height: 47,
-
-    borderRadius: 99,
-    paddingLeft: 17,
-    paddingRight: 18
-  },
-  text_caption: {
-    fontSize: 16
-  },
-
-
-
-
-
-  btn: {
-    width: 180,
-    height: 44,
-  },
-
-
-  modal: {
-    width: YSWHs.width_window,
-    height: 480,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  close: {
-    position: 'absolute',
-    right: 15,
-    top: 15
-  },
-  line: {
-    width: YSWHs.width_window,
-    height: 1,
-    backgroundColor: '#F1F1F1'
-  },
-  img: {
-    width: 164,
-    height: 100,
-    borderRadius: 5,
-    resizeMode: 'contain',
-    marginRight: 10
-  },
-  intro_title: {
-    width: YSWHs.width_window,
-    paddingLeft: 16,
-    paddingRight: 16,
-  }
 
 
 })
@@ -423,4 +368,4 @@ function mapDispatchToProps(dispatch) {
         GetPlace: bindActionCreators(GetPlace, dispatch),
     };
 }
-module.exports = connect(select, mapDispatchToProps)(SignedByCard);
+module.exports = connect(select, mapDispatchToProps)(SignedStat);

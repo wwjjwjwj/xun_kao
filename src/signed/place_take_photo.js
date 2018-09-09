@@ -30,10 +30,9 @@ import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
-import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
-import { checkPermissionCamera } from 'Util';
+import { checkPermissionCamera, getGeolocation } from 'Util';
 //4. action
 import { GetStudentByCard } from '../actions/exam';
 
@@ -58,10 +57,40 @@ class PlaceTakePhoto extends React.Component {
       (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
       (this: any).onUpload = this.onUpload.bind(this);
       (this: any).onViewSign = this.onViewSign.bind(this);
+      //(this: any).getLongitudeAndLatitude = this.getLongitudeAndLatitude.bind(this);
   };
   componentWillMount() {
     this.onTakePhoto();
+
+    //getGeolocation(function(res){
+    //  alert(JSON.stringify(res));
+    //})
+
   }
+
+  GetGeolocation(){
+        /*
+        说明：getCurrentPosition(fun_success,fun_error,geo_options)
+        成功回调函数与失败回调函数的写法， 应该使用箭头函数方式，因为回调结果可以供当前页面的this所调用，否则当前页面使用不了。
+        例：getCurrentPosition(function(val){ this.setState....  },function(val){ this.setState....})
+        会提示未定义函数或找不到对像，错误位置为this.setState
+
+        */
+        Geolocation.getCurrentPosition(val => {
+            let ValInfo = "速度：" + val.coords.speed +
+                "\n经度：" + val.coords.longitude +
+                "\n纬度：" + val.coords.latitude +
+                "\n准确度：" + val.coords.accuracy +
+                "\n行进方向：" + val.coords.heading +
+                "\n海拔：" + val.coords.altitude +
+                "\n海拔准确度：" + val.coords.altitudeAccuracy +
+                "\n时间戳：" + val.timestamp;
+            this.setState({LocalPosition: ValInfo});
+        }, val => {
+            let ValInfo = '获取坐标失败：' + JSON.stringify(val);
+            this.setState({LocalPosition: ValInfo});
+        });
+    }
 
   onCheckUserInfo(cardInfo){
     let { Toast } = this;

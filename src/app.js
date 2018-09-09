@@ -62,6 +62,7 @@ class App extends React.Component {
     else {
       content_block = <Navigator />;
     }
+content_block = <Navigator />;
     //content_block = <ReadCard />;
     // 多语言环境支持
     return <LocaleProvider locale={LocaleContext.chooseLocale()}>

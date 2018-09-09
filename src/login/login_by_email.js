@@ -268,6 +268,7 @@ var styles = StyleSheet.create({
     borderColor: "#D6D6D6",
     marginTop: 18,
     height: 47,
+    width: 280,
 
     borderRadius: 99,
     paddingLeft: 17,

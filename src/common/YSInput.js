@@ -122,7 +122,7 @@ class YSInput extends React.Component {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
         />
-        {this.props.enableClear && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
+        {this.props.enableClear && <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
         {this.props.button &&
           <TouchableOpacity style={styles.btn} onPress={this.props.button.onPress}>
             <Text center label_input gray2  >{this.props.button.title}</Text>
@@ -131,7 +131,7 @@ class YSInput extends React.Component {
       </View>
     }
     return (
-        <View style={[styles.container, this.props.containerStyle ]}>
+        <View centerV style={[styles.container, this.props.containerStyle ]}>
           {icon}{input}
         </View>
     );
@@ -142,8 +142,8 @@ var styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 47,
-    width: 280,
+    //height: 47,
+    //width: 280,
   },
 
   icon: {
@@ -164,7 +164,8 @@ var styles = StyleSheet.create({
     //height: '100%',
     flexDirection:'column',
     justifyContent:'center',
-    paddingRight: 36
+    marginRight: 36,
+    
   },
   btn: {
     height: 47,

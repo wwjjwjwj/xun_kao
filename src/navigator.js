@@ -98,8 +98,54 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
             })
         },
+        //-------------------4 统计
+        signedStat: {
+            screen: require('./home/signed_stat'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('签到统计'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        oneExamSignedStat: {
+            screen: require('OneExamSignedStat'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('本场签到统计'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        statDetailByType: {
+            screen: require('StatDetailByType'),
+        },
+
+        //-------------------5 其他签到
+        signedByOther: {
+            screen: require('./home/signed_by_other'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('其他签到'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
 
 
+        setting: {
+            screen: require('Setting'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('Setting'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal' },
+                headerStyle: { borderBottomWidth: 1, borderColor: YSColors.splitlineColor, backgroundColor: YSColors.whiteBackground }
+            })
+        },
 
 /*
         //员工管理
@@ -377,16 +423,7 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 1, borderColor: YSColors.splitlineColor, backgroundColor: YSColors.whiteBackground }
             })
         },
-        setting: {
-            screen: require('Setting'),
-            navigationOptions: ({ navigation }) => ({
-                title: YSI18n.get('Setting'),
-                gesturesEnabled: true,
-                gestureResponseDistance: { horizontal: 20 },
-                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal' },
-                headerStyle: { borderBottomWidth: 1, borderColor: YSColors.splitlineColor, backgroundColor: YSColors.whiteBackground }
-            })
-        },
+
 
         LeagueSchool: {
             screen: require('./demo/League/LeagueSchoolManageList'),

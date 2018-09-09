@@ -30,7 +30,6 @@ import YSToast from 'YSToast';
 import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
-import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 import { checkPermissionCamera } from 'Util';
@@ -354,7 +353,7 @@ class ExamSign extends React.Component {
               <Text font_20 black marginT-10>{this.state.cardInfo.cardNo}</Text>
             </View>
           }
-          //读身份证成功 但验证失败
+          {/*读身份证成功 但验证失败*/}
           {this.state.check_status == 3 &&
             <View centerH marginT-15 center row>
               <Image source={Assets.signed.icon_error_r} />
