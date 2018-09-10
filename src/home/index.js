@@ -38,8 +38,8 @@ class Index extends React.Component {
   constructor() {
     super();
     this.state = {
-      //selectedTab: 'home',
-      selectedTab: 'examTakePhoto',
+      selectedTab: 'home',
+      //selectedTab: 'examTakePhoto',
       //selectedTab: 'signedStat',
       //selectedTab: 'signedByOther',
     };
@@ -105,7 +105,7 @@ class Index extends React.Component {
         icon={Assets.home.icon_home}
         selectedIcon={Assets.home.icon_home_focus}
         title={YSI18n.get('首页')}
-        badge={2}
+        //badge={2}
         selected={this.state.selectedTab === 'home'}
         onPress={() => this.onChangeTab('home')}
       >

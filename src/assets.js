@@ -28,6 +28,7 @@ Assets.loadAssetsGroup('home', {
   img_otg: require('./assets/img_otg.png'),
   img_blueteeth: require('./assets/img_blueteeth.png'),
 
+  icon_task: require('./assets/icon_task.png'),
   icon_home_focus: require('./assets/icon_home_focus.png'),
   icon_home: require('./assets/icon_home.png'),
   icon_signed_card_focus: require('./assets/icon_signed_card_focus.png'),

@@ -55,6 +55,26 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
             })
         },
+        readCardTest: {
+            screen: require('ReadCardTest'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('读卡测试'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
+        taskList: {
+            screen: require('TaskList'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('监考任务'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
         //--------------2 刷卡签到
         //刷卡签到 首页
         signedByCard: {

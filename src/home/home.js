@@ -11,7 +11,7 @@ import { Colors, View, Text, TextInput, TextArea,
   Button, Assets, Image
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker,
-  Modal, WingBlank
+  Modal, WingBlank, Carousel
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -34,11 +34,22 @@ import { getDeviceUuid } from '../actions/base';
 
 import {getFinger} from '../env';
 
+const TASK = [
+  '监考任务一：开考后30分钟，巡考任务内容滚动显示',
+  '监考任务二：开考后10分钟，巡考任务内容滚动显示'
+];
+
 class Home extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       //connect_show: false,
+
+      //exam_notice_show: true,
+      exam_notice_show: false,
+      notice_text: 'bala bala balabala',
+
+      task_list: TASK,
 
       university: '吉林大学',
       name: '李老师',
@@ -55,6 +66,7 @@ class Home extends React.Component {
     (this: any).onCloseConnectModal = this.onCloseConnectModal.bind(this);
     (this: any).goto_otg = this.goto_otg.bind(this);
     (this: any).goto_blueteeth = this.goto_blueteeth.bind(this);
+    (this: any).onTask = this.onTask.bind(this);
   }
 
   onShowConnectModal(e){
@@ -68,6 +80,11 @@ class Home extends React.Component {
       connect_show: false
     })
   }
+  onCloseExamNoticeModal(){
+    this.setState({
+      exam_notice_show: false
+    })
+  }
 
   goto_otg(){
     this.onCloseConnectModal();
@@ -78,6 +95,9 @@ class Home extends React.Component {
     this.onCloseConnectModal();
     //this.props.navigation.navigate('blueteethTest', {keys: { home_key: this.props.navigation.state.key }});
     this.props.navigation.navigate('blueteethTest');
+  }
+  onTask(){
+    this.props.navigation.navigate('taskList');
   }
 
   render(){
@@ -103,6 +123,24 @@ class Home extends React.Component {
             caption={"点击连接读卡器"}
             text_style={styles.text_caption}
             onPress={this.onShowConnectModal}/>
+            <TouchableOpacity onPress={()=>this.onTask()}>
+          <View marginT-21 centerV row style={styles.lantern_view}>
+            <Image source={Assets.home.icon_task} style={styles.lantern_img}/>
+            <Carousel
+              style={styles.lantern_wapper}
+              selectedIndex={0}
+              autoplay
+              infinite
+              dots={false}
+              //afterChange={this.onHorizontalSelectedIndexChange}
+            >
+              {this.state.task_list.map(t => {
+                return <Text marginL-11 blue font_14 style={styles.lantern_text}>{this.state.task_list[0]}</Text>
+              })}
+            </Carousel>
+          </View>
+          </TouchableOpacity>
+        <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
               <Text font_18 black marginL-15>{this.state.batch}</Text>
@@ -144,6 +182,7 @@ class Home extends React.Component {
               </View>
             </View>
           </View>
+          </KeyboardAwareScrollView>
         </View>
 
 
@@ -176,6 +215,27 @@ class Home extends React.Component {
               <Text gray2 label_input>使用数据线与手机连接。</Text>
               <Text marginT-19 black2 label_input>蓝牙连接:</Text>
               <Text gray2 label_input>使开机后，设备蓝牙开启搜索，蓝牙指示灯闪烁，打开手机蓝牙连接设备，蓝牙指示灯每次闪烁两下表示蓝牙处于已连接状态。</Text>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          popup
+          visible={this.state.exam_notice_show}
+          onClose={()=>this.onCloseExamNoticeModal()}
+          animationType="slide-up"
+          maskClosable={true}
+        >
+          <View centerH style={styles.modal}>
+            <Text font_18 black2 marginT-17>监考须知</Text>
+            <TouchableOpacity style={styles.close} onPress={()=>this.onCloseExamNoticeModal()}>
+              <Image source={Assets.home.icon_close} style={styles.icon} />
+            </TouchableOpacity>
+            <View marginT-13 style={styles.line}/>
+            <View left marginT-15>
+              <Text font_18 black2>本批次监考须知</Text>
+              <Text font_14 black2 marginT-10>
+                1、监考人员必须充分重视监考工作，具有高度的责任感。监考安排一旦确定，监考人员必须按时履行监考职责，不得迟到、早退、缺席，不得擅自调换监考人员。 2、所有监考人员须携带监考证参加监考。监考过程中不得使用手机，不得擅自离岗，不得在考场中交谈等，一经发现，按相应教学事故处理。 3、监考当日，监考人员应提前15-20分钟到岗，作好考试各项准备工作： （1）按照规定引导学生隔列就坐或按指定位置就坐，前后对齐，不得由考生随意找、占座位； （2）要求考生将学生证（或带学号的E卡）放与桌面右上角，核实考生身份，核对实考人数； （3）向考生申明考场纪律和有关注意事项，开考开始前，监考人员要认真清场，要求考生将与考试无关物品集中放在指定地点，并认真检查桌面和抽屉，不得留有任何与考试科目有关的、非规定可带的纸张、书本以及其他物品。若在开考后被发现，按违纪处理，责任由学生自负；若因监考人员清场不严、检查不仔细，追究监考人员责任。 （4）考试开始前5分钟开始发卷，考场内若只有1名监考人员，应立即通报学院办公室或研究生院培养办公室，直至补派监考人员后，方可发卷。 （5）要求考生首先检查试卷是否完整无损，字迹清晰等。若有问题，应及时举手向监考人员更换；检查无误后填写学号、姓名、院系等信息。
+              </Text>
             </View>
           </View>
         </Modal>
@@ -281,6 +341,31 @@ var styles = StyleSheet.create({
     width: 180,
     height: 44,
   },
+  lantern_view: {
+    width: YSWHs.width_window,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#2E66E7',
+    backgroundColor: '#EEF5FF'
+  },
+  lantern_img: {
+    width: 25,
+    height: 25,
+    resizeMode: 'cover',
+    marginLeft: 15,
+  },
+  lantern_wapper: {
+    //backgroundColor: '#334400',
+    width: '100%',
+    alignSelf: 'center'
+  },
+  lantern_text: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 21
+  },
+
   bottom_1: {
     width: YSWHs.width_window,
     height: 140,

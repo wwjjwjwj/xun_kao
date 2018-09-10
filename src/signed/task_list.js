@@ -1,4 +1,8 @@
-
+/**
+ * 监考任务
+ * @providesModule TaskList
+ * @flow
+ */
 
 //
 import React from 'react';
@@ -33,7 +37,7 @@ import { getDeviceUuid } from '../actions/base';
 
 import {getFinger} from '../env';
 
-class Template extends React.Component {
+class TaskList extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -172,4 +176,4 @@ function mapDispatchToProps(dispatch) {
         getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
     };
 }
-module.exports = connect(select, mapDispatchToProps)(Template);
+module.exports = connect(select, mapDispatchToProps)(TaskList);
