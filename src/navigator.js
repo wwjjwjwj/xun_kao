@@ -75,6 +75,16 @@ const navigator = StackNavigator(
                 headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
             })
         },
+        noticeDetail: {
+            screen: require('NoticeDetail'),
+            navigationOptions: ({ navigation }) => ({
+                title: YSI18n.get('监考须知'),
+                gesturesEnabled: true,
+                gestureResponseDistance: { horizontal: 20 },
+                headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+            })
+        },
         //--------------2 刷卡签到
         //刷卡签到 首页
         signedByCard: {

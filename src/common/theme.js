@@ -6,6 +6,7 @@ Colors.loadColors({
   blue: '#2E66E7',
   blue2: '#A5CFFF', //首页字体
   blue3: '#CCE2FF',
+  blue4: '#EEF5FF',
   white: '#FFFFFF',
   white2: '#E7E7E7', //首页
   white3: '#4B9FFF',
@@ -20,6 +21,7 @@ Colors.loadColors({
 
 Typography.loadTypographies({
   label_input: {fontSize: 14, lineHeight: 20},
+  font_14_20: {fontSize: 14, lineHeight: 20},
   //text: {fontSize: 14, lineHeight: 20},
   text_btn: {fontSize: 18, lineHeight: 25},
   text_title: {fontSize: 24},

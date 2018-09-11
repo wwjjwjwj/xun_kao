@@ -191,3 +191,20 @@ export function userQuery(condition) {
         return promise;
     };
 }
+
+//查学校列表
+export function schoolListQuery() {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("Organization/GetSchool");
+        promise.then((result) => {
+            const action = {
+                type: 'LOADED_SCHOOLS',
+                data: {
+                  data_list: result.data.data_list,
+                },
+            }
+            dispatch(action);
+        });
+        return promise;
+    };
+}

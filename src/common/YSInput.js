@@ -124,7 +124,7 @@ class YSInput extends React.Component {
         {!!this.props.enableClear && <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
         {!!this.props.button &&
           <TouchableOpacity style={styles.btn} onPress={this.props.button.onPress}>
-            <Text center label_input gray2  >{this.props.button.title}</Text>
+            <Text center font_14_20 gray2  >{this.props.button.title}</Text>
           </TouchableOpacity>
         }
       </View>

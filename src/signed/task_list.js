@@ -6,12 +6,13 @@
 
 //
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio
+import { StyleSheet, TouchableOpacity, PixelRatio,
+  ListView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Modal, Button, Assets, Image
+  Modal, Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker
 } from 'antd-mobile-rn';
@@ -37,30 +38,82 @@ import { getDeviceUuid } from '../actions/base';
 
 import {getFinger} from '../env';
 
+const TASK = [
+  {
+    name: '监考任务1',
+    desc: '开考前5分钟，拍摄试卷袋照片。'
+  },
+  {
+    name: '监考任务2',
+    desc: '开考后30分钟，拍摄考场全景照片，拍摄缺考签到表'
+  }
+]
+
+const ds = new ListView.DataSource({
+    rowHasChanged: (r1, r2) => r1 !== r2,
+    sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+});
+
 class TaskList extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-
+        data_list: TASK,
       };
-      (this: any).onTest = this.onTest.bind(this);
+      (this: any).gotoNotice = this.gotoNotice.bind(this);
   };
   componentWillMount() {
   }
 
-  onTest(){
+  gotoNotice(){
+    this.props.navigation.navigate('noticeDetail');
+  }
 
+  renderRow(row, id) {
+      return (
+          <ListItem
+              activeBackgroundColor={Colors.dark60}
+              activeOpacity={0.3}
+              height={105}
+              //onPress={(item) => this.onLookView('View', row)}
+              animation="fadeIn"
+              easing="ease-out-expo"
+              duration={1000}
+              useNativeDriver
+              containerStyle={styles.list_wrap}
+          >
+              <ListItem.Part column>
+                  <ListItem.Part>
+                      <Text blue font_17>{row.name}</Text>
+                  </ListItem.Part>
+                  <ListItem.Part>
+                    <View row marginT-23>
+                        <Image source={Assets.signed.icon_task_gray}/>
+                        <Text black2 font_14 marginL-9 numberOfLines={3}>{row.desc}</Text>
+                      </View>
+                  </ListItem.Part>
+              </ListItem.Part>
+          </ListItem>
+      );
   }
   render(){
+    let block_list_view = <ListView
+        dataSource={ds.cloneWithRows(this.state.data_list)}
+        renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
+    />
 
     return (
       <View flex style={styles.container}>
-        <Image style={styles.behind_bg} source={Assets.home.img_bg}/>
-        <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
-          <View centerH paddingT-45 center>
-            <Image source={Assets.logo.app_logo} style={styles.logo} />
+        <TouchableOpacity onPress={()=>this.gotoNotice()}>
+        <View bg-blue4 centerV row style={styles.notice_title}>
+          <Text blue font_17 marginL-15>监考须知</Text>
+          <View right flex-1>
+            <Image source={Assets.signed.icon_next_blue}/>
           </View>
-
+        </View>
+        </TouchableOpacity>
+        <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
+          {block_list_view}
         </KeyboardAwareScrollView>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
@@ -75,88 +128,28 @@ var styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor: YSColors.home.bg
+    backgroundColor: '#F1F1F1',
+    paddingTop: 15,
+    paddingLeft: 15,
+    paddingRight: 15
   },
-  behind_bg: {
-    //height: '75%'
-  },
-  behind_bottom: {
-    position: 'absolute',
-    bottom: 47,
-    left: 97
-
-  },
-  front: {
-    position: 'absolute',
-    backgroundColor: YSColors.whiteBackground,
-    width: '91.5%',
-    height: '78%',
-    top: YSWHs.login.front_top,
-    left: YSWHs.login.front_left,
-    right: YSWHs.login.front_left,
-    //borderWidth: 0.5,
-    //borderColor: YSColors.login.border,
-    //box-shadow:0 5 5 0 rgba(0,0,0,0.05);
+  notice_title: {
+    height: 50,
+    width: '100%',
     borderRadius: 5,
-    elevation: 20,
-    shadowOffset: {width: 0, height: 10},
-    shadowColor: '#000000',
-    shadowOpacity: 1,
-    shadowRadius: 5
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
-  },
-  iconstyle:{
-    width: 16,
-    height: 16,
-    resizeMode:'contain',
-    marginRight: 12
-  },
-  inputText: {
-    color: '#333333',
-    borderRadius: 99,
-  },
-  inputContainer: {
-    marginLeft: 0,
-    marginRight: 0,
-    marginBottom: 0,
+    borderColor: '#2E66E7',
     borderWidth: 1,
-    borderColor: "#D6D6D6",
-    marginTop: 18,
-    height: 47,
-
-    borderRadius: 99,
-    paddingLeft: 17,
-    paddingRight: 18
   },
 
-  block_forget_wrap: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    //alignItems: 'center',
-    height: 20,
-  },
-  forgetwrap: {
-    textAlign: 'center',
-    color: YSColors.lightText,
-    backgroundColor: 'transparent'
-  },
-  text_caption: {
-    fontSize: 18
-  },
+  list_wrap: {
+    backgroundColor: YSColors.whiteBackground,
+    marginTop: 15,
+    borderRadius: 5,
 
-  border_button: {
-    borderRadius: 99,
-    //backgroundColor: 'transparent'
-    backgroundColor: '#4B9FFF'
-  },
-  logininput_margin: {
-    marginTop: 47,
-    marginLeft: 32,
-    marginRight: 32
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 1,
+    paddingBottom: 15
   },
 
 })

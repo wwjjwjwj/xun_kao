@@ -142,7 +142,7 @@ class LoginByEmail extends React.Component {
             <View flex style={styles.container}>
                 <Image style={styles.behind_bg} source={Assets.login.img_bg}/>
                 <View style={styles.behind_bottom}>
-                  <Text label_input gray>默认初始密码为身份证后六位</Text>
+                  <Text font_14_20 gray>默认初始密码为身份证后六位</Text>
                 </View>
                 <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
                     <View centerH paddingT-45 center>
@@ -162,9 +162,9 @@ class LoginByEmail extends React.Component {
                               <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
                                 <Image source={Assets.login.icon_school} style={[styles.iconstyle, {marginLeft: -15}]} resizeMode='contain' />
                                 {this.state.school_info.value ?
-                                  <Text black label_input>{this.state.school_info.label || '请选择学校'}</Text>
+                                  <Text black font_14_20>{this.state.school_info.label || '请选择学校'}</Text>
                                   :
-                                  <Text gray label_input>{this.state.school_info.label || '请选择学校'}</Text>
+                                  <Text gray font_14_20>{this.state.school_info.label || '请选择学校'}</Text>
                                 }
                               </View>
                             </List.Item>

@@ -215,7 +215,7 @@ class SignedByOther extends React.Component {
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
               <Text font_18 black marginL-15>{this.state.batch}</Text>
-              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.state.exam_num}`}</Text>
+              <Text gray2 font_14_20 marginL-80 marginR-15>{`考试人数:${this.state.exam_num}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />

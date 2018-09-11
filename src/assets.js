@@ -72,6 +72,7 @@ Assets.loadAssetsGroup('signed', {
   //右箭头
   icon_next: require('./assets/icon_next.png'),
   icon_next_orange: require('./assets/icon_next_orange.png'),
+  icon_next_blue: require('./assets/icon_next_blue.png'),
   //重点关注
   icon_notice: require('./assets/icon_notice.png'),
   icon_pass: require('./assets/icon_pass.png'),
@@ -79,6 +80,8 @@ Assets.loadAssetsGroup('signed', {
   icon_f: require('./assets/icon_f.png'),
   icon_repair: require('./assets/icon_repair.png'),
   icon_user_num: require('./assets/icon_user_num.png'),
+
+  icon_task_gray: require('./assets/icon_task_gray.png'),
 
   img_no_result: require('./assets/img_no_result.png'),
   img_add: require('./assets/img_add.png'),
