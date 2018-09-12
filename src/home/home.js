@@ -3,7 +3,7 @@
 //
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView
+  ImageBackground, ScrollView, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -87,9 +87,15 @@ class Home extends React.Component {
   }
 
   goto_otg(){
-    this.onCloseConnectModal();
-    //this.props.navigation.navigate('otgTest', {keys: { home_key: this.props.navigation.state.key }});
-    this.props.navigation.navigate('otgTest');
+    if(Platform.OS === 'android'){
+      this.onCloseConnectModal();
+      //this.props.navigation.navigate('otgTest', {keys: { home_key: this.props.navigation.state.key }});
+      this.props.navigation.navigate('otgTest');
+    }else {
+      let { Toast } = this;
+      Toast.info('iphone不支持otg连接');
+      return;
+    }
   }
   goto_blueteeth(){
     this.onCloseConnectModal();

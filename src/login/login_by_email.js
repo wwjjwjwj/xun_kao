@@ -28,7 +28,7 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { loginWithEmail } from '../actions/user';
+import { loginWithEmail, schoolListQuery } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
 
 import {getFinger} from '../env';
@@ -67,6 +67,17 @@ class LoginByEmail extends React.Component {
         //alert(density)
 
         this.props.getDeviceUuid();
+    }
+
+    getSchoolList(){
+      let { Toast } = this;
+      this.props.schoolListQuery()
+        .then((response) => {
+
+        })
+        .catch((response) => {
+          Toast.fail(response.message || YSI18n.get('loginFailed'));
+        })
     }
 
     onChangeSchool(val){
@@ -304,18 +315,19 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
+    var school_list = "";
+    if (store.user && store.user.school_list) {
+        school_list = store.user.school_list
     }
     return {
-        account: account,
+        school_list,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
+        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
+        schoolListQuery: bindActionCreators(schoolListQuery, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(LoginByEmail);

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ListView
+  ListView, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -49,7 +49,8 @@ class ReadCardTest extends React.Component {
         read_status: 0,   //0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
 
         blues: [],
-        cardInfo: {}
+        cardInfo: {},
+        type: props.navigation.state.params.type,
       };
       (this: any).onTest = this.onTest.bind(this);
       (this: any).onReturn = this.onReturn.bind(this);
@@ -173,8 +174,17 @@ class ReadCardTest extends React.Component {
         read_status: 1
       })
 
-      CardModule.read_card_info({
-      })
+      if(this.state.type == 'blueteeth'){
+        CardModule.read_card_info({
+        })
+      }else if(this.state.type == 'otg'){
+        if(Platform.OS === 'android'){
+          CardModule.read_card_info_otg({});
+        }else {
+          Toast.info('iphone不支持otg连接');
+          return;
+        }
+      }
 
       /*var that = this;
       setTimeout(function(){
@@ -276,7 +286,7 @@ class ReadCardTest extends React.Component {
                 text_style={styles.text_caption_return}
                 disable={false}
                 onPress={this.onReturn} /> }
-            {this.state.read_status <= 1 && <YSButton
+            {this.state.type == 'blueteeth' && this.state.read_status <= 1 && <YSButton
                 type={'bordered'}
                 style={styles.border_button}
                 caption={'获取蓝牙列表'}
@@ -285,7 +295,7 @@ class ReadCardTest extends React.Component {
                 onPress={this.onTestFind} /> }
 
           </View>
-          {this.state.read_status <= 1 && <View style={{width: '75%', borderWidth: 1, borderColor: '#2E66E7', marginLeft: 45, marginRight: 45}}>
+          {this.state.type == 'blueteeth' && this.state.read_status <= 1 && <View style={{width: '75%', borderWidth: 1, borderColor: '#2E66E7', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}

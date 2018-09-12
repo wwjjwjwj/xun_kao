@@ -197,6 +197,7 @@ export function schoolListQuery() {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("Organization/GetSchool");
         promise.then((result) => {
+            alert(JSON.stringify(result));
             const action = {
                 type: 'LOADED_SCHOOLS',
                 data: {

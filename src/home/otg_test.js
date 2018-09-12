@@ -47,7 +47,7 @@ class OtgTest extends React.Component {
   }
 
   onTest(){
-    this.props.navigation.navigate('readCardTest');
+    this.props.navigation.navigate('readCardTest', {type: 'otg'});
 
   }
   render(){

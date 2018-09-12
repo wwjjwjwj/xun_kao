@@ -54,6 +54,13 @@ function user(state = initialState, action) {
             schoolInfo: {}
         }
     }
+    if(action.type === 'LOADED_SCHOOLS'){
+        let { data_list } = action.data;
+        return {
+            ...state,
+            school_list: data_list
+        };
+    }
     if (action.type === 'SKIPPED_AD') {
         return {
             ...state,
