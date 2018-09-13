@@ -95,7 +95,6 @@ module.exports = {
       },
       ParamData: param
     }
-    //alert(JSON.stringify(_data));
     var fetchOptions = {
       method: 'POST',
       headers: {
@@ -107,11 +106,13 @@ module.exports = {
       },
       body: JSON.stringify(_data)
     };
+    //alert(JSON.stringify(_data));
 
     try {
       let beginTime = new Date();
       let response = await fetch(serverURL + url, fetchOptions)
       let responseText = await response.text();
+      //alert(JSON.stringify(responseText));
       if (response.status == 200) {
         var json = JSON.parse(responseText);
         if (apiDebug) {

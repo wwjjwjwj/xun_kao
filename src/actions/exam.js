@@ -11,11 +11,13 @@ export function GetPlace() {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("ExamPlan/GetPlace");
         promise.then((result) => {
-            const action = {
-                type: 'GET_PLACE',
-                data: result.data
+            if(result.State == 1){
+              const action = {
+                  type: 'GETTED_PLACE',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };

@@ -1,6 +1,6 @@
+//首页
 
 
-//
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
   ImageBackground, ScrollView, Platform
@@ -29,8 +29,9 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { loginWithEmail } from '../actions/user';
+import { logout } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
+import { GetPlace } from '../actions/exam';
 
 import {getFinger} from '../env';
 
@@ -51,9 +52,9 @@ class Home extends React.Component {
 
       task_list: TASK,
 
-      university: '吉林大学',
-      name: '李老师',
-      mobile: '13511112222',
+      //university: '吉林大学',
+      //name: '李老师',
+      //mobile: '13511112222',
       batch: '201809考试批次',
       exam_num: 2500,
       branch: '重庆学习中心',
@@ -67,6 +68,11 @@ class Home extends React.Component {
     (this: any).goto_otg = this.goto_otg.bind(this);
     (this: any).goto_blueteeth = this.goto_blueteeth.bind(this);
     (this: any).onTask = this.onTask.bind(this);
+    (this: any).gotoLogout = this.gotoLogout.bind(this);
+    (this: any).onGetPlaceData = this.onGetPlaceData.bind(this);
+  }
+  componentDidMount() {
+    this.onGetPlaceData();
   }
 
   onShowConnectModal(e){
@@ -105,6 +111,32 @@ class Home extends React.Component {
   onTask(){
     this.props.navigation.navigate('taskList');
   }
+  gotoLogout(){
+    let { Toast } = this;
+    this.props.logout()
+        .then((response) => {
+
+        })
+        .catch((response) => {
+          Toast.fail(response.message || YSI18n.get('loginFailed'));
+        })
+  }
+  onGetPlaceData(){
+    let { Toast } = this;
+    this.props.GetPlace()
+      .then((response) => {
+        //alert(JSON.stringify(response));
+        if(response.State == 1 && response.ReData){
+          this.setState({
+            info: response.ReData
+          })
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
+  }
 
   render(){
 
@@ -118,8 +150,11 @@ class Home extends React.Component {
             <View centerH center style={styles.logo_outside}>
               <Image source={Assets.home.img_avatar_jk} style={styles.logo} />
             </View>
-            <Text center marginT-13 blue font_16>{this.state.university}</Text>
-            <Text center marginT-12 black2 font_16>{this.state.name} {this.state.mobile}</Text>
+            <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
+              <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
+            </TouchableOpacity>
+            <Text center marginT-13 blue font_16>{this.props.school_name}</Text>
+            <Text center marginT-12 black2 font_16>{this.props.name} {this.props.account}</Text>
           </View>
         </View>
 
@@ -149,16 +184,16 @@ class Home extends React.Component {
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>{this.state.batch}</Text>
-              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.state.exam_num}`}</Text>
+              <Text font_18 black marginL-15>{this.props.info.examName}</Text>
+              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.props.info.studentCount}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.state.branch}</Text>
+              <Text marginL-11 blue label_input>{this.props.info.stationName}</Text>
             </View>
             <View centerV row marginT-10 paddingL-15>
               <Image source={Assets.home.icon_addr_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.state.branch_addr}</Text>
+              <Text marginL-11 blue label_input>{this.props.info.placeAddress}</Text>
             </View>
           </View>
           <View row center marginT-10 bg-white style={styles.bottom_2}>
@@ -178,13 +213,13 @@ class Home extends React.Component {
             </View>
             <View right style={styles.bottom_2_right}>
               <View centerV marginT-15 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.state.exam_place}</Text>
+                <Text black label_input>{this.props.info.placeName}</Text>
               </View>
               <View centerV marginT-10 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.state.exam_addr}</Text>
+                <Text black label_input>{this.props.info.placeAddress}</Text>
               </View>
               <View centerV marginT-10 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.state.exam_contact}</Text>
+                <Text black label_input>{this.props.info.contact}</Text>
               </View>
             </View>
           </View>
@@ -280,6 +315,18 @@ var styles = StyleSheet.create({
     height: 120,
     //backgroundColor: '#FFFFFF',
     borderRadius: 10,
+  },
+  touch_exit: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    height: 20,
+    width: 20,
+    //backgroundColor: '#330099'
+  },
+  img_exit: {
+    width: 20,
+    height: 20
   },
 
   front: {
@@ -437,18 +484,33 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
+    //alert(JSON.stringify(store.user));
+    //alert(JSON.stringify(store.exam));
+    var school_name = "";
+    var name = '';
+    var account = '';
+    if (store.user){
+      if(store.user.schoolInfo)
+        school_name = store.user.schoolInfo.label;
+      name = store.user.name;
+      account = store.user.account
+    }
+    var info = {};
+    if(store.exam && store.exam.place_info){
+      info = store.exam.place_info;
     }
     return {
-        account: account,
+        school_name,
+        name,
+        account,
+        info
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
+        logout: bindActionCreators(logout, dispatch),
+        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
+        GetPlace: bindActionCreators(GetPlace, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(Home);

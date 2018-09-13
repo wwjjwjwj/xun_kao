@@ -20,18 +20,20 @@ function appendAPPMessage(message, list) {
 }
 function user(state = initialState, action) {
     if (action.type === 'LOGGED_IN') {
-        let { token, id, name, userInfo, login_name, schoolInfo } = action.data;
+        //alert(JSON.stringify(action.data))
+        let { token, id, name, userInfo, account, schoolInfo } = action.data;
         return {
             ...state,
             isLoggedIn: true,
             id,
             name,
+            account,
+            login_name: account,
+            schoolInfo,
             userInfo,
-            login_name: login_name,
-            schoolInfo: schoolInfo
         };
     }
-    if (action.type === 'REGGED_IN') {
+    /*if (action.type === 'REGGED_IN') {
         let { token, id, name, userInfo, login_name } = action.data;
         return {
             ...state,
@@ -41,7 +43,7 @@ function user(state = initialState, action) {
             userInfo,
             login_name: login_name
         };
-    }
+    }*/
     if (action.type == 'LOGGED_OUT') {
         return {
             ...state,
@@ -55,10 +57,21 @@ function user(state = initialState, action) {
         }
     }
     if(action.type === 'LOADED_SCHOOLS'){
-        let { data_list } = action.data;
+        let { school_list } = action.data;
+        var _list = [];
+        if(school_list && school_list.length){
+          school_list.map(s => {
+            if(s){
+              _list.push({
+                value: s.schoolId,
+                label: s.schoolName
+              })
+            }
+          })
+        }
         return {
             ...state,
-            school_list: data_list
+            school_list: _list
         };
     }
     if (action.type === 'SKIPPED_AD') {

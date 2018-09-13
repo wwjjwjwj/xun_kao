@@ -10,5 +10,5 @@ module.exports = combineReducers({
     menu: require('./menu'),
     notice: require('./notice'),
     zixun: require('./zixun'),
-    //organization: require('./organization'),
+    exam: require('./exam')
 });

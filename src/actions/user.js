@@ -12,6 +12,7 @@ export function loginWithEmail(userName, password, school_id, school_name) {
         //管理端登录
         const promise = Ajax.promisePostJson("AccessManagement/login", { UserName: userName, Password: password, SchoolId: school_id, SchoolName: school_name });
         promise.then((result) => {
+            //alert(JSON.stringify(result));
             const action = {
                 type: 'LOGGED_IN',
                 data: {
@@ -19,7 +20,7 @@ export function loginWithEmail(userName, password, school_id, school_name) {
                     id: result.ReData.UserID,
                     name: result.ReData.RealName,
                     userInfo: result.ReData,
-                    login_name: userName,  //用于下次登录时，直接在输入框中
+                    account: userName,  //用于下次登录时，直接在输入框中
                     schoolInfo: {value: school_id, label: school_name}
                 }
             }
@@ -32,7 +33,7 @@ export function loginWithEmail(userName, password, school_id, school_name) {
 //退出登录
 export function logout() {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("user/logout");
+        const promise = Ajax.promisePostJson("AccessManagement/logout");
         promise.then(
             (result) => {
                 const action = {
@@ -197,14 +198,19 @@ export function schoolListQuery() {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("Organization/GetSchool");
         promise.then((result) => {
-            alert(JSON.stringify(result));
-            const action = {
+            //alert(JSON.stringify(result));
+            if(result.State == 1){
+              const action = {
                 type: 'LOADED_SCHOOLS',
                 data: {
-                  data_list: result.data.data_list,
+                  //school_list: result.data.data_list,
+                  school_list: result.ReData,
                 },
+              }
+              dispatch(action);
+
             }
-            dispatch(action);
+
         });
         return promise;
     };

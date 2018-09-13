@@ -27,6 +27,7 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
+import { md5_32 } from 'Util';
 //4. action
 import { loginWithEmail, schoolListQuery } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
@@ -39,14 +40,16 @@ class LoginByEmail extends React.Component {
         this.state = {
             account: props.account,
             //password: '',
-            //account: 'lpc',
-            password: '123123',
 
-            school_list: [
+            //account: '13800138067',
+            password: '084911',
+
+            /*school_list: [
               {'value': '1', 'label': '清华大学'},
               {'value': '2', 'label': '北京大学'},
               {'value': '3', 'label': '南开大学'}
-            ],
+            ],*/
+            //school_list: this.props.school_list || [],
             school_info: {}
         };
         this.message = "";
@@ -67,6 +70,7 @@ class LoginByEmail extends React.Component {
         //alert(density)
 
         this.props.getDeviceUuid();
+        this.getSchoolList();
     }
 
     getSchoolList(){
@@ -83,8 +87,8 @@ class LoginByEmail extends React.Component {
     onChangeSchool(val){
       var id = val[0];
       var name = '';
-      for(var i = 0; i < this.state.school_list.length; i++){
-        var s = this.state.school_list[i];
+      for(var i = 0; i < this.props.school_list.length; i++){
+        var s = this.props.school_list[i];
         if(s.value == id){
           name = s.label;
           break;
@@ -110,13 +114,15 @@ class LoginByEmail extends React.Component {
         let { account, password } = this.state;
         var school_id = this.state.school_info.value;
         var school_name = this.state.school_info.label;
+        //alert(JSON.stringify(this.state.school_info))
         if(!account || !password || !school_id){
           Toast.info('请输入登录信息');
           return;
         }
         //登录中...提示，默认3秒
         Toast.loading(YSI18n.get('loginPending'), 3);
-        this.props.loginWithEmail(account, password, school_id, school_name)
+        var _password = md5_32(password);
+        this.props.loginWithEmail(account, _password, school_id, school_name)
             //api调用成功
             .then((response) => {
                 Toast.success(YSI18n.get('loginSuccess'))
@@ -165,7 +171,7 @@ class LoginByEmail extends React.Component {
                           <Picker
                               title={YSI18n.get('请选择学校')}
                               extra={' '}
-                              data={this.state.school_list}
+                              data={this.props.school_list}
                               cols={1}
                               onChange={v => this.onChangeSchool(v)}
                           >
@@ -315,12 +321,18 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var school_list = "";
-    if (store.user && store.user.school_list) {
-        school_list = store.user.school_list
+    var school_list = [];
+    var account = '';
+    //alert(store.user.school_list);
+    if (store.user){
+        if(store.user.school_list)
+          school_list = store.user.school_list;
+        if(store.user.account)
+          account = store.user.account;
     }
     return {
         school_list,
+        account
     }
 }
 function mapDispatchToProps(dispatch) {

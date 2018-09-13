@@ -53,6 +53,7 @@ Assets.loadAssetsGroup('home', {
   icon_card: require('./assets/icon_card.png'),
   icon_read_card_fail: require('./assets/icon_read_card_fail.png'),
 
+  icon_exit: require('./assets/icon_exit.png')
 })
 
 Assets.loadAssetsGroup('signed', {

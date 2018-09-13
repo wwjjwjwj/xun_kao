@@ -26,8 +26,9 @@ module.exports = {
         var user = global.STORE_INSTANCE.getState().user;
         if (user && user.userInfo) {
             //管理端提供用户多应用身份切换
-            if (user.userInfo.role_contexts) {
-                return user.userInfo.token + ',' + user.userInfo.role_contexts[0].orgID;
+            return user.userInfo.Token;
+            if (user.userInfo.Token) {
+                //return user.userInfo.token + ',' + user.userInfo.role_contexts[0].orgID;
             }
             else {
                 return user.userInfo.token;
