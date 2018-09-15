@@ -64,12 +64,12 @@ export function logout() {
 // type: 1 注册；3 忘记密码
 export function sendSMS(phone: string, type: number, callback: any){
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("", {});
+        const promise = Ajax.promisePostJson("AccessManagement/GetAuthCode", {userName: phone});
         promise.then((result) => {
             const action = {
                 type: 'PHONECODE_SENDED',
                 data: {
-                  phone: phone,
+                  account: phone,
                 }
             }
             dispatch(action);
@@ -79,9 +79,9 @@ export function sendSMS(phone: string, type: number, callback: any){
 }
 
 //用手机号来 重置密码
-export function resetPwdByMobile(phone, callback: any){
+export function resetPwdByMobile(phone, code, password, callback: any){
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("", {});
+        const promise = Ajax.promisePostJson("AccessManagement/ChangePwd", {userName: phone, Password: password, authCode: code});
         promise.then((result) => {
             const action = {
                 type: 'PWD_RESETTED',

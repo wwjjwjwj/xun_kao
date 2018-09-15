@@ -20,6 +20,9 @@ function exam(state: State = initialState, action: Action): State {
       place_info
     }
   }
+  if(action.type == 'GETTED_EXAM_CLASS'){
+    
+  }
 
   return state;
 }

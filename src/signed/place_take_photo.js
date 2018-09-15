@@ -34,9 +34,7 @@ import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 import { checkPermissionCamera, getGeolocation } from 'Util';
 //4. action
-import { GetStudentByCard } from '../actions/exam';
-
-import {getFinger} from '../env';
+import { PhotoUpload } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -47,18 +45,18 @@ class PlaceTakePhoto extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
+        exam_info: props.navigation.state.params.info,
         status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
 
         image_list: [],
         //image: {}   //拍照图片
       };
       (this: any).onReturn = this.onReturn.bind(this);
-      (this: any).onCheckUserInfo = this.onCheckUserInfo.bind(this);
       (this: any).onTakePhoto = this.onTakePhoto.bind(this);
       (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
       (this: any).onUpload = this.onUpload.bind(this);
       (this: any).onViewSign = this.onViewSign.bind(this);
-      //(this: any).getLongitudeAndLatitude = this.getLongitudeAndLatitude.bind(this);
+      (this: any).onUploadData = this.onUploadData.bind(this);
   };
   componentWillMount() {
     this.onTakePhoto();
@@ -67,55 +65,6 @@ class PlaceTakePhoto extends React.Component {
     //  alert(JSON.stringify(res));
     //})
 
-  }
-
-  GetGeolocation(){
-        /*
-        说明：getCurrentPosition(fun_success,fun_error,geo_options)
-        成功回调函数与失败回调函数的写法， 应该使用箭头函数方式，因为回调结果可以供当前页面的this所调用，否则当前页面使用不了。
-        例：getCurrentPosition(function(val){ this.setState....  },function(val){ this.setState....})
-        会提示未定义函数或找不到对像，错误位置为this.setState
-
-        */
-        Geolocation.getCurrentPosition(val => {
-            let ValInfo = "速度：" + val.coords.speed +
-                "\n经度：" + val.coords.longitude +
-                "\n纬度：" + val.coords.latitude +
-                "\n准确度：" + val.coords.accuracy +
-                "\n行进方向：" + val.coords.heading +
-                "\n海拔：" + val.coords.altitude +
-                "\n海拔准确度：" + val.coords.altitudeAccuracy +
-                "\n时间戳：" + val.timestamp;
-            this.setState({LocalPosition: ValInfo});
-        }, val => {
-            let ValInfo = '获取坐标失败：' + JSON.stringify(val);
-            this.setState({LocalPosition: ValInfo});
-        });
-    }
-
-  onCheckUserInfo(cardInfo){
-    let { Toast } = this;
-    if(!cardInfo || !cardInfo.cardNo){
-      Toast.fail('未获取到学生身份证');
-      return;
-    }
-    var examId = 1;
-    var stationId = 1;
-    var placeId = 1;
-    this.props.GetStudentByCard(examId, stationId, placeId, cardInfo.cardNo)
-        .then((response) => {
-          alert(JSON.stringify(response));
-          if(response.State == 1){
-            this.setState({
-              check_status: 2,    //验证成功
-
-            })
-            //response.data
-          }
-        })
-        .catch((response) => {
-          Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
-        })
   }
 
   onReturn(){
@@ -157,6 +106,24 @@ class PlaceTakePhoto extends React.Component {
       image_list: _list,
       status: 1,
     })
+  }
+  onUploadData(){
+    let { Toast } = this;
+    let { examId, stationId, placeId } = this.props.place_info;
+    if(!examId || !stationId || !placeId){
+      Toast.info('参数不够，无法取场次数据');
+      return;
+    }
+    this.props.PhotoUpload(examId, stationId, placeId, )
+        .then((response) => {
+          alert(JSON.stringify(response));
+          if(response.State == 1){
+
+          }
+        })
+        .catch((response) => {
+          Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        })
   }
   onUpload(){
     //上传拍照 返回 验证 结果
@@ -444,7 +411,12 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
+    var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
+    }
     return {
+        place_info,
     }
 }
 function mapDispatchToProps(dispatch) {

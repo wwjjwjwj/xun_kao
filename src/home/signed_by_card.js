@@ -30,12 +30,9 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { GetPlace } from '../actions/exam';
-import { getDeviceUuid } from '../actions/base';
+import { GetExamClassSign } from '../actions/exam';
 
-import {getFinger} from '../env';
-
-const DATA = [
+/*const DATA = [
   {
     examId: 1,
     examName: '第一次月考',
@@ -52,7 +49,7 @@ const DATA = [
     status: 0,
     statusName: '未开始'
   }
-];
+];*/
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -63,12 +60,13 @@ class SignedByCard extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      batch: '201809考试批次',
-      exam_num: 2500,
-      branch: '重庆学习中心',
-      branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
+      //batch: '201809考试批次',
+      //exam_num: 2500,
+      //branch: '重庆学习中心',
+      //branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
 
-      data_list: DATA,
+      //data_list: DATA,
+      data_list: [],
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
   }
@@ -78,28 +76,48 @@ class SignedByCard extends React.Component {
 
   getPlaceInfo(){
     let { Toast } = this;
-    this.props.GetPlace()
+    let { examId, stationId, placeId } = this.props.place_info;
+    if(!examId || !stationId || !placeId){
+      Toast.info('参数不够，无法取场次数据');
+      return;
+    }
+    this.props.GetExamClassSign(examId, stationId, placeId)
       .then((response) => {
-        alert(JSON.stringify(response));
+        //alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
-
+            data_list: response.ReData.dataList
           })
-          //response.data
         }
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
   onSign(row: any){
-    if(row.status == 1){
+    if(row.state == 1){
       this.props.navigation.navigate('examSign', {info: row});
     }
   }
 
   renderRow(row, id) {
+      var _signTime;
+      var _examTime;
+      if(row.beginInterval && row.endInterval){
+        var index = row.beginInterval.indexOf(' ');
+        _signTime = row.beginInterval.substr(0, index);
+        _signTime += row.beginInterval.substr(index, 6);
+        _signTime += '-';
+        _signTime += row.endInterval.substr(index+1, 5);
+      }
+      if(row.beginTime && row.endTime){
+        var index = row.beginTime.indexOf(' ');
+        _examTime = row.beginTime.substr(0, index);
+        _examTime += row.beginTime.substr(index, 6);
+        _examTime += '-';
+        _examTime += row.endTime.substr(index+1, 5);
+      }
       return (
           <ListItem
               //activeBackgroundColor={Colors.dark60}
@@ -115,16 +133,16 @@ class SignedByCard extends React.Component {
               <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
                   <ListItem.Part containerStyle={{ marginBottom: 0 }}>
                       <View row marginL-20>
-                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.examName}</Text>
+                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
-                          {row.status == 1 &&
+                          {row.state == 1 &&
                             <View style={styles.sign_status} center>
-                              <Text font_12 white3 style={styles.sign_status_text}>{row.statusName}</Text>
+                              <Text font_12 white3 style={styles.sign_status_text}>{row.stateName}</Text>
                             </View>
                           }
-                          {row.status == 0 &&
+                          {row.state != 1 &&
                             <View style={styles.sign_status0} center>
-                              <Text font_12 white3 style={styles.sign_status_text0}>{row.statusName}</Text>
+                              <Text font_12 white3 style={styles.sign_status_text0}>{row.stateName}</Text>
                             </View>
                           }
                         </View>
@@ -134,9 +152,9 @@ class SignedByCard extends React.Component {
                     <View row marginT-23 marginL-22>
                       <Image source={Assets.signed.icon_time_signed}/>
                       <Text font_14 gray2>签到</Text>
-                      <Text font_14 gray2 marginL-15>{row.signTime}</Text>
+                      <Text font_14 gray2 marginL-15>{_signTime}</Text>
                       <View right flex-1>
-                        {row.status == 1 && <YSButton
+                        {row.state == 1 && <YSButton
                               type={'bordered'}
                               style={styles.btn_sign}
                               caption={'读卡签到'}
@@ -152,7 +170,7 @@ class SignedByCard extends React.Component {
                     <View row flex-1 centerV marginT-2 marginL-22>
                       <Image source={Assets.signed.icon_time_exam}/>
                       <Text font_14 gray2>考试</Text>
-                      <Text font_14 gray2 marginL-15>{row.examTime}</Text>
+                      <Text font_14 gray2 marginL-15>{_examTime}</Text>
                     </View>
                   </ListItem.Part>
               </ListItem.Part>
@@ -174,16 +192,16 @@ class SignedByCard extends React.Component {
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>{this.state.batch}</Text>
-              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.state.exam_num}`}</Text>
+              <Text font_18 black marginL-15>{this.props.place_info.examName}</Text>
+              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.props.place_info.studentCount}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.state.branch}</Text>
+              <Text marginL-11 blue label_input>{this.props.place_info.stationName}</Text>
             </View>
             <View centerV row marginT-10 paddingL-15>
               <Image source={Assets.home.icon_addr_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.state.branch_addr}</Text>
+              <Text marginL-11 blue label_input>{this.props.place_info.placeAddress}</Text>
             </View>
           </View>
         </View>
@@ -417,17 +435,17 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
+    var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
     }
     return {
-        account: account,
+        place_info,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetPlace: bindActionCreators(GetPlace, dispatch),
+        GetExamClassSign: bindActionCreators(GetExamClassSign, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(SignedByCard);

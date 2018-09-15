@@ -23,20 +23,66 @@ export function GetPlace() {
     };
 }
 
-//2.	考点地址-场次安排
-export function GetExamClass(examId, stationId, placeId) {
+
+//1.1	考试须知
+export function GetExamNotice(examId) {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("ExamPlan/GetExamPlanInvigilateNotice", {examId: examId});
+        promise.then((result) => {
+            if(result.State == 1){
+              const action = {
+                  type: 'GETTED_EXAM_NOTICE',
+                  data: result.ReData
+              }
+              dispatch(action);
+            }
+        });
+        return promise;
+    };
+}
+
+//2.	考点地址-场次安排（包含签到）
+export function GetExamClassSign(examId, stationId, placeId) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("ExamPlan/GetExamClass", {
           examId: examId,
           stationId: stationId,
-          placeId: placeId
+          placeId: placeId,
+          index: 1,
+          size: 999
         });
         promise.then((result) => {
-            const action = {
-                type: 'GET_EXAM_CLASS',
+
+
+            //alert(JSON.stringify(result));
+            if(result.State == 1){
+              const action = {
+                  type: 'GETTED_EXAM_CLASS_SIGN',
+                  data: result.ReData
+              }
+              dispatch(action);
+            }
+        });
+        return promise;
+    };
+}
+//2.	考点地址-场次安排（包含缺考等详情）
+export function GetExamClass(examId, stationId, placeId) {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("ExamPlan/GetExamClassSign", {
+          examId: examId,
+          stationId: stationId,
+          placeId: placeId,
+          index: 1,
+          size: 999
+        });
+        promise.then((result) => {
+            //alert(JSON.stringify(result));
+            /*const action = {
+                type: 'GETTED_EXAM_CLASS',
                 data: result.data
             }
-            dispatch(action);
+            dispatch(action);*/
         });
         return promise;
     };
@@ -64,12 +110,13 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
 }
 
 //4.1	根据证件号获取考生信息，精确匹配
-export function GetStudentByCard(examId, stationId, placeId, cardNumber) {
+export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumber) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("ExamPlan/GetStudent", {
+        const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
+          orderName: orderName,
           cardNumber: cardNumber,
         });
         promise.then((result) => {
@@ -119,14 +166,16 @@ export function GetStudentByState(state) {
 
 
 //1.	刷卡签到
-export function CardSign(studentId, pos, cardPic, photo) {
+export function CardSign(s) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("UserPhoto/CardSign", {
+        const promise = Ajax.promisePostJson("UserPhoto/CardSign", s
+        /*{
           studentId: studentId,
-          pos: pos,
+          pos: pos, //test  39.94876642336431,116.4245867729187
           cardPic: cardPic,
           photo: photo
-        });
+        }*/
+        );
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
@@ -143,7 +192,7 @@ export function PhotoSign(studentId, pos, photo) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/PhotoSign", {
           studentId: studentId,
-          pos: pos,
+          pos: pos, //test  39.94876642336431,116.4245867729187
           photo: photo
         });
         promise.then((result) => {
@@ -166,7 +215,7 @@ export function PhotoUpload(examId, stationId, placeId, orderName, className, po
           placeId: placeId,
           orderName: orderName,
           className: className,
-          pos: pos,
+          pos: pos, //test  39.94876642336431,116.4245867729187
           files: files,
         });
         promise.then((result) => {

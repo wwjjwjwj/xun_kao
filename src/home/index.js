@@ -39,6 +39,7 @@ class Index extends React.Component {
     super();
     this.state = {
       selectedTab: 'home',
+      selectedTab: 'signedByCard',
       //selectedTab: 'examTakePhoto',
       //selectedTab: 'signedStat',
       //selectedTab: 'signedByOther',

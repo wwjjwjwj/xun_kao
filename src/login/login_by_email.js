@@ -42,7 +42,8 @@ class LoginByEmail extends React.Component {
             //password: '',
 
             //account: '13800138067',
-            password: '084911',
+            //password: '084911',
+            password: '198693',
 
             /*school_list: [
               {'value': '1', 'label': '清华大学'},

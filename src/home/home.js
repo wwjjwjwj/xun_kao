@@ -31,7 +31,7 @@ import YSLoading from 'YSLoading';
 //4. action
 import { logout } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
-import { GetPlace } from '../actions/exam';
+import { GetPlace, GetExamNotice } from '../actions/exam';
 
 import {getFinger} from '../env';
 
@@ -70,9 +70,12 @@ class Home extends React.Component {
     (this: any).onTask = this.onTask.bind(this);
     (this: any).gotoLogout = this.gotoLogout.bind(this);
     (this: any).onGetPlaceData = this.onGetPlaceData.bind(this);
+    (this: any).onGetExamNoticeData = this.onGetExamNoticeData.bind(this);
   }
   componentDidMount() {
     this.onGetPlaceData();
+
+    this.onGetExamNoticeData();
   }
 
   onShowConnectModal(e){
@@ -128,13 +131,33 @@ class Home extends React.Component {
         //alert(JSON.stringify(response));
         if(response.State == 1 && response.ReData){
           this.setState({
-            info: response.ReData
+            info: response.ReData,
           })
         }
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        Toast.fail(response.ReMsg || YSI18n.get('获取考点数据失败'));
+      })
+  }
+  onGetExamNoticeData(){
+    let { Toast } = this;
+    var that = this;
+    this.props.GetExamNotice(this.props.info.examId)
+      .then((response) => {
+        //alert(JSON.stringify(response))
+        if(response.State == 1 && response.ReData){
+          setTimeout(function(){
+            that.setState({
+              notice_text: 'abc 中国  china',
+              exam_notice_show: true
+            })
+          }, 200);
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('获取任务数据失败'));
       })
   }
 
@@ -511,6 +534,7 @@ function mapDispatchToProps(dispatch) {
         logout: bindActionCreators(logout, dispatch),
         getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
         GetPlace: bindActionCreators(GetPlace, dispatch),
+        GetExamNotice: bindActionCreators(GetExamNotice, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(Home);

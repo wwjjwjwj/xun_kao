@@ -32,11 +32,11 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
-import { checkPermissionCamera } from 'Util';
+import { checkPermissionCamera, getGeolocation,
+  encodeText,
+} from 'Util';
 //4. action
-import { GetStudentByCard } from '../actions/exam';
-
-import {getFinger} from '../env';
+import { GetStudentByCard, CardSign } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -47,13 +47,19 @@ class ExamSign extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        read_status: 0,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
-        check_status: 2,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）
+        exam_info: props.navigation.state.params.info,
+        read_status: 2,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+        check_status: 0,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）
         //need_follow: false,  //需要重点关注
         valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
 
         blues: [],
-        cardInfo: {},
+        //cardInfo: {},
+        cardInfo: {
+          cardNo: '110224199007260023',
+          name: '张三',
+          avatar: "data:image/jpg;base64," + 'abc'
+        },
         image: {}   //拍照图片
       };
       (this: any).onRead = this.onRead.bind(this);
@@ -67,9 +73,14 @@ class ExamSign extends React.Component {
       (this: any).onUpload = this.onUpload.bind(this);
       (this: any).onReValid = this.onReValid.bind(this);
       (this: any).onValidFail = this.onValidFail.bind(this);
+      (this: any).onPostCardSign = this.onPostCardSign.bind(this);
   };
   componentWillMount() {
     this.initDevice();
+
+    //假设读卡成功
+    //read_status: 2,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+    this.onCheckUserInfo(this.state.cardInfo);
   }
 
   onCheckUserInfo(cardInfo){
@@ -78,18 +89,23 @@ class ExamSign extends React.Component {
       Toast.fail('未获取到学生身份证');
       return;
     }
-    var examId = 1;
-    var stationId = 1;
-    var placeId = 1;
-    this.props.GetStudentByCard(examId, stationId, placeId, cardInfo.cardNo)
-        .then((response) => {
-          alert(JSON.stringify(response));
-          if(response.State == 1){
-            this.setState({
-              check_status: 2,    //验证成功
 
-            })
-            //response.data
+    var that = this;
+    let { examId, stationId, placeId } = this.props.place_info;
+    this.props.GetStudentByCard(examId, stationId, placeId, this.state.exam_info.orderName, cardInfo.cardNo)
+        .then((response) => {
+          if(response.State == 1){
+            if(!response.ReData){
+              that.setState({
+                check_status: 3,    //3 验证失败（非本考场）
+              })
+            }else {
+              //alert(JSON.stringify(response.ReData));
+              that.setState({
+                check_status: response.ReData.important == 1 ? 1 : 2,    //验证成功
+                student_id: response.ReData.studentId,
+              })
+            }
           }
         })
         .catch((response) => {
@@ -164,7 +180,7 @@ class ExamSign extends React.Component {
             cardInfo: c,
             read_status: 2, //读卡成功
           })
-          this.onCheckUserInfo(cardInfo);
+          this.onCheckUserInfo(c);
       }else if(type == "30"){
           //ios 读取身份证信息
           if(typeof data == 'string'){
@@ -184,7 +200,7 @@ class ExamSign extends React.Component {
                 cardInfo: c,
                 read_status: 2, //成功
               })
-              this.onCheckUserInfo(cardInfo);
+              this.onCheckUserInfo(c);
             }
 
           }
@@ -242,6 +258,7 @@ class ExamSign extends React.Component {
           cropperCancelText: '取消'
         }).then(image => {
             //that.doUploadPhoto(image.data)
+            image.photo = `data:${image.mime};base64,${image.data}`;
             that.onChoosePhoto(image);
         });
       }else {
@@ -274,8 +291,71 @@ class ExamSign extends React.Component {
       that.onTakePhoto();
     }, 500);
   }
-  onUpload(){
+
+  onPostCardSign(pos){
     //上传拍照 返回 验证 结果
+    let { Toast } = this;
+    if(!this.state.student_id){
+      Toast.fail('未获取到学生Id');
+      return;
+    }
+    var that = this;
+    var s = {
+      studentId: this.state.student_id,
+      pos: pos,
+      //cardPic: this.state.cardInfo.avatar,
+      //cardPic: encodeText(this.state.image.photo),
+      //photo: encodeText(this.state.image.photo),
+      cardPic : encodeURI(this.state.image.photo),
+      photo: encodeURI(this.state.image.photo),
+    }
+    this.props.CardSign(s)
+        .then((response) => {
+          //alert(JSON.stringify(response));
+          if(response.State == 1){
+            setTimeout(function(){
+              that.setState({
+                valid_status: 2
+              })
+            }, 1000);
+          }else{
+            Toast.info(response.ReMsg);
+            setTimeout(function(){
+              that.setState({
+                valid_status: 3 //非本人
+              })
+              if(1==2){
+                that.setState({
+                  valid_status: 4 //非考场范围
+                })
+              }
+            }, 1000);
+          }
+        })
+        .catch((response) => {
+          Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        })
+  }
+
+  onUpload(){
+    this.onModalHide();
+    //验证位置权限
+    var that = this;
+    let { Toast } = this;
+    getGeolocation(function(res){
+      //alert(JSON.stringify(res));
+      if(res.result){
+        var pos = res.y + ',' + res.x;
+        that.onPostCardSign(pos);
+      }else {
+        Toast.info('未获取到用户位置');
+        return;
+      }
+    })
+
+return;
+
+
     this.onModalHide();
     var that = this;
     setTimeout(function(){
@@ -438,7 +518,7 @@ class ExamSign extends React.Component {
                 onPress={this.onReturn} />
             </View>
           }
-          {this.state.check_status == 2 &&
+          {this.state.read_status == 2 &&
             <View centerH marginT-65 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
@@ -660,12 +740,18 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
+    var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
+    }
     return {
+        place_info,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
+        CardSign: bindActionCreators(CardSign, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(ExamSign);
