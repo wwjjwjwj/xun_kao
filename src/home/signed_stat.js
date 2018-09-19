@@ -33,7 +33,7 @@ import YSLoading from 'YSLoading';
 //4. action
 import { GetExamClass } from '../actions/exam';
 
-const DATA = [
+/*const DATA = [
   {
     examId: 1,
     examName: '第一次月考',
@@ -66,7 +66,7 @@ const DATA = [
     numRepair: 5,
     numNotice: 3,
   }
-];
+];*/
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -77,12 +77,13 @@ class SignedStat extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      batch: '201809考试批次',
-      exam_num: 2500,
-      branch: '重庆学习中心',
-      branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
+      //batch: '201809考试批次',
+      //exam_num: 2500,
+      //branch: '重庆学习中心',
+      //branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
 
-      data_list: DATA,
+      //data_list: DATA,
+      data_list: [],
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
   }

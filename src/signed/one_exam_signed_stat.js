@@ -73,17 +73,17 @@ class OneExamSignedStat extends React.Component {
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>考试场次：{row.examName}</Text>
+              <Text font_18 black marginL-15>考试场次：{row.orderName}</Text>
             </View>
             <View centerV row marginT-17 marginL-15>
               <Image source={Assets.signed.icon_user_num} style={styles.icon} />
               <Text font_14 gray2>签到人数</Text>
-              <Text font_14 blue marginL-15>{row.numStu}</Text>
-              <Text font_14 gray2 >/{row.numTotal}人</Text>
+              <Text font_14 blue marginL-15>{row.signCount}</Text>
+              <Text font_14 gray2 >/{row.totalStudent}人</Text>
               <View right marginL-36 row>
                 <Image source={Assets.signed.icon_error_gray}/>
                 <Text font_14 gray2 marginL-6>缺考率</Text>
-                <Text font_14 blue marginL-15 marginR-36>{row.percent}%</Text>
+                <Text font_14 blue marginL-15 marginR-36>{ row.totalStudent > 0 ? ((row.totalStudent - row.signCount) * 100 / row.totalStudent).toFixed(2) : '0' }%</Text>
               </View>
             </View>
           </View>
@@ -99,7 +99,7 @@ class OneExamSignedStat extends React.Component {
               <Image source={Assets.signed.icon_f} style={styles.icon2}/>
               <Text marginL-10 font_17 black>未通过</Text>
               <View flex-1 right row centerV>
-                <Text marginR-8 font_14 gray2>{row.numF}人</Text>
+                <Text marginR-8 font_14 gray2>{row.missCount}人</Text>
                 <Image source={Assets.signed.icon_next} style={styles.icon2}/>
               </View>
             </View>
@@ -109,7 +109,7 @@ class OneExamSignedStat extends React.Component {
               <Image source={Assets.signed.icon_un_sign} style={styles.icon2}/>
               <Text marginL-10 font_17 black>未到</Text>
               <View flex-1 right row centerV>
-                <Text marginR-8 font_14 gray2>{row.numUnSign}人</Text>
+                <Text marginR-8 font_14 gray2>{row.missCount}人</Text>
                 <Image source={Assets.signed.icon_next} style={styles.icon2}/>
               </View>
             </View>
@@ -222,12 +222,12 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
+    var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
     }
     return {
-        account: account,
+        place_info,
     }
 }
 function mapDispatchToProps(dispatch) {

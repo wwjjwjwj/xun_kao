@@ -231,7 +231,7 @@ class SignedByOther extends React.Component {
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.prpos.place_info.stationName}</Text>
+              <Text marginL-11 blue label_input>{this.props.place_info.stationName}</Text>
             </View>
             <View centerV row marginT-10 paddingL-15>
               <Image source={Assets.home.icon_addr_focus} style={styles.icon} />

@@ -48,7 +48,7 @@ class ExamSign extends React.Component {
       super(props);
       this.state = {
         exam_info: props.navigation.state.params.info,
-        read_status: 2,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+        read_status: 0,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
         check_status: 0,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）
         //need_follow: false,  //需要重点关注
         valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
@@ -78,8 +78,8 @@ class ExamSign extends React.Component {
   componentWillMount() {
     this.initDevice();
 
-    //假设读卡成功
-    //read_status: 2,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+//假设读卡成功2018
+    this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
     this.onCheckUserInfo(this.state.cardInfo);
   }
 
@@ -303,11 +303,11 @@ class ExamSign extends React.Component {
     var s = {
       studentId: this.state.student_id,
       pos: pos,
-      //cardPic: this.state.cardInfo.avatar,
-      //cardPic: encodeText(this.state.image.photo),
-      //photo: encodeText(this.state.image.photo),
-      cardPic : encodeURI(this.state.image.photo),
-      photo: encodeURI(this.state.image.photo),
+      //cardPic: encodeText(this.state.cardInfo.avatar),
+      cardPic: encodeText(this.state.image.photo),
+      photo: encodeText(this.state.image.photo),
+      //cardPic : encodeURI(this.state.image.photo),
+      //photo: encodeURI(this.state.image.photo),
     }
     this.props.CardSign(s)
         .then((response) => {

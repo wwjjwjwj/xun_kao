@@ -2,7 +2,7 @@
 
 //1. 系统/第三方 插件
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio
+import { TouchableOpacity, PixelRatio
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,6 +28,7 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 import { md5_32 } from 'Util';
+const StyleSheet = require('../common/YSStyleSheet');
 //4. action
 import { loginWithEmail, schoolListQuery } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
@@ -38,11 +39,12 @@ class LoginByEmail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            account: props.account,
+            //account: props.account,
             //password: '',
 
             //account: '13800138067',
             //password: '084911',
+            account: '18612010002',
             password: '198693',
 
             /*school_list: [
@@ -59,6 +61,7 @@ class LoginByEmail extends React.Component {
         this.initFormValid = initFormValid.bind(this);
         this.getFormValid = getFormValid.bind(this);
         this.getTextInputValidator = getTextInputValidator.bind(this);
+        (this: any).onLogin = this.onLogin.bind(this);
     };
     componentWillMount() {
         //表单验证初始化
@@ -107,9 +110,9 @@ class LoginByEmail extends React.Component {
         //alert(uuid);
         //return;
 
+        let { Toast } = this;
         //隐藏键盘
         dismissKeyboard();
-        let { Toast } = this;
         this.message = "";
 
         let { account, password } = this.state;
@@ -130,7 +133,7 @@ class LoginByEmail extends React.Component {
             })
             //api调用失败,提示登录名或密码错误
             .catch((response) => {
-                Toast.fail(response.message || YSI18n.get('loginFailed'));
+                Toast.fail(response.ReMsg || YSI18n.get('loginFailed'));
             })
     };
 
@@ -166,7 +169,7 @@ class LoginByEmail extends React.Component {
                     <View centerH paddingT-45 center>
                       <Image source={Assets.logo.app_logo} style={styles.logo} />
                     </View>
-                    <View centerH paddingT-27 paddingH-31 center>
+                    <View centerH paddingT-27 center>
                       <View row centerV style={styles.inputContainer}>
                         <View flex-1 style={styles.inputText}>
                           <Picker
@@ -176,9 +179,9 @@ class LoginByEmail extends React.Component {
                               cols={1}
                               onChange={v => this.onChangeSchool(v)}
                           >
-                            <List.Item arrow="horizontal">
-                              <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                                <Image source={Assets.login.icon_school} style={[styles.iconstyle, {marginLeft: -15}]} resizeMode='contain' />
+                            <List.Item arrow="horizontal" style={styles.listItem}>
+                              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <Image source={Assets.login.icon_school} style={styles.iconstyle} resizeMode='contain' />
                                 {this.state.school_info.value ?
                                   <Text black font_14_20>{this.state.school_info.label || '请选择学校'}</Text>
                                   :
@@ -272,11 +275,23 @@ var styles = StyleSheet.create({
     width: 16,
     height: 16,
     resizeMode:'contain',
-    marginRight: 12
+    marginRight: 12,
+    ios: {
+      marginLeft: -15,
+    },
+    android: {
+      //paddingLeft: -100,
+    }
   },
   inputText: {
     color: '#333333',
     borderRadius: 99,
+  },
+  listItem: {
+    ios: {},
+    android: {
+      marginLeft: -15
+    }
   },
   inputContainer: {
     marginLeft: 0,
@@ -290,7 +305,7 @@ var styles = StyleSheet.create({
 
     borderRadius: 99,
     paddingLeft: 17,
-    paddingRight: 18
+    paddingRight: 18,
   },
 
   block_forget_wrap: {

@@ -32,7 +32,9 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
-import { checkPermissionCamera, getGeolocation } from 'Util';
+import { checkPermissionCamera, getGeolocation,
+  encodeText,
+} from 'Util';
 //4. action
 import { PhotoUpload } from '../actions/exam';
 
@@ -61,9 +63,14 @@ class PlaceTakePhoto extends React.Component {
   componentWillMount() {
     this.onTakePhoto();
 
-    //getGeolocation(function(res){
-    //  alert(JSON.stringify(res));
-    //})
+    var that = this;
+    getGeolocation(function(res){
+      //alert(JSON.stringify(res));
+      var pos = res.y + ',' + res.x;
+      that.setState({
+        pos: pos
+      })
+    })
 
   }
 
@@ -90,7 +97,8 @@ class PlaceTakePhoto extends React.Component {
           cropperCancelText: '取消'
         }).then(image => {
             //that.doUploadPhoto(image.data)
-            that.onChoosePhoto(image);
+            var photo = `data:${image.mime};base64,${image.data}`;
+            that.onChoosePhoto(photo);
         });
       }else {
         that.setState({
@@ -114,7 +122,17 @@ class PlaceTakePhoto extends React.Component {
       Toast.info('参数不够，无法取场次数据');
       return;
     }
-    this.props.PhotoUpload(examId, stationId, placeId, )
+    var orderName = this.state.exam_info.orderName;
+    var pos = this.state.pos;
+    var situation = 0;
+    var memo ='';
+    var files = [];
+    this.state.image_list.map(i => {
+      files.push(encodeText(i));
+    })
+    var files = files.join(',');
+    //className, pos, files
+    this.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
         .then((response) => {
           alert(JSON.stringify(response));
           if(response.State == 1){
@@ -122,19 +140,23 @@ class PlaceTakePhoto extends React.Component {
           }
         })
         .catch((response) => {
+          alert(JSON.stringify(response));
           Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
         })
   }
   onUpload(){
     //上传拍照 返回 验证 结果
-    var that = this;
+    if(this.state.image_list.length){
+      this.onUploadData()
+    }
+    /*var that = this;
     setTimeout(function(){
       //alert('上传');
       that.setState({
         //status: 2,
         status: 3
       })
-    }, 1000);
+    }, 1000);*/
   }
 
   onViewSign(){
@@ -160,7 +182,7 @@ class PlaceTakePhoto extends React.Component {
             <View style={styles.image_view}>
               {this.state.image_list.map(image => {
                   if(image){
-                    return <Image style={styles.image_photo} source={{uri: `data:${image.mime};base64,${image.data}`}} />
+                    return <Image style={styles.image_photo} source={{uri: image}} />
                   }
 
                 })
@@ -421,7 +443,7 @@ function select(store) {
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
+        PhotoUpload: bindActionCreators(PhotoUpload, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(PlaceTakePhoto);

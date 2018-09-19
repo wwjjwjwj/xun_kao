@@ -171,7 +171,7 @@ class Home extends React.Component {
           <Text marginT-11 blue2 label_input>欢迎来到考场巡检系统！</Text>
           <View marginT-57 marginL-28 marginR-28 bg-white style={styles.front_user}>
             <View centerH center style={styles.logo_outside}>
-              <Image source={Assets.home.img_avatar_jk} style={styles.logo} />
+              <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>
             </View>
             <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
               <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
@@ -284,7 +284,8 @@ class Home extends React.Component {
         </Modal>
         <Modal
           popup
-          visible={this.state.exam_notice_show}
+          //visible={this.state.exam_notice_show}
+          visible={false}
           onClose={()=>this.onCloseExamNoticeModal()}
           animationType="slide-up"
           maskClosable={true}
@@ -320,6 +321,8 @@ var styles = StyleSheet.create({
   },
   behind_bg: {
     //height: '75%'
+    //width: YSWHs.borderWidth,
+    width: '100%',
   },
   front0: {
     position: 'absolute',
@@ -331,12 +334,11 @@ var styles = StyleSheet.create({
     left: 0,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   front_user: {
     width: '85%',
     height: 120,
-    //backgroundColor: '#FFFFFF',
     borderRadius: 10,
   },
   touch_exit: {
@@ -372,11 +374,13 @@ var styles = StyleSheet.create({
   },
   logo_outside: {
     marginTop: -36,
+    //zIndex: 2,
   },
-  logo: {
+  logo_jk: {
     width: 73,
     height: 73,
     resizeMode: 'contain',
+    //zIndex: 3
   },
   iconstyle:{
     width: 16,

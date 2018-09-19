@@ -207,15 +207,16 @@ export function PhotoSign(studentId, pos, photo) {
 }
 
 //3.	拍照上传
-export function PhotoUpload(examId, stationId, placeId, orderName, className, pos, files) {
+export function PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/PhotoUpload", {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
           orderName: orderName,
-          className: className,
           pos: pos, //test  39.94876642336431,116.4245867729187
+          situation: situation,
+          memo: memo,
           files: files,
         });
         promise.then((result) => {

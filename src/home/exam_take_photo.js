@@ -97,7 +97,7 @@ class ExamTakePhoto extends React.Component {
       })
   }
   onSign(row: any){
-    if(row.status == 1){
+    if(row.state == 1){
       this.props.navigation.navigate('placeTakePhoto', {info: row});
     }
   }
@@ -136,12 +136,12 @@ class ExamTakePhoto extends React.Component {
                       <View row marginL-20>
                         <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
-                          {row.status == 1 &&
+                          {row.state == 1 &&
                             <View style={styles.sign_status} center>
                               <Text font_12 white3 style={styles.sign_status_text}>{row.stateName}</Text>
                             </View>
                           }
-                          {row.status != 1 &&
+                          {row.state != 1 &&
                             <View style={styles.sign_status0} center>
                               <Text font_12 white3 style={styles.sign_status_text0}>{row.stateName}</Text>
                             </View>
@@ -155,7 +155,7 @@ class ExamTakePhoto extends React.Component {
                       <Text font_14 gray2>签到</Text>
                       <Text font_14 gray2 marginL-15>{_signTime}</Text>
                       <View right flex-1>
-                        {row.status == 1 && <YSButton
+                        {row.state == 1 && <YSButton
                               type={'bordered'}
                               style={styles.btn_sign}
                               caption={'考场拍照'}

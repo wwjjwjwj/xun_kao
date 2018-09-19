@@ -1,6 +1,6 @@
 /**
  * Created by Administrator on 4/14/2017.
- * @providesModule My
+ * @providesModule MyInformation
  * @flow
  */
 
@@ -76,7 +76,7 @@ class My extends React.Component {
   }
 
   render() {
- 
+
     let block_content = <View flex>
       <WhiteSpace size='lg' />
       <View row spread centerV style={styles.list_body}>
@@ -130,13 +130,13 @@ class My extends React.Component {
           {YSI18n.get('ID（账号）')}
         </Item>
       </List>
-     
+
       <WhiteSpace size='lg'  style={styles.border}/>
-     
+
     </View>
 
     return <View style={styles.container}>
-    
+
       <ScrollView
         automaticallyAdjustContentInsets={false}
         showsHorizontalScrollIndicator={false}
