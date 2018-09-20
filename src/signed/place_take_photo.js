@@ -107,9 +107,9 @@ class PlaceTakePhoto extends React.Component {
       }
     })
   }
-  onChoosePhoto(image){
+  onChoosePhoto(photo){
     var _list = this.state.image_list;
-    _list.push(image);
+    _list.push(photo);
     this.setState({
       image_list: _list,
       status: 1,
@@ -130,7 +130,7 @@ class PlaceTakePhoto extends React.Component {
     this.state.image_list.map(i => {
       files.push(encodeText(i));
     })
-    var files = files.join(',');
+    //var files = files.join(',');
     //className, pos, files
     this.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
         .then((response) => {

@@ -53,6 +53,7 @@ class YSInput extends React.Component {
     (this: any).onClear = this.onClear.bind(this);
   };
   shouldComponentUpdate(nextProps){
+    //此方法为了解决，输入框不能输入中文的问题
     return Platform.OS !== 'ios' || (this.props.value === nextProps.value &&
            (nextProps.defaultValue == undefined || nextProps.defaultValue == '' )) ||
            (this.props.defaultValue === nextProps.defaultValue &&  (nextProps.value == undefined || nextProps.value == '' ));

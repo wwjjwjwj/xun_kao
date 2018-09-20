@@ -36,16 +36,18 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
-import { checkPermissionCamera } from 'Util';
+import { checkPermissionCamera, getGeolocation,
+  encodeText
+} from 'Util';
 //4. action
-import { GetStudentByState } from '../actions/exam';
+import { GetStudentByOrder, StudentPhotoSign } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-const DATA = [
+/*const DATA = [
   {
     userId: 1,
     name: '李勤',
@@ -87,7 +89,7 @@ const DATA = [
     course: '建筑施工技术',
     need_repair: false,
   },
-];
+];*/
 
 class OtherSignedDetail extends React.Component {
   constructor(props){
@@ -96,19 +98,19 @@ class OtherSignedDetail extends React.Component {
     this.state = {
       exam_info: params.currentDataModel,
 
-      all_data_list: DATA,
-      data_list: DATA,
+      data_list: [],
 
       valid_status: 0,  //验证是否本考点： 0 未验证； 2 通过； 3 失败（非考场范围）
       image: {},
       modal_show: false,
     };
-    (this: any).getDataList = this.getDataList.bind(this);
     (this: any).onTakePhoto = this.onTakePhoto.bind(this);
     (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
     (this: any).onReScan = this.onReScan.bind(this);
     (this: any).onUpload = this.onUpload.bind(this);
     (this: any).onReturn = this.onReturn.bind(this);
+    (this: any).getDataList = this.getDataList.bind(this);
+    (this: any).uploadData = this.uploadData.bind(this);
   }
   componentDidMount() {
     this.getDataList();
@@ -118,42 +120,22 @@ class OtherSignedDetail extends React.Component {
     let { Toast } = this;
     //let { examId, stationId, placeId } = this.props.place_info;
     let { examId, stationId, placeId, orderName } = this.state.exam_info;
-    this.props.GetStudentByState(examId, stationId, placeId, orderName, )
+    this.props.GetStudentByOrder(examId, stationId, placeId, orderName, 1, 999)
       .then((response) => {
-        alert(JSON.stringify(response));
+        //alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
-
+            data_list: response.ReData.dataList
           })
           //response.data
         }
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
 
-  onSearchChange(text){
-    if(!this.state.all_data_list.length){
-      return;
-    }
-    if(!text){
-      this.setState({
-        search_text: '',
-        data_list: this.state.all_data_list
-      });
-      return;
-    }
-    //触发搜索
-    var _list = this.state.all_data_list.filter(a => a.name.indexOf(text) >= 0);
-
-    this.setState({
-      search_text: text,
-      data_list: _list
-    });
-
-  }
   onReturn(){
     //this.props.navigation.goBack(this.props.navigation.state.params.keys.home_key);
     this.props.navigation.popToTop();
@@ -173,7 +155,8 @@ class OtherSignedDetail extends React.Component {
           cropperCancelText: '取消'
         }).then(image => {
             //that.doUploadPhoto(image.data)
-            that.onChoosePhoto(image);
+            image.photo = `data:${image.mime};base64,${image.data}`;
+            that.onChoosePhoto(image, row);
         });
       }else {
         that.setState({
@@ -182,9 +165,10 @@ class OtherSignedDetail extends React.Component {
       }
     })
   }
-  onChoosePhoto(image){
+  onChoosePhoto(image, row){
     this.setState({
-      image: image
+      image: image,
+      studentId: row.studentId
     })
     this.onModalShow();
   }
@@ -209,14 +193,52 @@ class OtherSignedDetail extends React.Component {
     //上传拍照 返回 验证 结果
     this.onModalHide();
     var that = this;
-    setTimeout(function(){
-      //alert('上传');
-      that.setState({
-        //valid_status: 2   //通过
-        valid_status: 3   //验证失败
+    let { Toast } = this;
+    if(this.state.studentId && this.state.image.photo){
+      getGeolocation(function(res){
+        //alert(JSON.stringify(res));
+        if(res.result){
+          var pos = res.y + ',' + res.x;
+          that.uploadData(pos);
+        }else {
+          Toast.info('未获取到用户位置');
+          return;
+        }
       })
-    }, 1000);
+    }
 
+  }
+  uploadData(pos){
+    var that = this;
+    let { Toast } = this;
+    var studentId = this.state.studentId;
+    var photo = encodeText(this.state.image.photo);
+    this.props.StudentPhotoSign(studentId, pos, photo)
+      .then((response) => {
+        //alert(JSON.stringify(response));
+        if(response.State == 1){
+          setTimeout(function(){
+            that.setState({
+              valid_status: 2
+            })
+          }, 1000);
+          //Toast.success('拍照补签成功！');
+          //this.getDataList();
+        }else{
+          Toast.info(response.ReMsg);
+          setTimeout(function(){
+            /*that.setState({
+              valid_status: 3 //非本人
+            })*/
+            that.setState({
+              valid_status: 4 //非考场范围
+            })
+          }, 1000);
+        }
+      })
+      .catch((response) => {
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
   }
 
   //浏览视图
@@ -257,15 +279,18 @@ class OtherSignedDetail extends React.Component {
               <ListItem.Part column>
                   <ListItem.Part containerStyle={[styles.list_item, styles.list_view_head]}>
                       <View row centerV>
-                        <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>
-                        <Text black font_17 marginL-30 numberOfLines={1}>{row.name}</Text>
-                        {row.need_notice &&
+                        {row.state == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
+                        {row.state == 3 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
+                        {row.state == 0 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
+                        {row.state == 2 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
+                        <Text black font_17 marginL-30 numberOfLines={1}>{row.studentName}</Text>
+                        {row.important == 1 &&
                           <View marginL-9 bg-yellow center style={styles.list_view_notice}>
                             <Text orange font_12>重点关注</Text>
                           </View>
                         }
                         <View right flex-1>
-                          <Text font_14 gray2>座位号 {row.seat}</Text>
+                          <Text font_14 gray2>座位号 {row.seatNumber}</Text>
                         </View>
                       </View>
                   </ListItem.Part>
@@ -276,22 +301,22 @@ class OtherSignedDetail extends React.Component {
                     <View column>
                       <View row marginT-17>
                         <Text font_14 gray2>证件号</Text>
-                        <Text font_14 gray2 marginL-13>{row.card}</Text>
+                        <Text font_14 gray2 marginL-13>{row.cardNumber}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>学号</Text>
-                        <Text font_14 gray2 marginL-13>{row.stuNo}</Text>
+                        <Text font_14 gray2 marginL-13>{row.studentCode}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>专业</Text>
-                        <Text font_14 gray2 marginL-13>{row.specialty}</Text>
+                        <Text font_14 gray2 marginL-13>{row.subject}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>课程</Text>
-                        <Text font_14 gray2 marginL-13>{row.course}</Text>
+                        <Text font_14 gray2 marginL-13>{row.courseName}</Text>
                       </View>
                     </View>
-                    {row.need_repair && <View right flex-1 centerV>
+                    {row.replenishType == 1 && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
                           <Text font_13 white>拍照签到</Text>
@@ -310,40 +335,21 @@ class OtherSignedDetail extends React.Component {
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
     />
 
-    var row = this.state.currentDataModel;
+    var row = this.state.exam_info;
 
     return (
       <View flex style={styles.container}>
         {this.state.valid_status == 0 && <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
-            <View row>
-              <YSInput ref="input_name"
-                  icon={Assets.signed.icon_search}
-                  //iconstyle={styles.iconstyle}
-                  placeholder={'请输入考生信息查询'}
-                  placeholderTextColor={"#999999"}
-                  style={styles.inputText}
-                  containerStyle={this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
-                  onChangeText={(text) => this.onSearchChange(text)}
-                  value={this.state.search_text}
-                  enableClear={this.state.search_text ? true : false}
-                  clearStyle={styles.clearStyle}
-                  onClear={()=>this.onSearchChange('')}
-              />
-              {this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
-                <Text font_14 blue marginT-19>取消</Text>
-              </TouchableOpacity>}
-            </View>
-            <View bg-white2 style={styles.line}/>
             <View row marginT-16 marginB-14>
-              <Text font_18 black marginL-15>考试场次：{row.examName}</Text>
+              <Text font_18 black marginL-15>考试场次：{row.orderName}</Text>
             </View>
             <View bg-white2 style={styles.line}/>
             <View centerV row marginL-15 style={styles.bottom_2_top}>
               <Image source={Assets.signed.icon_user_num} style={styles.icon0} />
               <Text font_14 gray2>签到人数</Text>
-              <Text font_14 blue marginL-15>{row.numStu}</Text>
-              <Text font_14 gray2 >/{row.numTotal}人</Text>
+              <Text font_14 blue marginL-15>{row.signCount}</Text>
+              <Text font_14 gray2 >/{row.totalStudent}人</Text>
             </View>
           </View>
         </View>}
@@ -579,10 +585,10 @@ var styles = StyleSheet.create({
   bottom_1: {
     width: YSWHs.width_window,
     ios: {
-      height: 145,
+      height: 95,
     },
     android: {
-      height: 155,
+      height: 105,
     }
   },
   bottom_2: {
@@ -741,7 +747,8 @@ function select(store) {
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetStudentByState: bindActionCreators(GetStudentByState, dispatch),
+        GetStudentByOrder: bindActionCreators(GetStudentByOrder, dispatch),
+        StudentPhotoSign: bindActionCreators(StudentPhotoSign, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(OtherSignedDetail);

@@ -131,10 +131,16 @@ export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumb
 }
 
 //4.2	根据考生姓名、学号、证件号获取考生信息，模糊匹配
-export function GetStudentByName(studentInfo) {
+export function GetStudentByName(examId, stationId, placeId, orderName, studentInfo, index, size) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("ExamPlan/GetStudent", {
+        const promise = Ajax.promisePostJson("ExamPlan/GetStudentBySearch", {
+          examId: examId,
+          stationId: stationId,
+          placeId: placeId,
+          orderName: orderName,
           studentInfo: studentInfo,
+          index: index,
+          size: size
         });
         promise.then((result) => {
             const action = {
@@ -156,6 +162,24 @@ export function GetStudentByState(examId, stationId, placeId, orderName, state, 
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
+                data: result.data
+            }
+            dispatch(action);
+        });
+        return promise;
+    };
+}
+
+
+//4.3	根据场次获取考生信息
+export function GetStudentByOrder(examId, stationId, placeId, orderName, index, size) {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("ExamPlan/GetStudentByOrder", {
+          examId, stationId, placeId, orderName, index, size
+        });
+        promise.then((result) => {
+            const action = {
+                type: 'GET_STUDENT_BY_ORDER',
                 data: result.data
             }
             dispatch(action);

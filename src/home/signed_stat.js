@@ -114,11 +114,6 @@ class SignedStat extends React.Component {
       })
   }
 
-  onSearchChange(text){
-    this.setState({search_text: text});
-    //触发搜索
-  }
-
   //浏览视图
   onLookView = (op, item) => {
       this.setState({

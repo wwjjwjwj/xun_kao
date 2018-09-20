@@ -256,16 +256,18 @@ class StatDetailByType extends React.Component {
     var photo = encodeText(this.state.image.photo);
     this.props.StudentPhotoSign(studentId, pos, photo)
       .then((response) => {
-        alert(JSON.stringify(response));
+        //alert(JSON.stringify(response));
         if(response.State == 1){
           /*setTimeout(function(){
             that.setState({
               valid_status: 2
             })
           }, 1000);*/
+          Toast.success('拍照补签成功！');
+          this.getDataList();
         }else{
           Toast.info(response.ReMsg);
-          setTimeout(function(){
+          /*setTimeout(function(){
             that.setState({
               valid_status: 3 //非本人
             })
@@ -274,7 +276,7 @@ class StatDetailByType extends React.Component {
                 valid_status: 4 //非考场范围
               })
             }
-          }, 1000);
+          }, 1000);*/
         }
       })
       .catch((response) => {
@@ -359,7 +361,7 @@ class StatDetailByType extends React.Component {
                         <Text font_14 gray2 marginL-13>{row.courseName}</Text>
                       </View>
                     </View>
-                    {this.state.type == 3 && <View right flex-1 centerV>
+                    {row.replenishType == 1 && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
                           <Text font_13 white>拍照补签</Text>

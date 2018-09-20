@@ -32,9 +32,9 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { GetExamClass } from '../actions/exam';
+import { GetExamClass, GetStudentByName } from '../actions/exam';
 
-const DATA = [
+/*const DATA = [
   {
     examId: 1,
     examName: '第一次月考',
@@ -57,7 +57,7 @@ const DATA = [
     numTotal: 29,
     percent: ((29 - 28) * 100 / 29).toFixed(2),
   }
-];
+];*/
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -69,10 +69,12 @@ class SignedByOther extends React.Component {
     super(props);
     this.state = {
       data_list: [],
+      is_search: false,
+      search_data_list: []
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    //this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    //this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
   }
   componentDidMount() {
     this.getPlaceInfo();
@@ -96,13 +98,36 @@ class SignedByOther extends React.Component {
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
 
   onSearchChange(text){
-    this.setState({search_text: text});
+    if(!text){
+      this.setState({search_text: '', is_search: false});
+      return;
+    }
+    this.setState({search_text: text, is_search: true});
     //触发搜索
+    this.searchDataList(text);
+  }
+  searchDataList(text){
+    let { Toast } = this;
+    let { examId, stationId, placeId } = this.props.place_info;
+    var orderName = '';
+    this.props.GetStudentByName(examId, stationId, placeId, orderName, text, 1, 999)
+      .then((response) => {
+        alert(JSON.stringify(response));
+        if(response.State == 1 && response.ReData){
+          this.setState({
+            search_data_list: response.ReData.dataList
+          })
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
   }
 
   //浏览视图
@@ -129,6 +154,7 @@ class SignedByOther extends React.Component {
       }
       this.setState({ editMode: 'Manage' });
   }
+  //默认进入页面的 ListView 项
   renderRow(row, id) {
       var _signTime;
       var _examTime;
@@ -194,12 +220,73 @@ class SignedByOther extends React.Component {
           </ListItem>
       );
   }
+  //搜索结果 ListView 项
+  renderRowSearch(row, id) {
+      var _signTime;
+      var _examTime;
+
+      return (
+          <ListItem
+              activeBackgroundColor={Colors.dark60}
+              activeOpacity={0.3}
+              height={120}
+              onPress={(item) => this.onLookView('View', row)}
+              animation="fadeIn"
+              easing="ease-out-expo"
+              duration={1000}
+              useNativeDriver
+              containerStyle={styles.list_wrap}
+          >
+              <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
+                  <ListItem.Part containerStyle={{ marginBottom: 0 }}>
+                      <View row marginL-20>
+                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>
+                        <View right flex-1 paddingT-10 paddingR-10>
+                          {row.state == 1 && row.importantCount &&
+                            <View style={styles.sign_status} center>
+                              <Text font_12 orange style={styles.sign_status_text}>重点关注考生：{row.importantCount}人</Text>
+                            </View>
+                          }
+                        </View>
+                      </View>
+                  </ListItem.Part>
+                  <ListItem.Part>
+                    <View row marginT-23 marginL-22>
+                      <Image source={Assets.signed.icon_time_signed}/>
+                      <Text font_14 gray2>签到</Text>
+                      <Text font_14 gray2 marginL-15>{_signTime}</Text>
+                      <View right flex-1>
+                        <Image source={Assets.signed.icon_next}/>
+                      </View>
+                    </View>
+
+                  </ListItem.Part>
+                  <ListItem.Part>
+                    <View row flex-1 centerV marginT-2 marginL-22>
+                      <Image source={Assets.signed.icon_user_num}/>
+                      <Text font_14 gray2>签到人数</Text>
+                      <Text font_14 blue marginL-15>{row.signCount}</Text>
+                      <Text font_14 gray2>/{row.totalStudent}人</Text>
+                    </View>
+                  </ListItem.Part>
+              </ListItem.Part>
+          </ListItem>
+      );
+  }
 
   render(){
-    let block_list_view = <ListView
+    let block_list_view;
+    if(this.state.is_search){
+      block_list_view = <ListView
+        dataSource={ds.cloneWithRows(this.state.search_data_list)}
+        renderRow={(row, sectionId, rowId) => this.renderRowSearch(row, rowId)}
+      />
+    }else {
+      block_list_view = <ListView
         dataSource={ds.cloneWithRows(this.state.data_list)}
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
-    />
+      />
+    }
 
     return (
       <View flex style={styles.container}>
@@ -217,14 +304,14 @@ class SignedByOther extends React.Component {
                 value={this.state.search_text}
                 enableClear={this.state.search_text ? true : false}
                 clearStyle={styles.clearStyle}
-                onClear={()=>this.setState({search_text: ''})}
+                onClear={()=>this.onSearchChange('')}
             />
             {!!this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
               <Text font_14 white marginT-19>取消</Text>
             </TouchableOpacity>}
           </View>
         </View>
-        <View centerH style={styles.bottom}>
+        {!this.state.is_search &&  <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
               <Text font_18 black marginL-15>{this.props.place_info.examName}</Text>
@@ -239,7 +326,7 @@ class SignedByOther extends React.Component {
               <Text marginL-11 blue label_input>{this.props.place_info.placeAddress}</Text>
             </View>
           </View>
-        </View>
+        </View>}
 
         {block_list_view}
 
@@ -385,102 +472,6 @@ var styles = StyleSheet.create({
     height: 25,
   },
 
-
-
-  behind_bg: {
-    //height: '75%'
-  },
-  front0: {
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    //backgroundColor: YSColors.AppMainColor,
-    width: YSWHs.width_window,
-    height: 257,
-    top: 0,
-    left: 0,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  front_user: {
-    width: '85%',
-    height: 120,
-    //backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-  },
-
-  front: {
-    position: 'absolute',
-    backgroundColor: YSColors.whiteBackground,
-    width: 320,
-    height: 156,
-    top: 101,
-    left: 28,
-    right: 28,
-    //borderWidth: 0.5,
-    //borderColor: YSColors.login.border,
-    //box-shadow:0 5 5 0 rgba(0,0,0,0.05);
-    borderRadius: 5,
-    elevation: 20,
-    shadowOffset: {width: 0, height: 10},
-    shadowColor: '#000000',
-    shadowOpacity: 1,
-    shadowRadius: 5
-  },
-  logo_outside: {
-    marginTop: -36,
-  },
-  logo: {
-    width: 73,
-    height: 73,
-    resizeMode: 'contain',
-  },
-  text_caption: {
-    fontSize: 16
-  },
-
-
-
-
-
-  btn: {
-    width: 180,
-    height: 44,
-  },
-
-
-  modal: {
-    width: YSWHs.width_window,
-    height: 480,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  close: {
-    position: 'absolute',
-    right: 15,
-    top: 15
-  },
-  line: {
-    width: YSWHs.width_window,
-    height: 1,
-    backgroundColor: '#F1F1F1'
-  },
-  img: {
-    width: 164,
-    height: 100,
-    borderRadius: 5,
-    resizeMode: 'contain',
-    marginRight: 10
-  },
-  intro_title: {
-    width: YSWHs.width_window,
-    paddingLeft: 16,
-    paddingRight: 16,
-  }
-
-
 })
 
 function select(store) {
@@ -495,6 +486,7 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         GetExamClass: bindActionCreators(GetExamClass, dispatch),
+        GetStudentByName: bindActionCreators(GetStudentByName, dispatch)
     };
 }
 module.exports = connect(select, mapDispatchToProps)(SignedByOther);

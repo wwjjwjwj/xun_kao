@@ -114,7 +114,7 @@ module.exports = {
       let beginTime = new Date();
       let response = await fetch(serverURL + url, fetchOptions)
       let responseText = await response.text();
-      //alert(JSON.stringify(responseText));
+      alert(JSON.stringify(responseText));
       if (response.status == 200) {
         var json = JSON.parse(responseText);
         if (apiDebug) {
