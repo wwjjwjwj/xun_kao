@@ -303,8 +303,8 @@ class ExamSign extends React.Component {
     var s = {
       studentId: this.state.student_id,
       pos: pos,
-      //cardPic: encodeText(this.state.cardInfo.avatar),
-      cardPic: encodeText(this.state.image.photo),
+      cardPic: encodeText(this.state.cardInfo.avatar),
+      //cardPic: encodeText(this.state.image.photo),
       photo: encodeText(this.state.image.photo),
       //cardPic : encodeURI(this.state.image.photo),
       //photo: encodeURI(this.state.image.photo),

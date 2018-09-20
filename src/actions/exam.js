@@ -148,10 +148,10 @@ export function GetStudentByName(studentInfo) {
 }
 
 //4.3	根据场次状态获取考生信息
-export function GetStudentByState(state) {
+export function GetStudentByState(examId, stationId, placeId, orderName, state, index, size) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("ExamPlan/GetStudent", {
-          state: state,
+        const promise = Ajax.promisePostJson("ExamPlan/GetStudentByState", {
+          examId, stationId, placeId, orderName, state, index, size
         });
         promise.then((result) => {
             const action = {
@@ -188,7 +188,7 @@ export function CardSign(s) {
 }
 
 //2.	其他签到
-export function PhotoSign(studentId, pos, photo) {
+export function StudentPhotoSign(studentId, pos, photo) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/PhotoSign", {
           studentId: studentId,

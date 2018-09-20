@@ -184,9 +184,10 @@ class SignedByOther extends React.Component {
                   </ListItem.Part>
                   <ListItem.Part>
                     <View row flex-1 centerV marginT-2 marginL-22>
-                      <Image source={Assets.signed.icon_time_exam}/>
-                      <Text font_14 gray2>考试</Text>
-                      <Text font_14 gray2 marginL-15>{_examTime}</Text>
+                      <Image source={Assets.signed.icon_user_num}/>
+                      <Text font_14 gray2>签到人数</Text>
+                      <Text font_14 blue marginL-15>{row.signCount}</Text>
+                      <Text font_14 gray2>/{row.totalStudent}人</Text>
                     </View>
                   </ListItem.Part>
               </ListItem.Part>

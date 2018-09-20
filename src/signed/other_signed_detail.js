@@ -38,10 +38,7 @@ import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 import { checkPermissionCamera } from 'Util';
 //4. action
-import { GetPlace } from '../actions/exam';
-import { getDeviceUuid } from '../actions/base';
-
-import {getFinger} from '../env';
+import { GetStudentByState } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -97,7 +94,7 @@ class OtherSignedDetail extends React.Component {
     super(props);
     var params = props.navigation.state.params;
     this.state = {
-      currentDataModel: params.currentDataModel,
+      exam_info: params.currentDataModel,
 
       all_data_list: DATA,
       data_list: DATA,
@@ -106,7 +103,7 @@ class OtherSignedDetail extends React.Component {
       image: {},
       modal_show: false,
     };
-    (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
+    (this: any).getDataList = this.getDataList.bind(this);
     (this: any).onTakePhoto = this.onTakePhoto.bind(this);
     (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
     (this: any).onReScan = this.onReScan.bind(this);
@@ -114,14 +111,16 @@ class OtherSignedDetail extends React.Component {
     (this: any).onReturn = this.onReturn.bind(this);
   }
   componentDidMount() {
-    this.getPlaceInfo();
+    this.getDataList();
   }
 
-  getPlaceInfo(){
+  getDataList(){
     let { Toast } = this;
-    this.props.GetPlace()
+    //let { examId, stationId, placeId } = this.props.place_info;
+    let { examId, stationId, placeId, orderName } = this.state.exam_info;
+    this.props.GetStudentByState(examId, stationId, placeId, orderName, )
       .then((response) => {
-        //alert(JSON.stringify(response));
+        alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
 
@@ -731,17 +730,18 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
+    return {}
+    /*var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
     }
     return {
-        account: account,
-    }
+        place_info,
+    }*/
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetPlace: bindActionCreators(GetPlace, dispatch),
+        GetStudentByState: bindActionCreators(GetStudentByState, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(OtherSignedDetail);

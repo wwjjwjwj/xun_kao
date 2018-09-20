@@ -32,58 +32,85 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { loginWithEmail } from '../actions/user';
-import { getDeviceUuid } from '../actions/base';
-
-import {getFinger} from '../env';
+import { GetOrderStatistics } from '../actions/exam';
 
 class OneExamSignedStat extends React.Component {
   constructor(props: Props) {
       super(props);
+      var params = props.navigation.state.params;
+      //alert(JSON.stringify(params.currentDataModel));
       this.state = {
-          currentDataModel: props.navigation.state.params.currentDataModel,
+          exam_info: props.navigation.state.params.currentDataModel,
+          stat_info: {},
       };
       (this: any).onTest = this.onTest.bind(this);
       (this: any).gotoDetail = this.gotoDetail.bind(this);
+      (this: any).getStatInfo = this.getStatInfo.bind(this);
   };
   componentWillMount() {
+    this.getStatInfo();
+  }
+
+  getStatInfo(){
+    let { Toast } = this;
+    let { examId, stationId, placeId, orderName, className } = this.state.exam_info;
+    if(!examId || !stationId || !placeId){
+      Toast.info('参数不够，无法取场次数据');
+      return;
+    }
+    this.props.GetOrderStatistics(examId, stationId, placeId, orderName, className)
+      .then((response) => {
+        //alert(JSON.stringify(response));
+        if(response.State == 1){
+          this.setState({
+            stat_info: response.ReData
+          })
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
   }
 
   onTest(){
 
   }
   gotoDetail(type, title){
+    //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
     switch (type) {
       case 1:
         break;
       default:
     }
     this.props.navigation.navigate('statDetailByType', {
-      currentDataModel: this.state.currentDataModel,
+      exam_info: this.state.exam_info,
+      stat_info: this.state.stat_info,
       type: type,
       title: title,
     });
   }
   render(){
 
-    var row = this.state.currentDataModel;
+    var exam = this.state.exam_info;
+    var row = this.state.stat_info;
 
     return (
       <View flex style={styles.container}>
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>考试场次：{row.orderName}</Text>
+              <Text font_18 black marginL-15>考试场次：{exam.orderName}</Text>
             </View>
             <View centerV row marginT-17 marginL-15>
               <Image source={Assets.signed.icon_user_num} style={styles.icon} />
               <Text font_14 gray2>签到人数</Text>
-              <Text font_14 blue marginL-15>{row.signCount}</Text>
-              <Text font_14 gray2 >/{row.totalStudent}人</Text>
+              <Text font_14 blue marginL-15>{exam.signCount}</Text>
+              <Text font_14 gray2 >/{exam.totalStudent}人</Text>
               <View right marginL-36 row>
                 <Image source={Assets.signed.icon_error_gray}/>
                 <Text font_14 gray2 marginL-6>缺考率</Text>
-                <Text font_14 blue marginL-15 marginR-36>{ row.totalStudent > 0 ? ((row.totalStudent - row.signCount) * 100 / row.totalStudent).toFixed(2) : '0' }%</Text>
+                <Text font_14 blue marginL-15 marginR-36>{ exam.missRate }%</Text>
               </View>
             </View>
           </View>
@@ -99,12 +126,12 @@ class OneExamSignedStat extends React.Component {
               <Image source={Assets.signed.icon_f} style={styles.icon2}/>
               <Text marginL-10 font_17 black>未通过</Text>
               <View flex-1 right row centerV>
-                <Text marginR-8 font_14 gray2>{row.missCount}人</Text>
+                <Text marginR-8 font_14 gray2>{row.notPassCount}人</Text>
                 <Image source={Assets.signed.icon_next} style={styles.icon2}/>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>this.gotoDetail(2, '未到')}>
+          <TouchableOpacity onPress={()=>this.gotoDetail(3, '未到')}>
             <View bg-white centerV row style={styles.center1}>
               <Image source={Assets.signed.icon_un_sign} style={styles.icon2}/>
               <Text marginL-10 font_17 black>未到</Text>
@@ -114,22 +141,22 @@ class OneExamSignedStat extends React.Component {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>this.gotoDetail(3, '通过')}>
+          <TouchableOpacity onPress={()=>this.gotoDetail(0, '通过')}>
             <View bg-white centerV row style={styles.center1}>
               <Image source={Assets.signed.icon_pass} style={styles.icon2}/>
               <Text marginL-10 font_17 black>通过</Text>
               <View flex-1 right row centerV>
-                <Text marginR-8 font_14 gray2>{row.numPass}人</Text>
+                <Text marginR-8 font_14 gray2>{row.passCount}人</Text>
                 <Image source={Assets.signed.icon_next} style={styles.icon2}/>
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>this.gotoDetail(4, '补签')}>
+          <TouchableOpacity onPress={()=>this.gotoDetail(2, '补签')}>
             <View bg-white centerV row style={styles.center1}>
               <Image source={Assets.signed.icon_repair} style={styles.icon2}/>
               <Text marginL-10 font_17 black>补签</Text>
               <View flex-1 right row centerV>
-                <Text marginR-8 font_14 gray2>{row.numRepair}人</Text>
+                <Text marginR-8 font_14 gray2>{row.replenishCount}人</Text>
                 <Image source={Assets.signed.icon_next} style={styles.icon2}/>
               </View>
             </View>
@@ -138,14 +165,16 @@ class OneExamSignedStat extends React.Component {
             <View bg-orange marginL-1 style={styles.center0}/>
             <Text marginL-6 font_14 orange>重点关注</Text>
           </View>
+          <TouchableOpacity onPress={()=>this.gotoDetail(4, '重点关注')}>
           <View bg-white centerV row style={styles.center1}>
             <Image source={Assets.signed.icon_notice} style={styles.icon2}/>
             <Text marginL-10 font_17 black>重点关注</Text>
             <View flex-1 right row centerV>
-              <Text marginR-8 font_14 orange>{row.numNotice}人</Text>
+              <Text marginR-8 font_14 orange>{row.importantCount}人</Text>
               <Image source={Assets.signed.icon_next_orange} style={styles.icon2}/>
             </View>
           </View>
+          </TouchableOpacity>
         </View>
 
         <YSToast ref={(toast) => this.Toast = toast} />
@@ -222,18 +251,12 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var place_info = {};
-    if (store.exam && store.exam.place_info) {
-        place_info = store.exam.place_info || {};
-    }
     return {
-        place_info,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
+      GetOrderStatistics: bindActionCreators(GetOrderStatistics, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(OneExamSignedStat);

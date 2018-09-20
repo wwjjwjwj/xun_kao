@@ -34,19 +34,18 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
-import { checkPermissionCamera } from 'Util';
+import { checkPermissionCamera, getGeolocation,
+  encodeText
+} from 'Util';
 //4. action
-import { GetPlace } from '../actions/exam';
-import { getDeviceUuid } from '../actions/base';
-
-import {getFinger} from '../env';
+import { GetStudentByState, StudentPhotoSign } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-const DATA = [
+/*const DATA = [
   {
     userId: 1,
     name: '李勤',
@@ -92,7 +91,7 @@ const DATA = [
     type: 4,
     need_repair: false,
   },
-];
+];*/
 
 class StatDetailByType extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -115,41 +114,45 @@ class StatDetailByType extends React.Component {
     super(props);
     var params = props.navigation.state.params;
     this.state = {
-      currentDataModel: params.currentDataModel,
-      type: params.type,
+      exam_info: params.exam_info,
+      stat_info: params.stat_info,
+      type: params.type,  //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
       title: params.title,
 
-      all_data_list: DATA,
-      data_list: DATA,
+      all_data_list: [],
+      data_list: [],
 
       image: {},
       modal_show: false,
     };
-    (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
     (this: any).onTakePhoto = this.onTakePhoto.bind(this);
     (this: any).onChoosePhoto = this.onChoosePhoto.bind(this);
     (this: any).onReScan = this.onReScan.bind(this);
     (this: any).onUpload = this.onUpload.bind(this);
+    (this: any).getDataList = this.getDataList.bind(this);
+    (this: any).uploadData = this.uploadData.bind(this);
   }
   componentDidMount() {
-    this.getPlaceInfo();
+    this.getDataList();
   }
 
-  getPlaceInfo(){
+  getDataList(){
     let { Toast } = this;
-    this.props.GetPlace()
+    let { examId, stationId, placeId, orderName } = this.state.exam_info;
+    var state = this.state.type;
+    this.props.GetStudentByState(examId, stationId, placeId, orderName, state, 1, 999)
       .then((response) => {
-        alert(JSON.stringify(response));
-        if(response.State == 1){
+        //alert(JSON.stringify(response));
+        if(response.State == 1 && response.ReData){
           this.setState({
-
+            all_data_list: response.ReData.dataList,
+            data_list: response.ReData.dataList
           })
-          //response.data
         }
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        //Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
 
@@ -165,12 +168,13 @@ class StatDetailByType extends React.Component {
       return;
     }
     //触发搜索
-    var _list = this.state.all_data_list.filter(a => a.name.indexOf(text) >= 0);
+    var _list = this.state.all_data_list.filter(a => a.studentName.indexOf(text) >= 0);
 
     this.setState({
       search_text: text,
       data_list: _list
     });
+    //this.state.search_text = text;
 
   }
   onTakePhoto(row){
@@ -188,7 +192,8 @@ class StatDetailByType extends React.Component {
           cropperCancelText: '取消'
         }).then(image => {
             //that.doUploadPhoto(image.data)
-            that.onChoosePhoto(image);
+            image.photo = `data:${image.mime};base64,${image.data}`;
+            that.onChoosePhoto(image, row);
         });
       }else {
         that.setState({
@@ -197,9 +202,10 @@ class StatDetailByType extends React.Component {
       }
     })
   }
-  onChoosePhoto(image){
+  onChoosePhoto(image, row){
     this.setState({
-      image: image
+      image: image,
+      studentId: row.studentId,
     })
     this.onModalShow();
   }
@@ -224,13 +230,56 @@ class StatDetailByType extends React.Component {
     //上传拍照 返回 验证 结果
     this.onModalHide();
     var that = this;
-    setTimeout(function(){
+    let { Toast } = this;
+    /*setTimeout(function(){
       //alert('上传');
       that.setState({
         valid_status: 4
       })
-    }, 1000);
-
+    }, 1000);*/
+    if(this.state.studentId && this.state.image.photo){
+      getGeolocation(function(res){
+        //alert(JSON.stringify(res));
+        if(res.result){
+          var pos = res.y + ',' + res.x;
+          that.uploadData(pos);
+        }else {
+          Toast.info('未获取到用户位置');
+          return;
+        }
+      })
+    }
+  }
+  uploadData(pos){
+    let { Toast } = this;
+    var studentId = this.state.studentId;
+    var photo = encodeText(this.state.image.photo);
+    this.props.StudentPhotoSign(studentId, pos, photo)
+      .then((response) => {
+        alert(JSON.stringify(response));
+        if(response.State == 1){
+          /*setTimeout(function(){
+            that.setState({
+              valid_status: 2
+            })
+          }, 1000);*/
+        }else{
+          Toast.info(response.ReMsg);
+          setTimeout(function(){
+            that.setState({
+              valid_status: 3 //非本人
+            })
+            if(1==2){
+              that.setState({
+                valid_status: 4 //非考场范围
+              })
+            }
+          }, 1000);
+        }
+      })
+      .catch((response) => {
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
   }
 
   //浏览视图
@@ -256,6 +305,8 @@ class StatDetailByType extends React.Component {
       this.setState({ editMode: 'Manage' });
   }
   renderRow(row, id) {
+    //this.state.type
+    //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
       return (
           <ListItem
               activeBackgroundColor={Colors.dark60}
@@ -271,18 +322,18 @@ class StatDetailByType extends React.Component {
               <ListItem.Part column>
                   <ListItem.Part containerStyle={[styles.list_item, styles.list_view_head]}>
                       <View row centerV>
-                        {row.type == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
-                        {row.type == 2 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
-                        {row.type == 3 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
-                        {row.type == 4 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
-                        <Text black font_17 marginL-30 numberOfLines={1}>{row.name}</Text>
-                        {row.need_notice &&
+                        {this.state.type == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
+                        {this.state.type == 3 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
+                        {this.state.type == 0 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
+                        {this.state.type == 2 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
+                        <Text black font_17 marginL-30 numberOfLines={1}>{row.studentName}</Text>
+                        {this.state.type == 4 &&
                           <View marginL-9 bg-yellow center style={styles.list_view_notice}>
                             <Text orange font_12>重点关注</Text>
                           </View>
                         }
                         <View right flex-1>
-                          <Text font_14 gray2>座位号 {row.seat}</Text>
+                          <Text font_14 gray2>座位号 {row.seatNumber}</Text>
                         </View>
                       </View>
                   </ListItem.Part>
@@ -293,22 +344,22 @@ class StatDetailByType extends React.Component {
                     <View column>
                       <View row marginT-17>
                         <Text font_14 gray2>证件号</Text>
-                        <Text font_14 gray2 marginL-13>{row.card}</Text>
+                        <Text font_14 gray2 marginL-13>{row.cardNumber}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>学号</Text>
-                        <Text font_14 gray2 marginL-13>{row.stuNo}</Text>
+                        <Text font_14 gray2 marginL-13>{row.studentCode}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>专业</Text>
-                        <Text font_14 gray2 marginL-13>{row.specialty}</Text>
+                        <Text font_14 gray2 marginL-13>{row.subject}</Text>
                       </View>
                       <View row marginT-17>
                         <Text font_14 gray2>课程</Text>
-                        <Text font_14 gray2 marginL-13>{row.course}</Text>
+                        <Text font_14 gray2 marginL-13>{row.courseName}</Text>
                       </View>
                     </View>
-                    {row.need_repair && <View right flex-1 centerV>
+                    {this.state.type == 3 && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
                           <Text font_13 white>拍照补签</Text>
@@ -327,7 +378,7 @@ class StatDetailByType extends React.Component {
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
     />
 
-    var row = this.state.currentDataModel;
+    var row = this.state.exam_info;
 
     return (
       <View flex style={styles.container}>
@@ -353,18 +404,18 @@ class StatDetailByType extends React.Component {
             </View>
             <View bg-white2 style={styles.line}/>
             <View row marginT-16 marginB-14>
-              <Text font_18 black marginL-15>考试场次：{row.examName}</Text>
+              <Text font_18 black marginL-15>考试场次：{row.orderName}</Text>
             </View>
             <View bg-white2 style={styles.line}/>
             <View centerV row marginL-15 style={styles.bottom_2_top}>
               <Image source={Assets.signed.icon_user_num} style={styles.icon0} />
               <Text font_14 gray2>签到人数</Text>
-              <Text font_14 blue marginL-15>{row.numStu}</Text>
-              <Text font_14 gray2 >/{row.numTotal}人</Text>
+              <Text font_14 blue marginL-15>{row.signCount}</Text>
+              <Text font_14 gray2 >/{row.totalStudent}人</Text>
               <View right marginL-36 row>
                 <Image source={Assets.signed.icon_error_gray}/>
                 <Text font_14 gray2 marginL-6>缺考率</Text>
-                <Text font_14 blue marginL-15 marginR-36>{row.percent}%</Text>
+                <Text font_14 blue marginL-15 marginR-36>{row.missRate}%</Text>
               </View>
             </View>
           </View>
@@ -696,17 +747,13 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
-    }
     return {
-        account: account,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetPlace: bindActionCreators(GetPlace, dispatch),
+        GetStudentByState: bindActionCreators(GetStudentByState, dispatch),
+        StudentPhotoSign: bindActionCreators(StudentPhotoSign, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(StatDetailByType);

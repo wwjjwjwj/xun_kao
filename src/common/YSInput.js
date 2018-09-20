@@ -12,7 +12,8 @@ import {
   Image,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 import React from 'react';
 import { Assets, Text } from 'react-native-ui-lib';
@@ -51,6 +52,11 @@ class YSInput extends React.Component {
     (this: any).onBlur = this.onBlur.bind(this);
     (this: any).onClear = this.onClear.bind(this);
   };
+  shouldComponentUpdate(nextProps){
+    return Platform.OS !== 'ios' || (this.props.value === nextProps.value &&
+           (nextProps.defaultValue == undefined || nextProps.defaultValue == '' )) ||
+           (this.props.defaultValue === nextProps.defaultValue &&  (nextProps.value == undefined || nextProps.value == '' ));
+  }
   componentWillReceiveProps(nextProps) {
     // Should be a controlled component.
     if ('value' in nextProps) {
