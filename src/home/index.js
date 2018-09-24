@@ -42,7 +42,7 @@ class Index extends React.Component {
       //selectedTab: 'signedByCard',
       //selectedTab: 'examTakePhoto',
       //selectedTab: 'signedStat',
-      selectedTab: 'signedByOther',
+      //selectedTab: 'signedByOther',
     };
   }
   componentDidMount() { }

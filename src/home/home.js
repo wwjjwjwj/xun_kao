@@ -152,7 +152,7 @@ class Home extends React.Component {
               notice_text: 'abc 中国  china',
               exam_notice_show: true
             })
-          }, 200);
+          }, 3000); //如果不显示，那时间就再久一点
         }
       })
       .catch((response) => {
@@ -284,8 +284,8 @@ class Home extends React.Component {
         </Modal>
         <Modal
           popup
-          //visible={this.state.exam_notice_show}
-          visible={false}
+          visible={this.state.exam_notice_show}
+          //visible={false}
           onClose={()=>this.onCloseExamNoticeModal()}
           animationType="slide-up"
           maskClosable={true}

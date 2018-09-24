@@ -51,17 +51,21 @@ class App extends React.Component {
   render() {
     let content_block = "";
     // 应用版本更新时显示
-    if (appVersion != this.props.lastedAppVersion) {
+    //if (appVersion != this.props.lastedAppVersion) {
+    //  content_block = <Introduction />;
+    //}
+    if(!this.props.closeAd){
       content_block = <Introduction />;
     }
     //未登录情况
-    if (!this.props.isLoggedIn) {
+    else if (!this.props.isLoggedIn) {
       content_block = <Login />;
     }
     //已经登录用户
     else {
       content_block = <Navigator />;
     }
+//content_block = <Introduction />;
 //content_block = <Navigator />;
     //content_block = <ReadCard />;
     // 多语言环境支持

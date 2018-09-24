@@ -137,7 +137,7 @@ export function GetStudentByName(examId, stationId, placeId, orderName, studentI
           examId: examId,
           stationId: stationId,
           placeId: placeId,
-          orderName: orderName,
+          //orderName: orderName,
           studentInfo: studentInfo,
           index: index,
           size: size
