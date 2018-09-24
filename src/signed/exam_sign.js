@@ -54,12 +54,12 @@ class ExamSign extends React.Component {
         valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
 
         blues: [],
-        //cardInfo: {},
-        cardInfo: {
+        cardInfo: {},
+        /*cardInfo: {
           cardNo: '110224199007260023',
           name: '张三',
           avatar: "data:image/jpg;base64," + 'abc'
-        },
+        },*/
         image: {}   //拍照图片
       };
       (this: any).onRead = this.onRead.bind(this);
@@ -79,8 +79,8 @@ class ExamSign extends React.Component {
     this.initDevice();
 
 //假设读卡成功2018
-    this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
-    this.onCheckUserInfo(this.state.cardInfo);
+    //this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
+    //this.onCheckUserInfo(this.state.cardInfo);
   }
 
   onCheckUserInfo(cardInfo){
