@@ -557,7 +557,7 @@ return;
 
         </KeyboardAwareScrollView>
 
-        {this.state.image.data && this.state.valid_status == 0 &&
+        {!!this.state.image.data && this.state.valid_status == 0 &&
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
         }
 

@@ -21,6 +21,7 @@ import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import CardModule from 'react-native-card-read';
 import ImagePicker from 'react-native-image-crop-picker';
+import SchoolearnModule from 'react-native-schoolearn';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -35,6 +36,7 @@ import YSLoading from 'YSLoading';
 import { checkPermissionCamera, getGeolocation,
   encodeText,
 } from 'Util';
+import YSAppSettings from "YSAppSettings";
 //4. action
 import { PhotoUpload } from '../actions/exam';
 
@@ -61,7 +63,10 @@ class PlaceTakePhoto extends React.Component {
       (this: any).onUploadData = this.onUploadData.bind(this);
   };
   componentWillMount() {
-    this.onTakePhoto();
+    var that = this;
+    setTimeout(function(){
+      that.onTakePhoto();
+    }, 1000);
 
     var that = this;
     getGeolocation(function(res){
@@ -104,6 +109,7 @@ class PlaceTakePhoto extends React.Component {
         that.setState({
           showSettingBox: true
         })
+        //Toast.info("请您在设置中，允许我们使用您手机的摄像头.");
       }
     })
   }
@@ -134,13 +140,15 @@ class PlaceTakePhoto extends React.Component {
     //className, pos, files
     this.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
         .then((response) => {
-          alert(JSON.stringify(response));
+          //alert(JSON.stringify(response));
           if(response.State == 1){
-
+            this.setState({
+              status: 2
+            })
           }
         })
         .catch((response) => {
-          alert(JSON.stringify(response));
+          //alert(JSON.stringify(response));
           Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
         })
   }
@@ -162,6 +170,12 @@ class PlaceTakePhoto extends React.Component {
   onViewSign(){
     alert('查看本场签到');
   }
+  openSettings() {
+    SchoolearnModule.openSettings();
+    this.setState({
+      showSettingBox: false
+    })
+  }
 
   render(){
     return (
@@ -178,7 +192,7 @@ class PlaceTakePhoto extends React.Component {
 
             </View>
           */}
-          {this.state.image_list.length && this.state.status == 1 &&
+          {this.state.image_list.length > 0 && this.state.status == 1 &&
             <View style={styles.image_view}>
               {this.state.image_list.map(image => {
                   if(image){
@@ -188,7 +202,7 @@ class PlaceTakePhoto extends React.Component {
                 })
               }
               <TouchableOpacity style={styles.image_bg} onPress={()=>this.onTakePhoto()}>
-              <Image style={styles.image_add} source={Assets.signed.img_add}/>
+                <Image style={styles.image_add} source={Assets.signed.img_add}/>
               </TouchableOpacity>
             </View>
           }
@@ -262,6 +276,7 @@ class PlaceTakePhoto extends React.Component {
         {/*this.state.image.data && this.state.valid_status == 0 &&
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
         */}
+        {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
 
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>

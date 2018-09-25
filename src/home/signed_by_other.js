@@ -331,7 +331,7 @@ class SignedByOther extends React.Component {
               <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
                   <ListItem.Part containerStyle={{ marginBottom: 0 }}>
                       <View row marginL-20>
-                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>
+                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 && row.importantCount &&
                             <View style={styles.sign_status} center>
@@ -430,7 +430,7 @@ class SignedByOther extends React.Component {
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.list_warp_exam}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>考试场次：{row.orderName}</Text>
+              <Text font_18 black marginL-15>考试场次：{row.orderName} {row.className}</Text>
             </View>
             <View bg-white2 style={styles.line}/>
             <View centerV row marginT-16 paddingL-15>

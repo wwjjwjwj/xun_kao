@@ -169,15 +169,17 @@ class Home extends React.Component {
         <View style={styles.front0}>
           <Text marginT-35 white text_title2>E考官</Text>
           <Text marginT-11 blue2 label_input>欢迎来到考场巡检系统！</Text>
-          <View marginT-57 marginL-28 marginR-28 bg-white style={styles.front_user}>
+          <View marginL-28 marginR-28 style={styles.front_user0}>
+            <View marginT-52 marginB-5 bg-white style={styles.front_user}>
+              <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
+                <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
+              </TouchableOpacity>
+              <Text center marginT-51 blue font_16>{this.props.school_name}</Text>
+              <Text center marginT-12 marginB-22 black2 font_16>{this.props.name} {this.props.account}</Text>
+            </View>
             <View centerH center style={styles.logo_outside}>
               <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>
             </View>
-            <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
-              <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
-            </TouchableOpacity>
-            <Text center marginT-13 blue font_16>{this.props.school_name}</Text>
-            <Text center marginT-12 black2 font_16>{this.props.name} {this.props.account}</Text>
           </View>
         </View>
 
@@ -335,10 +337,16 @@ var styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    borderRadius: 10
+  },
+  front_user0: {
+    width: '85%',
+    //height: 120,
+    borderRadius: 10,
   },
   front_user: {
-    width: '85%',
-    height: 120,
+    width: '100%',
+    height: 115,
     borderRadius: 10,
   },
   touch_exit: {
@@ -373,8 +381,15 @@ var styles = StyleSheet.create({
     shadowRadius: 5
   },
   logo_outside: {
-    marginTop: -36,
+    //marginTop: -36,
     //zIndex: 2,
+    position: 'absolute',
+    //left: '50%',
+    left: 0,
+    right: 0,
+    top: 21,
+    margin: 'auto',
+
   },
   logo_jk: {
     width: 73,
