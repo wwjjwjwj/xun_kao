@@ -68,6 +68,11 @@ class PlaceTakePhoto extends React.Component {
       that.onTakePhoto();
     }, 1000);
 
+    this.getLocation();
+
+  }
+
+  getLocation(){
     var that = this;
     getGeolocation(function(res){
       //alert(JSON.stringify(res));
@@ -76,7 +81,6 @@ class PlaceTakePhoto extends React.Component {
         pos: pos
       })
     })
-
   }
 
   onReturn(){
@@ -128,6 +132,14 @@ class PlaceTakePhoto extends React.Component {
       Toast.info('参数不够，无法取场次数据');
       return;
     }
+    if(!this.state.pos){
+      //Toast.info('参数不够，无法取场次数据');
+      this.getLocation();
+      this.setState({
+        showSettingBox2: true
+      })
+      return;
+    }
     var orderName = this.state.exam_info.orderName;
     var pos = this.state.pos;
     var situation = 0;
@@ -168,12 +180,14 @@ class PlaceTakePhoto extends React.Component {
   }
 
   onViewSign(){
-    alert('查看本场签到');
+    //alert('查看本场签到');
+    this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: this.state.exam_info });
   }
   openSettings() {
     SchoolearnModule.openSettings();
     this.setState({
-      showSettingBox: false
+      showSettingBox: false,
+      showSettingBox2: false
     })
   }
 
@@ -277,6 +291,7 @@ class PlaceTakePhoto extends React.Component {
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
         */}
         {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
+        {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
 
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>

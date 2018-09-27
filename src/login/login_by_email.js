@@ -31,7 +31,7 @@ import { md5_32 } from 'Util';
 const StyleSheet = require('../common/YSStyleSheet');
 //4. action
 import { loginWithEmail, schoolListQuery } from '../actions/user';
-import { getDeviceUuid } from '../actions/base';
+import { getDeviceUuid, checkPermissionReadPhoneState } from '../actions/base';
 
 import {getFinger} from '../env';
 
@@ -73,7 +73,12 @@ class LoginByEmail extends React.Component {
         var density = PixelRatio.get()
         //alert(density)
 
-        this.props.getDeviceUuid();
+        var that = this;
+        this.props.checkPermissionReadPhoneState()
+        //.then((response) => {
+          //that.props.getDeviceUuid();
+        //})
+        that.props.getDeviceUuid();
         this.getSchoolList();
     }
 
@@ -355,6 +360,7 @@ function mapDispatchToProps(dispatch) {
     return {
         loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
         getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
+        checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch),
         schoolListQuery: bindActionCreators(schoolListQuery, dispatch),
     };
 }

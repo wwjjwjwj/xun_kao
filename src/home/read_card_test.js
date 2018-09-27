@@ -33,7 +33,7 @@ import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
 import { loginWithEmail } from '../actions/user';
-import { getDeviceUuid } from '../actions/base';
+import { checkPermissionReadPhoneState } from '../actions/base';
 
 import {getFinger} from '../env';
 
@@ -59,6 +59,7 @@ class ReadCardTest extends React.Component {
   };
   componentWillMount() {
     this.initDevice();
+    this.props.checkPermissionReadPhoneState();
   }
 
   initDevice(){
@@ -251,12 +252,12 @@ class ReadCardTest extends React.Component {
             </View>
           }
           {this.state.read_status == 2 &&
-            <View centerH marginT-26 marginL-28 marginR-28 bg-white style={styles.result}>
-              <Text font_18 blue marginT-18>身份证信息</Text>
+            <View center marginT-26 marginL-28 marginR-28 bg-white style={styles.result}>
+              <Text font_18 blue>身份证信息</Text>
               <Image source={{uri: this.state.cardInfo.avatar}} style={styles.photo}/>
               <Text font_14 gray2 marginT-15>姓名</Text>
               <Text font_20 black marginT-10>{this.state.cardInfo.name}</Text>
-              <Text font_14 gray2 marginT-31>证件号码</Text>
+              <Text font_14 gray2 marginT-21>证件号码</Text>
               <Text font_20 black marginT-10>{this.state.cardInfo.cardNo}</Text>
             </View>
           }
@@ -371,7 +372,8 @@ var styles = StyleSheet.create({
 
   result: {
     width: 320,
-    height: 320
+    height: 320,
+    borderRadius: 5,
   },
   photo: {
     width: 100,
@@ -379,7 +381,7 @@ var styles = StyleSheet.create({
     resizeMode: 'cover',
     borderWidth: 1,
     borderColor: '#C5C5C5',
-    marginTop: 33
+    marginTop: 23
   }
 
 })
@@ -396,7 +398,7 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
-        getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch)
+        checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch)
     };
 }
 module.exports = connect(select, mapDispatchToProps)(ReadCardTest);

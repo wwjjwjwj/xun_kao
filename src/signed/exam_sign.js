@@ -21,6 +21,7 @@ import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import CardModule from 'react-native-card-read';
 import ImagePicker from 'react-native-image-crop-picker';
+import SchoolearnModule from 'react-native-schoolearn';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -35,8 +36,10 @@ import YSLoading from 'YSLoading';
 import { checkPermissionCamera, getGeolocation,
   encodeText,
 } from 'Util';
+import YSAppSettings from "YSAppSettings";
 //4. action
 import { GetStudentByCard, CardSign } from '../actions/exam';
+import { checkPermissionReadPhoneState } from '../actions/base';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -77,10 +80,22 @@ class ExamSign extends React.Component {
   };
   componentWillMount() {
     this.initDevice();
+    this.props.checkPermissionReadPhoneState();
 
 //假设读卡成功2018
     //this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
     //this.onCheckUserInfo(this.state.cardInfo);
+  }
+
+  getLocation(){
+    var that = this;
+    getGeolocation(function(res){
+      //alert(JSON.stringify(res));
+      var pos = res.y + ',' + res.x;
+      that.setState({
+        pos: pos
+      })
+    })
   }
 
   onCheckUserInfo(cardInfo){
@@ -299,6 +314,14 @@ class ExamSign extends React.Component {
       Toast.fail('未获取到学生Id');
       return;
     }
+    if(!this.state.pos){
+      //Toast.info('参数不够，无法取场次数据');
+      this.getLocation();
+      this.setState({
+        showSettingBox2: true
+      })
+      return;
+    }
     var that = this;
     var s = {
       studentId: this.state.student_id,
@@ -353,18 +376,6 @@ class ExamSign extends React.Component {
       }
     })
 
-return;
-
-
-    this.onModalHide();
-    var that = this;
-    setTimeout(function(){
-      //alert('上传');
-      that.setState({
-        valid_status: 4
-      })
-    }, 1000);
-
   }
 
   onReValid(){
@@ -375,6 +386,13 @@ return;
     //确认不通过
     alert('不通过操作');
     this.onReturn();
+  }
+  openSettings() {
+    SchoolearnModule.openSettings();
+    this.setState({
+      showSettingBox: false,
+      showSettingBox2: false
+    })
   }
 
   renderRow(row, id) {
@@ -424,12 +442,12 @@ return;
             </View>
           }
           {this.state.read_status == 2 &&
-            <View centerH marginT-26 marginL-28 marginR-28 bg-white style={styles.result}>
-              <Text font_18 blue marginT-18>考生身份证信息</Text>
+            <View center marginT-26 marginL-28 marginR-28 bg-white style={styles.result}>
+              <Text font_18 blue>考生身份证信息</Text>
               <Image source={{uri: this.state.cardInfo.avatar}} style={styles.photo}/>
               <Text font_14 gray2 marginT-15>姓名</Text>
               <Text font_20 black marginT-10>{this.state.cardInfo.name}</Text>
-              <Text font_14 gray2 marginT-31>证件号码</Text>
+              <Text font_14 gray2 marginT-21>证件号码</Text>
               <Text font_20 black marginT-10>{this.state.cardInfo.cardNo}</Text>
             </View>
           }
@@ -601,6 +619,9 @@ return;
 
           </View>
         </Modal>
+        {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
+        {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
+
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
@@ -674,7 +695,8 @@ var styles = StyleSheet.create({
 
   result: {
     width: 320,
-    height: 320
+    height: 320,
+    borderRadius: 5
   },
   photo: {
     width: 100,
@@ -682,7 +704,7 @@ var styles = StyleSheet.create({
     resizeMode: 'cover',
     borderWidth: 1,
     borderColor: '#C5C5C5',
-    marginTop: 33
+    marginTop: 23
   },
 
   image: {
@@ -752,6 +774,7 @@ function mapDispatchToProps(dispatch) {
     return {
         GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
         CardSign: bindActionCreators(CardSign, dispatch),
+        checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch)
     };
 }
 module.exports = connect(select, mapDispatchToProps)(ExamSign);

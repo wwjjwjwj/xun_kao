@@ -50,7 +50,8 @@ class Home extends React.Component {
       exam_notice_show: false,
       notice_text: 'bala bala balabala',
 
-      task_list: TASK,
+      //task_list: TASK,
+      task_list: [],
 
       //university: '吉林大学',
       //name: '李老师',
@@ -189,23 +190,24 @@ class Home extends React.Component {
             caption={"点击连接读卡器"}
             text_style={styles.text_caption}
             onPress={this.onShowConnectModal}/>
-            <TouchableOpacity onPress={()=>this.onTask()}>
-          <View marginT-21 centerV row style={styles.lantern_view}>
-            <Image source={Assets.home.icon_task} style={styles.lantern_img}/>
-            <Carousel
-              style={styles.lantern_wapper}
-              selectedIndex={0}
-              autoplay
-              infinite
-              dots={false}
-              //afterChange={this.onHorizontalSelectedIndexChange}
-            >
-              {this.state.task_list.map(t => {
-                return <Text marginL-11 blue font_14 style={styles.lantern_text}>{this.state.task_list[0]}</Text>
-              })}
-            </Carousel>
+          {this.state.task_list.length > 0 && <View marginT-21 centerV row style={styles.lantern_view}>
+              <TouchableOpacity onPress={()=>this.onTask()}>
+              <Image source={Assets.home.icon_task} style={styles.lantern_img}/>
+              <Carousel
+                style={styles.lantern_wapper}
+                selectedIndex={0}
+                autoplay
+                infinite
+                dots={false}
+                //afterChange={this.onHorizontalSelectedIndexChange}
+              >
+                {this.state.task_list.map(t => {
+                  return <Text marginL-11 blue font_14 style={styles.lantern_text}>{this.state.task_list[0]}</Text>
+                })}
+              </Carousel>
+              </TouchableOpacity>
           </View>
-          </TouchableOpacity>
+          }
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>

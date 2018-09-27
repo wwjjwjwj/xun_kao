@@ -59,16 +59,39 @@ export function departmentDelete(id: any) {
     };
 }
 
+export function checkPermissionReadPhoneState(){
+  return (dispatch) => {
+    if(Platform.OS === 'ios'){
+      const action = {
+        type: 'CHECKED_PHONE_STATE',
+        data: {}
+      }
+      dispatch(action);
+    }else {
+      DeviceModule.checkPermissionReadPhoneState(function(result0){
+        if(result0){
+          //alert(JSON.stringify(result0))
+          const action = {
+            type: 'CHECKED_PHONE_STATE',
+            data: result0
+          }
+          dispatch(action);
+        }
+      });
+    }
+  };
+}
+
 export function getDeviceUuid(){
   return (dispatch) => {
-    DeviceModule.getUuid(function (result) {
-      if (result && result.uuid) {
-        const action = {
-          type: 'GETTED_UUID',
-          data: result
-        }
-        dispatch(action);
-      }
-    })
+        DeviceModule.getUuid(function (result) {
+          if (result && result.uuid) {
+            const action = {
+              type: 'GETTED_UUID',
+              data: result
+            }
+            dispatch(action);
+          }
+        })
   };
 }
