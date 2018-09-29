@@ -40,6 +40,25 @@ export function GetExamNotice(examId) {
         return promise;
     };
 }
+//1.1	考试任务
+export function GetExamTask(examId) {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("ExamPlan/GetExamPlanInvigilateTask", {
+          examId: examId, index: 1, size: 999
+        });
+        promise.then((result) => {
+            if(result.State == 1){
+              const action = {
+                  type: 'GETTED_EXAM_TASK',
+                  data: result.ReData
+              }
+              dispatch(action);
+            }
+        });
+        return promise;
+    };
+}
+
 
 //2.	考点地址-场次安排（包含签到）
 export function GetExamClassSign(examId, stationId, placeId) {
@@ -215,6 +234,24 @@ export function CardSign(s) {
 export function StudentPhotoSign(studentId, pos, photo) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/PhotoSign", {
+          studentId: studentId,
+          pos: pos, //test  39.94876642336431,116.4245867729187
+          photo: photo
+        });
+        promise.then((result) => {
+            const action = {
+                type: 'GET_STUDENT',
+                data: result.data
+            }
+            dispatch(action);
+        });
+        return promise;
+    };
+}
+//2.	其他签到（从拍照签到跳转过来的 签到）
+export function StudentPhotoSignAdd(studentId, pos, photo) {
+    return (dispatch) => {
+        const promise = Ajax.promisePostJson("UserPhoto/AddSign", {
           studentId: studentId,
           pos: pos, //test  39.94876642336431,116.4245867729187
           photo: photo

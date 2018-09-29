@@ -38,60 +38,14 @@ import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';
 //4. action
-import { GetStudentByState, StudentPhotoSign } from '../actions/exam';
+import { GetStudentByState, StudentPhotoSign,
+  StudentPhotoSignAdd
+} from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
-
-/*const DATA = [
-  {
-    userId: 1,
-    name: '李勤',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '01',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    type: 1,
-    need_notice: true,
-    need_repair: true,
-  },
-  {
-    userId: 3,
-    name: '李勤2',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '02',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    type: 2,
-    need_repair: false,
-  },
-  {
-    userId: 3,
-    name: '李勤3',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '03',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    type: 3,
-    need_repair: false,
-  },
-  {
-    userId: 4,
-    name: '李勤4',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '04',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    type: 4,
-    need_repair: false,
-  },
-];*/
 
 class StatDetailByType extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -118,6 +72,7 @@ class StatDetailByType extends React.Component {
       stat_info: params.stat_info,
       type: params.type,  //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
       title: params.title,
+      signType: params.signType,  //0 拍照签到跳来的； 1 直接从统计的未到的 跳来的。
 
       all_data_list: [],
       data_list: [],
@@ -254,7 +209,8 @@ class StatDetailByType extends React.Component {
     let { Toast } = this;
     var studentId = this.state.studentId;
     var photo = encodeText(this.state.image.photo);
-    this.props.StudentPhotoSign(studentId, pos, photo)
+    if(this.state.signType == 1){
+      this.props.StudentPhotoSign(studentId, pos, photo)
       .then((response) => {
         //alert(JSON.stringify(response));
         if(response.State == 1){
@@ -282,6 +238,20 @@ class StatDetailByType extends React.Component {
       .catch((response) => {
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
+    }else {
+      this.props.StudentPhotoSignAdd(studentId, pos, photo)
+      .then((response) => {
+        if(response.State == 1){
+          Toast.success('拍照补签成功！');
+          this.getDataList();
+        }else{
+          Toast.info(response.ReMsg);
+        }
+      })
+      .catch((response) => {
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
+    }
   }
 
   //浏览视图
@@ -756,6 +726,7 @@ function mapDispatchToProps(dispatch) {
     return {
         GetStudentByState: bindActionCreators(GetStudentByState, dispatch),
         StudentPhotoSign: bindActionCreators(StudentPhotoSign, dispatch),
+        StudentPhotoSignAdd: bindActionCreators(StudentPhotoSignAdd, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(StatDetailByType);

@@ -38,7 +38,7 @@ import { checkPermissionCamera, getGeolocation,
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 //4. action
-import { PhotoUpload } from '../actions/exam';
+import { PhotoUpload, GetOrderStatistics } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -181,7 +181,27 @@ class PlaceTakePhoto extends React.Component {
 
   onViewSign(){
     //alert('查看本场签到');
-    this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: this.state.exam_info });
+    //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: this.state.exam_info });
+    return;
+    let { examId, stationId, placeId, orderName } = this.state.exam_info;
+    if(!examId || !stationId || !placeId){
+      Toast.info('参数不够，无法取场次数据');
+      return;
+    }
+    this.props.GetOrderStatistics(examId, stationId, placeId, orderName, '')
+      .then((response) => {
+        alert(‘场次统计信息：’ + JSON.stringify(response));
+        if(response.State == 1){
+          alert(JSON.stringify(response.ReData))
+          return;
+
+          //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: , signType: 0 });
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+      })
   }
   openSettings() {
     SchoolearnModule.openSettings();
@@ -474,6 +494,7 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         PhotoUpload: bindActionCreators(PhotoUpload, dispatch),
+        GetOrderStatistics: bindActionCreators(GetOrderStatistics, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(PlaceTakePhoto);

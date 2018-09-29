@@ -40,7 +40,8 @@ class OneExamSignedStat extends React.Component {
       var params = props.navigation.state.params;
       //alert(JSON.stringify(params.currentDataModel));
       this.state = {
-          exam_info: props.navigation.state.params.currentDataModel,
+          exam_info: params.currentDataModel,
+          signType: params.signType,
           stat_info: {},
       };
       (this: any).onTest = this.onTest.bind(this);
@@ -88,6 +89,7 @@ class OneExamSignedStat extends React.Component {
       stat_info: this.state.stat_info,
       type: type,
       title: title,
+      signType: this.state.signType,  //用于判断是从哪里进来的
     });
   }
   render(){

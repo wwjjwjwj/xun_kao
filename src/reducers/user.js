@@ -53,7 +53,8 @@ function user(state = initialState, action) {
             name: '',
             userInfo: null,
             //email: state.userInfo.user_name,
-            schoolInfo: {}
+            schoolInfo: {},
+            saw_notice: false
         }
     }
     if(action.type === 'LOADED_SCHOOLS'){
@@ -79,6 +80,12 @@ function user(state = initialState, action) {
             ...state,
             closeAd: true
         };
+    }
+    if(action.type === 'SAW_NOTICE') {
+        return {
+          ...state,
+          saw_notice: true
+        }
     }
     //app消息处理
     if (action.type === 'APP_MESSAGE_ACTION') {

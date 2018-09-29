@@ -200,11 +200,12 @@ async _reset() {
         Toast.fail("密码长度不能小于6");
         return;
     }
-    var world_phone = "+" + this.props.countryCode + phone;
+    //var world_phone = "+" + this.props.countryCode + phone;
+    var world_phone = phone;
     let params = [];
     params.push(world_phone);
-    params.push(valid_code);
     params.push(pwd);
+    //params.push(valid_code);
 
     const { dispatch, onReggedIn } = this.props;
     this.setState({ isLoading: true });

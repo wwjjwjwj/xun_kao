@@ -64,7 +64,7 @@ export function logout() {
 // type: 1 注册；3 忘记密码
 export function sendSMS(phone: string, type: number, callback: any){
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("AccessManagement/GetAuthCode", {userName: phone});
+        const promise = Ajax.promisePostJson("AccessManagement/GetMessageCode", {mobile: phone});
         promise.then((result) => {
             const action = {
                 type: 'PHONECODE_SENDED',
@@ -79,9 +79,13 @@ export function sendSMS(phone: string, type: number, callback: any){
 }
 
 //用手机号来 重置密码
-export function resetPwdByMobile(phone, code, password, callback: any){
+export function resetPwdByMobile(params, callback: any){
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("AccessManagement/ChangePwd", {userName: phone, Password: password, authCode: code});
+        const promise = Ajax.promisePostJson("AccessManagement/ChangePwd", {
+          mobile: params[0],
+          password: params[1],
+          //authCode: params[2]
+        });
         promise.then((result) => {
             const action = {
                 type: 'PWD_RESETTED',
@@ -214,4 +218,10 @@ export function schoolListQuery() {
         });
         return promise;
     };
+}
+
+export function HideExamNotice(){
+  return {
+    type: 'SAW_NOTICE',
+  }
 }

@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView, Platform
+  ImageBackground, ScrollView, Platform, WebView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,9 +29,10 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { logout } from '../actions/user';
+import { logout, HideExamNotice } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
-import { GetPlace, GetExamNotice } from '../actions/exam';
+import { GetPlace, GetExamNotice, GetExamTask
+} from '../actions/exam';
 
 import {getFinger} from '../env';
 
@@ -48,7 +49,7 @@ class Home extends React.Component {
 
       //exam_notice_show: true,
       exam_notice_show: false,
-      notice_text: 'bala bala balabala',
+      notice_text: '<h1>Hello world</h1>',
 
       //task_list: TASK,
       task_list: [],
@@ -72,11 +73,16 @@ class Home extends React.Component {
     (this: any).gotoLogout = this.gotoLogout.bind(this);
     (this: any).onGetPlaceData = this.onGetPlaceData.bind(this);
     (this: any).onGetExamNoticeData = this.onGetExamNoticeData.bind(this);
+    (this: any).onGetExamTaskData = this.onGetExamTaskData.bind(this);
   }
   componentDidMount() {
     this.onGetPlaceData();
+    this.onGetExamTaskData();
 
-    this.onGetExamNoticeData();
+//alert(this.props.saw_notice);
+    if(!this.props.saw_notice){
+      this.onGetExamNoticeData();
+    }
   }
 
   onShowConnectModal(e){
@@ -91,6 +97,7 @@ class Home extends React.Component {
     })
   }
   onCloseExamNoticeModal(){
+    this.props.HideExamNotice();
     this.setState({
       exam_notice_show: false
     })
@@ -144,16 +151,39 @@ class Home extends React.Component {
   onGetExamNoticeData(){
     let { Toast } = this;
     var that = this;
+    if(!this.props.info.examId){
+      return;
+    }
     this.props.GetExamNotice(this.props.info.examId)
       .then((response) => {
         //alert(JSON.stringify(response))
         if(response.State == 1 && response.ReData){
           setTimeout(function(){
             that.setState({
-              notice_text: 'abc 中国  china',
+              notice_text: response.ReData,
               exam_notice_show: true
             })
           }, 3000); //如果不显示，那时间就再久一点
+        }
+      })
+      .catch((response) => {
+        //alert(JSON.stringify(response));
+        Toast.fail(response.ReMsg || YSI18n.get('获取通知数据失败'));
+      })
+  }
+  onGetExamTaskData(){
+    let { Toast } = this;
+    var that = this;
+    if(!this.props.info.examId){
+      return;
+    }
+    this.props.GetExamTask(this.props.info.examId)
+      .then((response) => {
+        //alert(JSON.stringify(response))
+        if(response.State == 1 && response.ReData){
+            that.setState({
+              task_list: response.ReData,
+            })
         }
       })
       .catch((response) => {
@@ -302,9 +332,14 @@ class Home extends React.Component {
             <View marginT-13 style={styles.line}/>
             <View left marginT-15>
               <Text font_18 black2>本批次监考须知</Text>
-              <Text font_14 black2 marginT-10>
+              {/*<Text font_14 black2 marginT-10>
                 1、监考人员必须充分重视监考工作，具有高度的责任感。监考安排一旦确定，监考人员必须按时履行监考职责，不得迟到、早退、缺席，不得擅自调换监考人员。 2、所有监考人员须携带监考证参加监考。监考过程中不得使用手机，不得擅自离岗，不得在考场中交谈等，一经发现，按相应教学事故处理。 3、监考当日，监考人员应提前15-20分钟到岗，作好考试各项准备工作： （1）按照规定引导学生隔列就坐或按指定位置就坐，前后对齐，不得由考生随意找、占座位； （2）要求考生将学生证（或带学号的E卡）放与桌面右上角，核实考生身份，核对实考人数； （3）向考生申明考场纪律和有关注意事项，开考开始前，监考人员要认真清场，要求考生将与考试无关物品集中放在指定地点，并认真检查桌面和抽屉，不得留有任何与考试科目有关的、非规定可带的纸张、书本以及其他物品。若在开考后被发现，按违纪处理，责任由学生自负；若因监考人员清场不严、检查不仔细，追究监考人员责任。 （4）考试开始前5分钟开始发卷，考场内若只有1名监考人员，应立即通报学院办公室或研究生院培养办公室，直至补派监考人员后，方可发卷。 （5）要求考生首先检查试卷是否完整无损，字迹清晰等。若有问题，应及时举手向监考人员更换；检查无误后填写学号、姓名、院系等信息。
-              </Text>
+              </Text>*/}
+              <WebView
+                originWhitelist={['*']}
+                //source={{ html: '`${this.state.notice_text}`' }}
+                source={{ html: '<h1>Hello world</h1>' }}
+              />
             </View>
           </View>
         </Modal>
@@ -547,7 +582,8 @@ function select(store) {
         school_name,
         name,
         account,
-        info
+        info,
+        saw_notice: store.user.saw_notice
     }
 }
 function mapDispatchToProps(dispatch) {
@@ -556,6 +592,7 @@ function mapDispatchToProps(dispatch) {
         getDeviceUuid: bindActionCreators(getDeviceUuid, dispatch),
         GetPlace: bindActionCreators(GetPlace, dispatch),
         GetExamNotice: bindActionCreators(GetExamNotice, dispatch),
+        HideExamNotice: bindActionCreators(HideExamNotice, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(Home);

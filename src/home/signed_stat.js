@@ -122,7 +122,7 @@ class SignedStat extends React.Component {
       });
       switch (op) {
           case 'View':
-              this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: item });
+              this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: item, signType: 1 });
               break;
       }
   };
