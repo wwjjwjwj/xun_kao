@@ -32,7 +32,7 @@ import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
+import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
   encodeText,
 } from 'Util';
@@ -52,6 +52,7 @@ class PlaceTakePhoto extends React.Component {
         exam_info: props.navigation.state.params.info,
         status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
 
+        loading: false,
         image_list: [],
         //image: {}   //拍照图片
       };
@@ -99,7 +100,8 @@ class PlaceTakePhoto extends React.Component {
         ImagePicker.openCamera({
           width: 640,
           height: 640,
-          cropping: true,
+          //cropping: true,
+          cropping: false,
           mediaType:'photo',
           includeBase64: true,
           cropperChooseText: '选择',
@@ -107,7 +109,16 @@ class PlaceTakePhoto extends React.Component {
         }).then(image => {
             //that.doUploadPhoto(image.data)
             var photo = `data:${image.mime};base64,${image.data}`;
-            that.onChoosePhoto(photo);
+            var _l = that.state.image_list;
+            var index = 0;
+            if(_l.length > 0){
+              index = _l[_l.length - 1].index + 1;
+            }
+            var img = {
+              photo: photo,
+              index: index
+            }
+            that.onChoosePhoto(img);
         });
       }else {
         that.setState({
@@ -117,9 +128,9 @@ class PlaceTakePhoto extends React.Component {
       }
     })
   }
-  onChoosePhoto(photo){
+  onChoosePhoto(image){
     var _list = this.state.image_list;
-    _list.push(photo);
+    _list.push(image);
     this.setState({
       image_list: _list,
       status: 1,
@@ -140,31 +151,46 @@ class PlaceTakePhoto extends React.Component {
       })
       return;
     }
-    var orderName = this.state.exam_info.orderName;
-    var pos = this.state.pos;
-    var situation = 0;
-    var memo ='';
-    var files = [];
-    this.state.image_list.map(i => {
-      files.push(encodeText(i));
-    })
-    //var files = files.join(',');
-    //className, pos, files
-    this.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
+    var that = this;
+    var _upload = function(){
+      var orderName = that.state.exam_info.orderName;
+      var pos = that.state.pos;
+      var situation = 0;
+      var memo ='';
+      var files = [];
+      that.state.image_list.map(i => {
+        files.push(encodeText(i.photo));
+      })
+      //var files = files.join(',');
+      //className, pos, files
+      that.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
         .then((response) => {
           //alert(JSON.stringify(response));
           if(response.State == 1){
-            this.setState({
-              status: 2
+            that.setState({
+              status: 2,
+              loading: false
             })
+          }else {
+            that.setState({ loading: false });
           }
         })
         .catch((response) => {
+          that.setState({ loading: false });
           //alert(JSON.stringify(response));
           Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
         })
+    }
+    this.setState({ loading: true });
+    setTimeout(function(){
+      _upload();
+    }, 100);
+
   }
   onUpload(){
+    if(this.state.loading){
+      return;
+    }
     //上传拍照 返回 验证 结果
     if(this.state.image_list.length){
       this.onUploadData()
@@ -177,6 +203,25 @@ class PlaceTakePhoto extends React.Component {
         status: 3
       })
     }, 1000);*/
+  }
+  onDelImage(image){
+    var _l = this.state.image_list || [];
+    for(var i = 0; i < _l.length; i++){
+      if(image.index == _l[i].index){
+        _l.splice(i, 1);
+        if(_l.length > 0){
+          this.setState({
+            image_list: _l
+          })
+        }else {
+          this.setState({
+            image_list: _l,
+            status: 0
+          })
+        }
+        break;
+      }
+    }
   }
 
   onViewSign(){
@@ -230,14 +275,21 @@ class PlaceTakePhoto extends React.Component {
             <View style={styles.image_view}>
               {this.state.image_list.map(image => {
                   if(image){
-                    return <Image style={styles.image_photo} source={{uri: image}} />
+                    return <View style={styles.image_outside}>
+                      <Image style={styles.image_photo} source={{uri: image.photo}} />
+                      <TouchableOpacity style={styles.del_outside} onPress={()=>this.onDelImage(image)}>
+                        <Image source={Assets.login.icon_del} style={styles.image_del}/>
+                      </TouchableOpacity>
+                    </View>
                   }
 
                 })
               }
-              <TouchableOpacity style={styles.image_bg} onPress={()=>this.onTakePhoto()}>
-                <Image style={styles.image_add} source={Assets.signed.img_add}/>
-              </TouchableOpacity>
+              {this.state.image_list.length < 5 &&
+                <TouchableOpacity style={styles.image_bg} onPress={()=>this.onTakePhoto()}>
+                  <Image style={styles.image_add} source={Assets.signed.img_add}/>
+                </TouchableOpacity>
+              }
             </View>
           }
 
@@ -246,7 +298,7 @@ class PlaceTakePhoto extends React.Component {
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
-                caption={'确认上传'}
+                caption={this.state.loading ? '上传中...' : '确认上传'}
                 text_style={styles.text_caption}
                 disable={false}
                 onPress={this.onUpload} />
@@ -304,6 +356,17 @@ class PlaceTakePhoto extends React.Component {
                 onPress={this.onViewSign} />
             </View>
           }
+          {this.state.status == 0 &&
+            <View centerH marginT-115 marginL-48 marginR-48>
+             <YSButton
+                type={'bordered'}
+                style={styles.border_button}
+                caption={'拍照'}
+                text_style={styles.text_caption}
+                disable={false}
+                onPress={this.onTakePhoto} />
+            </View>
+          }
 
         </KeyboardAwareScrollView>
 
@@ -312,7 +375,7 @@ class PlaceTakePhoto extends React.Component {
         */}
         {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
         {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
-
+        <YSLoaderScreen loading={this.state.loading} tips={'上传中...'}/>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
@@ -460,12 +523,32 @@ var styles = StyleSheet.create({
     flexWrap: 'wrap',
 
   },
+  image_outside: {
+    width: 112,
+    height: 112,
+    marginTop: 15 - 7,
+    marginRight: 14 - 7,
+    //borderWidth: 1,
+    //borderColor: '#FF0000'
+  },
   image_photo: {
     width: 105,
     height: 105,
     resizeMode: 'cover',
-    marginTop: 15,
-    marginRight: 14,
+    marginTop: 7,
+    marginRight: 7
+  },
+  del_outside: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 17,
+    height: 17,
+  },
+  image_del: {
+    width: 17,
+    height: 17,
+    resizeMode: 'cover',
   },
   image_add: {
     width: 32,

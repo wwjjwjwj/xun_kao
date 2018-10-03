@@ -24,19 +24,36 @@ class YSWebView extends React.Component {
   render() {
     let url = this.props.url;
     let block_loading =this.state.isLoading?<YSLoading />:null;
-    return (
-      <View style={styles.container}>
-        <WebView
-          style={{ width: width, height: height }}
-          source={{ uri: url, method: 'GET' }}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          scalesPageToFit={true}
-          onLoadEnd={() => { this.setState({isLoading:false}) }}
-        />
-        {block_loading}
-      </View>
-    );
+    if(url){
+      return (
+        <View style={styles.container}>
+          <WebView
+            style={{ width: width, height: height }}
+            source={{ uri: url, method: 'GET' }}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            scalesPageToFit={true}
+            onLoadEnd={() => { this.setState({isLoading:false}) }}
+          />
+          {block_loading}
+        </View>
+      )
+    }else if(this.props.source){
+      return (
+        <View style={styles.container}>
+          <WebView
+            style={{ width: width, height: height }}
+            source={{ html: this.props.source }}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            scalesPageToFit={true}
+            onLoadEnd={() => { this.setState({isLoading:false}) }}
+          />
+          {block_loading}
+        </View>
+      )
+    }
+    ;
   };
 };
 var styles = StyleSheet.create({

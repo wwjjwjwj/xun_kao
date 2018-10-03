@@ -26,7 +26,7 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
+import YSLoaderScreen from 'YSLoaderScreen';
 import { md5_32 } from 'Util';
 const StyleSheet = require('../common/YSStyleSheet');
 //4. action
@@ -42,18 +42,11 @@ class LoginByEmail extends React.Component {
             //account: props.account,
             //password: '',
 
-            //account: '13800138067',
-            //password: '084911',
             account: '18612010002',
             password: '198693',
 
-            /*school_list: [
-              {'value': '1', 'label': '清华大学'},
-              {'value': '2', 'label': '北京大学'},
-              {'value': '3', 'label': '南开大学'}
-            ],*/
-            //school_list: this.props.school_list || [],
-            school_info: {}
+            school_info: {},
+            loading: false,
         };
         this.message = "";
         //扩展方法用于本组件实例
@@ -116,6 +109,7 @@ class LoginByEmail extends React.Component {
         //return;
 
         let { Toast } = this;
+        var that = this;
         //隐藏键盘
         dismissKeyboard();
         this.message = "";
@@ -129,26 +123,30 @@ class LoginByEmail extends React.Component {
           return;
         }
         //登录中...提示，默认3秒
-        Toast.loading(YSI18n.get('loginPending'), 3);
-        var _password = md5_32(password);
-        this.props.loginWithEmail(account, _password, school_id, school_name)
-            //api调用成功
+        //Toast.loading(YSI18n.get('loginPending'), 3);
+        this.setState({ loading: true })
+        setTimeout(function(){
+          var _password = md5_32(password);
+          that.props.loginWithEmail(account, _password, school_id, school_name)
             .then((response) => {
+                that.setState({ loading: false });
                 Toast.success(YSI18n.get('loginSuccess'))
             })
-            //api调用失败,提示登录名或密码错误
             .catch((response) => {
+                that.setState({ loading: false });
                 Toast.fail(response.ReMsg || YSI18n.get('loginFailed'));
             })
+        }, 1000);
+
     };
 
     render() {
         var segment = "";
-        let block_loading = null;
+        //let block_loading = null;
         //let disable = (this.state.account.trim() === '' || this.state.password.trim() === '' || !this.state.school_info.value)
         let disable = false;
-        if (this.state.isLoading) {
-            block_loading = <YSLoading loading_type={1} />
+        if (this.state.loading) {
+            //block_loading = <YSLoading loading_type={1} />
             segment = <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -231,6 +229,7 @@ class LoginByEmail extends React.Component {
                       {segment}
                     </View>
                 </KeyboardAwareScrollView>
+                <YSLoaderScreen loading={this.state.loading} tips={'登录中...'}/>
                 <YSToast ref={(toast) => this.Toast = toast} />
             </View>
         );
@@ -245,7 +244,7 @@ var styles = StyleSheet.create({
     backgroundColor: YSColors.login.bg
   },
   behind_bg: {
-    //height: '75%'
+    width: '100%',
   },
   behind_bottom: {
     position: 'absolute',
@@ -269,7 +268,8 @@ var styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 10},
     shadowColor: '#000000',
     shadowOpacity: 1,
-    shadowRadius: 5
+    shadowRadius: 5,
+    zIndex: 0,
   },
   logo: {
     width: 80,

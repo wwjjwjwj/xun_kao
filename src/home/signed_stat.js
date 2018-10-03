@@ -48,7 +48,6 @@ class SignedStat extends React.Component {
       //branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
 
       //data_list: DATA,
-      //data_list: [],
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
   }
