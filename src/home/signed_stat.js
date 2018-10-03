@@ -31,42 +31,7 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { GetExamClass } from '../actions/exam';
-
-/*const DATA = [
-  {
-    examId: 1,
-    examName: '第一次月考',
-    signTime: '9月20日 08:20-08:59',
-    //examTime: '9月20日 09:00-10:30',
-    numStu: 28,
-    numTotal: 29,
-    percent: ((29 - 28) * 100 / 29).toFixed(2),
-    status: 1,
-    statusName: '签到中',
-    numPass: 19,
-    numF: 3,
-    numUnSign: 1,
-    numRepair: 5,
-    numNotice: 3,
-  },
-  {
-    examId: 2,
-    examName: '第四场',
-    signTime: '9月21日 08:20-08:59',
-    //examTime: '9月21日 09:00-10:30',
-    numStu: 29,
-    numTotal: 29,
-    percent: ((29 - 29) * 100 / 29).toFixed(2),
-    status: 0,
-    statusName: '未开始',
-    numPass: 19,
-    numF: 3,
-    numUnSign: 1,
-    numRepair: 5,
-    numNotice: 3,
-  }
-];*/
+import { GetExamClassStat } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -83,12 +48,12 @@ class SignedStat extends React.Component {
       //branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
 
       //data_list: DATA,
-      data_list: [],
+      //data_list: [],
     };
     (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
   }
   componentDidMount() {
-    this.getPlaceInfo();
+    //this.getPlaceInfo();
   }
 
   getPlaceInfo(){
@@ -98,8 +63,8 @@ class SignedStat extends React.Component {
       Toast.info('参数不够，无法取场次数据');
       return;
     }
-    this.props.GetExamClass(examId, stationId, placeId)
-      .then((response) => {
+    this.props.GetExamClassStat(examId, stationId, placeId);
+      /*.then((response) => {
         //alert(JSON.stringify(response));
         if(response.State == 1){
           this.setState({
@@ -111,7 +76,7 @@ class SignedStat extends React.Component {
       .catch((response) => {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
-      })
+      })*/
   }
 
   //浏览视图
@@ -209,7 +174,7 @@ class SignedStat extends React.Component {
 
   render(){
     let block_list_view = <ListView
-        dataSource={ds.cloneWithRows(this.state.data_list)}
+        dataSource={ds.cloneWithRows(this.props.class_stat_list)}
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
     />
 
@@ -411,22 +376,25 @@ var styles = StyleSheet.create({
     color: '#666666'
   },
 
-
-
 })
 
 function select(store) {
     var place_info = {};
+    var class_stat_list = [];
     if (store.exam && store.exam.place_info) {
         place_info = store.exam.place_info || {};
     }
+    if(store.exam && store.exam.class_stat_list){
+      class_stat_list = store.exam.class_stat_list
+    }
     return {
         place_info,
+        class_stat_list
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetExamClass: bindActionCreators(GetExamClass, dispatch),
+        GetExamClassStat: bindActionCreators(GetExamClassStat, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(SignedStat);

@@ -36,7 +36,9 @@ import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';
 //4. action
-import { GetExamClass, GetStudentByName,
+import {
+  GetExamClassStat,
+  GetStudentByName,
   StudentPhotoSign
 } from '../actions/exam';
 
@@ -49,7 +51,7 @@ class SignedByOther extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      data_list: [],
+      //data_list: [],
       is_search: false,
       search_data_list: [],
 
@@ -70,7 +72,7 @@ class SignedByOther extends React.Component {
     (this: any).uploadData = this.uploadData.bind(this);
   }
   componentDidMount() {
-    this.getPlaceInfo();
+    //this.getPlaceInfo();
   }
 
   getPlaceInfo(){
@@ -80,8 +82,8 @@ class SignedByOther extends React.Component {
       Toast.info('参数不够，无法取场次数据');
       return;
     }
-    this.props.GetExamClass(examId, stationId, placeId)
-      .then((response) => {
+    this.props.GetExamClassStat(examId, stationId, placeId)
+      /*.then((response) => {
         if(response.State == 1){
           //alert(JSON.stringify(response));
           this.setState({
@@ -93,7 +95,7 @@ class SignedByOther extends React.Component {
       .catch((response) => {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
-      })
+      })*/
   }
 
   onSearchChange(text){
@@ -118,8 +120,9 @@ class SignedByOther extends React.Component {
         if(response.State == 1 && response.ReData){
           response.ReData.dataList.map(stu => {
             var _oc = { stu_list: [] };
-            for(var i = 0; i < this.state.data_list.length; i++){
-              var oc = this.state.data_list[i];
+            var _stat_list = this.props.class_stat_list
+            for(var i = 0; i < _stat_list.length; i++){
+              var oc = _stat_list[i];
               if(stu.orderName == oc.orderName && stu.className == oc.className){
                 _oc = oc;
                 break;
@@ -454,7 +457,7 @@ class SignedByOther extends React.Component {
     let block_list_view;
     if(!this.state.is_search){
       block_list_view = <ListView
-        dataSource={ds.cloneWithRows(this.state.data_list)}
+        dataSource={ds.cloneWithRows(this.props.class_stat_list)}
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
       />
     }else {
@@ -834,16 +837,21 @@ var styles = StyleSheet.create({
 
 function select(store) {
     var place_info = {};
+    var class_stat_list = [];
     if (store.exam && store.exam.place_info) {
         place_info = store.exam.place_info || {};
     }
+    if(store.exam && store.exam.class_stat_list){
+        class_stat_list = store.exam.class_stat_list
+    }
     return {
         place_info,
+        class_stat_list
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetExamClass: bindActionCreators(GetExamClass, dispatch),
+        GetExamClassStat: bindActionCreators(GetExamClassStat, dispatch),
         GetStudentByName: bindActionCreators(GetStudentByName, dispatch),
         StudentPhotoSign: bindActionCreators(StudentPhotoSign, dispatch),
     };

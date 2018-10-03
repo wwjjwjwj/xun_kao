@@ -134,8 +134,8 @@ class Home extends React.Component {
   }
   onGetPlaceData(){
     let { Toast } = this;
-    this.props.GetPlace()
-      .then((response) => {
+    this.props.GetPlace();
+      /*.then((response) => {
         //alert(JSON.stringify(response));
         if(response.State == 1 && response.ReData){
           this.setState({
@@ -146,7 +146,7 @@ class Home extends React.Component {
       .catch((response) => {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('获取考点数据失败'));
-      })
+      })*/
   }
   onGetExamNoticeData(){
     let { Toast } = this;
@@ -593,6 +593,7 @@ function mapDispatchToProps(dispatch) {
         GetPlace: bindActionCreators(GetPlace, dispatch),
         GetExamNotice: bindActionCreators(GetExamNotice, dispatch),
         HideExamNotice: bindActionCreators(HideExamNotice, dispatch),
+        GetExamTask: bindActionCreators(GetExamTask, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(Home);

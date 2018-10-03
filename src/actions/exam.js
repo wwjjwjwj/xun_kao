@@ -71,13 +71,11 @@ export function GetExamClassSign(examId, stationId, placeId) {
           size: 999
         });
         promise.then((result) => {
-
-
             //alert(JSON.stringify(result));
             if(result.State == 1){
               const action = {
                   type: 'GETTED_EXAM_CLASS_SIGN',
-                  data: result.ReData
+                  data: result.ReData.dataList
               }
               dispatch(action);
             }
@@ -86,7 +84,7 @@ export function GetExamClassSign(examId, stationId, placeId) {
     };
 }
 //2.	考点地址-场次安排（包含缺考等详情）
-export function GetExamClass(examId, stationId, placeId) {
+export function GetExamClassStat(examId, stationId, placeId) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("ExamPlan/GetExamClassSign", {
           examId: examId,
@@ -97,11 +95,11 @@ export function GetExamClass(examId, stationId, placeId) {
         });
         promise.then((result) => {
             //alert(JSON.stringify(result));
-            /*const action = {
-                type: 'GETTED_EXAM_CLASS',
-                data: result.data
+            const action = {
+                type: 'GETTED_EXAM_CLASS_STAT',
+                data: result.ReData.dataList
             }
-            dispatch(action);*/
+            dispatch(action);
         });
         return promise;
     };

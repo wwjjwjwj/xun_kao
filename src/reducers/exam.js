@@ -20,8 +20,21 @@ function exam(state: State = initialState, action: Action): State {
       place_info
     }
   }
-  if(action.type == 'GETTED_EXAM_CLASS'){
-    
+  else if(action.type == 'GETTED_EXAM_CLASS_SIGN'){
+    var class_sign_list = action.data || [];
+    //包含 examId, stationId, palceId, orderName, className, time...
+    return {
+      ...state,
+      class_sign_list
+    }
+  }
+  else if(action.type == 'GETTED_EXAM_CLASS_STAT'){
+    var class_stat_list = action.data || [];
+    return {
+      ...state,
+      class_stat_list
+    }
+
   }
 
   return state;

@@ -32,7 +32,8 @@ import SignedByOther from './signed_by_other';
 import My from './my';
 import _Modal from './modal';
 
-import { getUserMenus } from '../actions/user';
+import { GetPlace, GetExamClassSign, GetExamClassStat
+} from '../actions/exam';
 
 class Index extends React.Component {
   constructor() {
@@ -83,13 +84,21 @@ class Index extends React.Component {
   }
 
   onChangeTab(tabName: any) {
-    if (tabName === 'workbench') {
-      //载入我的功能菜单（刷新）
-      this.props.getUserMenus()
+    if(this.state.selectedTab != tabName){
+      if (tabName === 'home') {
+        //载入我的功能菜单（刷新）
+        this.props.GetPlace()
+      }else if(tabName === 'signedByCard' || tabName === 'examTakePhoto'){
+        let { examId, stationId, placeId } = this.props.place_info;
+        this.props.GetExamClassSign(examId, stationId, placeId);
+      }else if(tabName === 'signedStat' || tabName === 'signedByOther'){
+        let { examId, stationId, placeId } = this.props.place_info;
+        this.props.GetExamClassStat(examId, stationId, placeId);
+      }
+      this.setState({
+        selectedTab: tabName,
+      });
     }
-    this.setState({
-      selectedTab: tabName,
-    });
   }
 
   render() {
@@ -167,17 +176,23 @@ var styles = StyleSheet.create({
 })
 
 
-const mapStateToProps = (state) => {
-  return {
-    locale: state.user.locale || global.locale,
-  };
+function select(store){
+    var place_info = {};
+    if (store.exam && store.exam.place_info) {
+        place_info = store.exam.place_info || {};
+    }
+    return {
+        place_info
+    }
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     //各业务接口
-    //getUserMenus: bindActionCreators(getUserMenus, dispatch),
+    GetPlace: bindActionCreators(GetPlace, dispatch),
+    GetExamClassSign: bindActionCreators(GetExamClassSign, dispatch),
+    GetExamClassStat: bindActionCreators(GetExamClassStat, dispatch),
   };
 }
 //redux 组件 封装
-module.exports = connect(mapStateToProps, mapDispatchToProps)(Index);
+module.exports = connect(select, mapDispatchToProps)(Index);

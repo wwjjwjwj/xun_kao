@@ -30,26 +30,7 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { GetExamClassSign } from '../actions/exam';
-
-/*const DATA = [
-  {
-    examId: 1,
-    examName: '第一次月考',
-    signTime: '9月20日 08:20-08:59',
-    examTime: '9月20日 09:00-10:30',
-    status: 1,
-    statusName: '签到中',
-  },
-  {
-    examId: 2,
-    examName: '第四场',
-    signTime: '9月21日 08:20-08:59',
-    examTime: '9月21日 09:00-10:30',
-    status: 0,
-    statusName: '未开始'
-  }
-];*/
+//import { GetExamClassSign } from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -66,15 +47,14 @@ class SignedByCard extends React.Component {
       //branch_addr: '重庆市沙坪坝区沙坪坝正街174号',
 
       //data_list: DATA,
-      data_list: [],
     };
-    (this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
+    //(this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
   }
   componentDidMount() {
-    this.getPlaceInfo();
+    //this.getPlaceInfo();
   }
 
-  getPlaceInfo(){
+  /*getPlaceInfo(){
     let { Toast } = this;
     let { examId, stationId, placeId } = this.props.place_info;
     if(!examId || !stationId || !placeId){
@@ -94,7 +74,7 @@ class SignedByCard extends React.Component {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
-  }
+  }*/
   onSign(row: any){
     if(row.state == 1){
       this.props.navigation.navigate('examSign', {info: row});
@@ -180,7 +160,7 @@ class SignedByCard extends React.Component {
 
   render(){
     let block_list_view = <ListView
-        dataSource={ds.cloneWithRows(this.state.data_list)}
+        dataSource={ds.cloneWithRows(this.props.class_sign_list)}
         renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
     />
 
@@ -436,16 +416,21 @@ var styles = StyleSheet.create({
 
 function select(store) {
     var place_info = {};
+    var class_sign_list = [];
     if (store.exam && store.exam.place_info) {
         place_info = store.exam.place_info || {};
     }
+    if(store.exam && store.exam.class_sign_list){
+      class_sign_list = store.exam.class_sign_list
+    }
     return {
         place_info,
+        class_sign_list
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        GetExamClassSign: bindActionCreators(GetExamClassSign, dispatch),
+        //GetExamClassSign: bindActionCreators(GetExamClassSign, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(SignedByCard);

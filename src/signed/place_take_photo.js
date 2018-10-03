@@ -190,7 +190,7 @@ class PlaceTakePhoto extends React.Component {
     }
     this.props.GetOrderStatistics(examId, stationId, placeId, orderName, '')
       .then((response) => {
-        alert(‘场次统计信息：’ + JSON.stringify(response));
+        alert('场次统计信息：' + JSON.stringify(response));
         if(response.State == 1){
           alert(JSON.stringify(response.ReData))
           return;
