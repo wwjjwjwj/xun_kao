@@ -139,7 +139,7 @@ class StatDetailByType extends React.Component {
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
-          height: 640,
+          height: 640 * YSWHs.height_window / YSWHs.width_window,
           cropping: true,
           mediaType:'photo',
           includeBase64: true,

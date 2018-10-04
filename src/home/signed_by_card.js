@@ -134,7 +134,9 @@ class SignedByCard extends React.Component {
                       <Text font_14 gray2>签到</Text>
                       <Text font_14 gray2 marginL-15>{_signTime}</Text>
                       <View right flex-1>
-                        {row.state == 1 && <YSButton
+                        {row.state == 1
+//|| row.state != 1
+                          && <YSButton
                               type={'bordered'}
                               style={styles.btn_sign}
                               caption={'读卡签到'}

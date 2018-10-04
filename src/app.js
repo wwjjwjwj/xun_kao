@@ -14,6 +14,7 @@ import {
 import {
   LocaleProvider
 } from 'antd-mobile-rn';
+import Orientation from "react-native-orientation";
 
 const React = require('React');
 const AppState = require('AppState');
@@ -35,6 +36,8 @@ import './assets';
 
 class App extends React.Component {
   componentWillMount() {
+    //应用强制竖屏
+    Orientation.lockToPortrait();
   }
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);

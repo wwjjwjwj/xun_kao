@@ -32,7 +32,7 @@ import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
+import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
   encodeText,
 } from 'Util';
@@ -63,7 +63,7 @@ class ExamSign extends React.Component {
           name: '张三',
           avatar: "data:image/jpg;base64," + 'abc'
         },*/
-        image: {}   //拍照图片
+        image: {},   //拍照图片
       };
       (this: any).onRead = this.onRead.bind(this);
       (this: any).onReturn = this.onReturn.bind(this);
@@ -81,6 +81,7 @@ class ExamSign extends React.Component {
   componentWillMount() {
     this.initDevice();
     this.props.checkPermissionReadPhoneState();
+    this.getLocation();
 
 //假设读卡成功2018
     //this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
@@ -91,14 +92,27 @@ class ExamSign extends React.Component {
     var that = this;
     getGeolocation(function(res){
       //alert(JSON.stringify(res));
-      var pos = res.y + ',' + res.x;
-      that.setState({
-        pos: pos
-      })
+      if(res.result){
+        var pos = res.y + ',' + res.x;
+        that.setState({
+          pos: pos
+        })
+      }else {
+        that.setState({
+          showSettingBox2: true
+        })
+      }
+
     })
   }
 
   onCheckUserInfo(cardInfo){
+/*this.setState({
+  check_status: 1,    //验证成功
+  student_id: 999,
+})
+return;*/
+
     let { Toast } = this;
     if(!cardInfo || !cardInfo.cardNo){
       Toast.fail('未获取到学生身份证');
@@ -265,16 +279,19 @@ class ExamSign extends React.Component {
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
-          height: 640,
-          cropping: true,
+          height: 640 * YSWHs.height_window / YSWHs.width_window,
+          //cropping: true,
+          cropping: false,
           mediaType:'photo',
           includeBase64: true,
           cropperChooseText: '选择',
           cropperCancelText: '取消'
         }).then(image => {
             //that.doUploadPhoto(image.data)
-            image.photo = `data:${image.mime};base64,${image.data}`;
-            that.onChoosePhoto(image);
+            var img = {
+              photo: `data:${image.mime};base64,${image.data}`
+            };
+            that.onChoosePhoto(img);
         });
       }else {
         that.setState({
@@ -307,7 +324,7 @@ class ExamSign extends React.Component {
     }, 500);
   }
 
-  onPostCardSign(pos){
+  onPostCardSign(){
     //上传拍照 返回 验证 结果
     let { Toast } = this;
     if(!this.state.student_id){
@@ -323,47 +340,66 @@ class ExamSign extends React.Component {
       return;
     }
     var that = this;
-    var s = {
-      studentId: this.state.student_id,
-      pos: pos,
-      cardPic: encodeText(this.state.cardInfo.avatar),
-      //cardPic: encodeText(this.state.image.photo),
-      photo: encodeText(this.state.image.photo),
-      //cardPic : encodeURI(this.state.image.photo),
-      //photo: encodeURI(this.state.image.photo),
-    }
-    this.props.CardSign(s)
+    this.setState({
+      loading: true
+    })
+    setTimeout(function(){
+      var s = {
+        studentId: that.state.student_id,
+        pos: that.state.pos,
+        cardPic: encodeText(that.state.cardInfo.avatar),
+        //完全相同的base64不能传2次，否则app会奔溃
+//cardPic: '',
+        photo: encodeText(that.state.image.photo),
+        //cardPic : encodeURI(this.state.image.photo),
+        //photo: encodeURI(this.state.image.photo),
+      }
+      that.props.CardSign(s)
         .then((response) => {
           //alert(JSON.stringify(response));
           if(response.State == 1){
             setTimeout(function(){
               that.setState({
-                valid_status: 2
+                valid_status: 2,
+                loading: false
               })
             }, 1000);
           }else{
             Toast.info(response.ReMsg);
             setTimeout(function(){
               that.setState({
-                valid_status: 3 //非本人
+                valid_status: 3, //非本人
+                loading: false
               })
               if(1==2){
                 that.setState({
-                  valid_status: 4 //非考场范围
+                  valid_status: 4, //非考场范围
+                  loading: false
                 })
               }
             }, 1000);
           }
         })
         .catch((response) => {
+          that.setState({
+            loading: false
+          });
+          setTimeout(function(){
+            that.onModalShow();
+          }, 2000);
           Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
         })
+    }, 200);
   }
 
   onUpload(){
     this.onModalHide();
     //验证位置权限
     var that = this;
+    setTimeout(function(){
+      that.onPostCardSign();
+    }, 200);
+    return;
     let { Toast } = this;
     getGeolocation(function(res){
       //alert(JSON.stringify(res));
@@ -536,7 +572,7 @@ class ExamSign extends React.Component {
                 onPress={this.onReturn} />
             </View>
           }
-          {this.state.read_status == 2 &&
+          {this.state.read_status == 2 && (this.state.check_status == 2 || this.state.check_status == 1) &&
             <View centerH marginT-65 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
@@ -557,7 +593,7 @@ class ExamSign extends React.Component {
                 onPress={this.onRead} />
             </View>
           }
-          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
+          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -565,7 +601,7 @@ class ExamSign extends React.Component {
                 text_style={styles.text_caption}
                 disable={false}
                 onPress={this.onTestFind} />
-          </View> }
+          </View> */}
           {this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
@@ -575,8 +611,8 @@ class ExamSign extends React.Component {
 
         </KeyboardAwareScrollView>
 
-        {!!this.state.image.data && this.state.valid_status == 0 &&
-            <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
+        {!!this.state.image.photo && this.state.valid_status == 0 &&
+            <Image style={styles.image} source={{uri: this.state.image.photo}} />
         }
 
         <Modal
@@ -622,6 +658,7 @@ class ExamSign extends React.Component {
         {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
         {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
 
+        <YSLoaderScreen loading={this.state.loading} tips={'上传中...'}/>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )

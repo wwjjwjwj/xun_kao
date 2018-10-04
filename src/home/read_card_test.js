@@ -32,7 +32,6 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoading from 'YSLoading';
 //4. action
-import { loginWithEmail } from '../actions/user';
 import { checkPermissionReadPhoneState } from '../actions/base';
 
 import {getFinger} from '../env';
@@ -67,8 +66,10 @@ class ReadCardTest extends React.Component {
     CardModule.init({
       a: '11',
       onReturn: (data, type) => {
+        let { Toast } = that;
         if(type < 0 || type == "-1"){
-          alert(data);
+          //alert(data);
+          Toast.info(data);
           that.setState({
             read_status: 3
           })
@@ -175,22 +176,22 @@ class ReadCardTest extends React.Component {
         read_status: 1
       })
 
-      if(this.state.type == 'blueteeth'){
-        CardModule.read_card_info({
-        })
-      }else if(this.state.type == 'otg'){
-        if(Platform.OS === 'android'){
-          CardModule.read_card_info_otg({});
-        }else {
-          Toast.info('iphone不支持otg连接');
-          return;
-        }
-      }
-
-      /*var that = this;
+      var that = this;
       setTimeout(function(){
-        that.setState({read_status: 3})
-      }, 2000)*/
+        if(that.state.type == 'blueteeth'){
+          CardModule.read_card_info({
+          })
+        }else if(that.state.type == 'otg'){
+          if(Platform.OS === 'android'){
+            CardModule.read_card_info_otg({});
+          }else {
+            Toast.info('iphone不支持otg连接');
+            return;
+          }
+        }
+
+        //that.setState({read_status: 3})
+      }, 500)
     }else {
       Toast.info('正在读卡中...');
     }
@@ -387,17 +388,11 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
-    var account = "";
-    if (store.user && store.user.login_name) {
-        account = store.user.login_name
-    }
     return {
-        account: account,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        loginWithEmail: bindActionCreators(loginWithEmail, dispatch),
         checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch)
     };
 }

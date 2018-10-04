@@ -146,7 +146,7 @@ class Home extends React.Component {
 
   handleAppStateChange = (appState) => {
     if (appState == 'active') {
-      
+
     }
   }
 

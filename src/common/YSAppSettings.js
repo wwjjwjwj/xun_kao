@@ -71,32 +71,31 @@ class YSAppSettings extends React.Component {
   render() {
 
     let block_button = null;
-    if (Platform.OS == 'ios') {
+    /*if (Platform.OS == 'ios') {
       block_button = <View style={styles.block_buttonWrap}>
         <TouchableOpacity style={styles.touch_button} onPress={() => this.props.callback()}>
           <Text style={styles.text_ok}>{YSI18n.get("马上设置")}</Text>
         </TouchableOpacity>
       </View>
-    } else {
+    } else {*/
       block_button = <View style={styles.block_buttonWrap_android}>
         <TouchableOpacity style={styles.touch_button_android} onPress={() => this.props.callback()}>
           <Text style={styles.text_ok_android}>{YSI18n.get("马上设置")}</Text>
         </TouchableOpacity>
       </View>
-    }
+    //}
 
     let block_close = <View style={styles.block_close_wrap}>
       <TouchableOpacity activeOpacity={1} onPress={() => this.props.hideDialog()}><Image source={IMG_CLOSEBUTTON} style={styles.img_closebutton} /></TouchableOpacity>
     </View>
 
-    if (Platform.OS == 'ios') {
+    /*if (Platform.OS == 'ios') {
       return (
         <Animated.View style={[styles.block_container, { opacity: this.state.animate_opacity }]}>
           <TouchableWithoutFeedback onPress={() => this.props.hideDialog()}>
             <View style={styles.modal_mask} />
           </TouchableWithoutFeedback>
           <View style={styles.block_dialogConten_wrap}>
-            {/*this.props.type == 1 && <Image source={IMG_CONTENT[0]} style={styles.img_content} />*/}
             {this.props.type == 1 && <Text style={styles.text_header}>{YSI18n.get("相机权限未打开")}</Text>}
             {this.props.type == 1 && <Text style={styles.text_small}>{YSI18n.get("去“设置”允许E考官访问相机")}</Text>}
             {this.props.type == 2 && <Text style={styles.text_header}>{YSI18n.get("定位权限未打开")}</Text>}
@@ -106,7 +105,7 @@ class YSAppSettings extends React.Component {
           {block_close}
         </Animated.View >
       )
-    } else {
+    } else {*/
       return (
         <Animated.View style={[styles.block_container, { opacity: this.state.animate_opacity }]}>
           <TouchableWithoutFeedback onPress={() => this.props.hideDialog()}>
@@ -121,7 +120,7 @@ class YSAppSettings extends React.Component {
           </View>
         </Animated.View >
       )
-    }
+    //}
 
   }
 }

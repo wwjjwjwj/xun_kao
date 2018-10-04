@@ -34,7 +34,7 @@ import YSWHs from 'YSWHs';
 import YSFontSizes from 'YSFontSizes';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
+import YSLoaderScreen from 'YSLoaderScreen';
 import YSI18n from 'YSI18n';
 const StyleSheet = require('../common/YSStyleSheet');
 import YSToast from 'YSToast';
@@ -144,6 +144,9 @@ _startCountDown(){
     }, 1000)
 };
 _sendSMS(){
+    if(this.state.isCountDown){
+      return;
+    }
     let { Toast } = this;
     var that = this;
     var phone = this.state.phone;
@@ -158,19 +161,30 @@ _sendSMS(){
         Toast.fail("请输入手机号");
         return;
     }
-    this.code_sended = true;
-    var world_phone = "+" + this.props.countryCode + phone;
+    this.setState({ loading: true })
+    //this.code_sended = true;
+    //var world_phone = "+" + this.props.countryCode + phone;
+    var world_phone = phone;
     this.props.sendSMS(world_phone, 3)
       .then(response => {
+        //alert(JSON.stringify(response))
         //倒计时60s
-        that.setState({
-            isCountDown: true,
-            countDownSeconds: COUNT_DOWN_INIT
-        });
-        that._startCountDown();
+        if(response.State == 1){
+          that.setState({
+              isCountDown: true,
+              countDownSeconds: COUNT_DOWN_INIT,
+              loading: false
+          });
+          that._startCountDown();
+        }else {
+          Toast.fail(response.ReMsg);
+          that.setState({ loading: false })
+        }
       })
       .catch(response => {
-        Toast.fail(response.message || YSI18n.get('loginFailed'));
+        that.setState({ loading: false })
+        //alert(JSON.stringify(response))
+        Toast.fail(response.ReMsg || '找回密码失败');
       })
 }
 onNext(){
@@ -179,7 +193,7 @@ onNext(){
       step: 2
     })
   }else {
-
+    this._reset();
   }
 
 }
@@ -193,7 +207,7 @@ async _reset() {
 
     } else {
         //alert(YSI18n.get('Register_tip'));
-        Toast.fail("请输入手机号");
+        Toast.fail("请输入手机号、验证码和新密码");
         return;
     }
     if (pwd.length < 6) {
@@ -277,7 +291,10 @@ render() {
                 value={this.state.code}
                 onFocus={()=>this.setState({isCodeFocus: true})}
                 onBlur={()=>this.setState({isCodeFocus: false})}
-                button={{title: '获取验证码', onPress:this._sendSMS  }}
+                button={{
+                  title: this.state.isCountDown ? this.state.countDownSeconds : '获取验证码',
+                  onPress:this._sendSMS
+                }}
               />
             </View>
     }else {
@@ -323,6 +340,7 @@ render() {
           </KeyboardAwareScrollView>
           <HeaderNavigator navigation={this.props.navigation} headerTitle={""} />
           <YSToast ref={(toast) => this.Toast = toast} />
+          <YSLoaderScreen loading={this.state.loading} tips={'发送中...'}/>
         </View>
     );
 };

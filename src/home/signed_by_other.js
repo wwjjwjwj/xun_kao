@@ -183,7 +183,7 @@ class SignedByOther extends React.Component {
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
-          height: 640,
+          height: 640 * YSWHs.height_window / YSWHs.width_window,
           cropping: true,
           mediaType:'photo',
           includeBase64: true,
@@ -338,7 +338,8 @@ class SignedByOther extends React.Component {
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 && row.importantCount &&
                             <View style={styles.sign_status} center>
-                              <Text font_12 orange style={styles.sign_status_text}>重点关注考生：{row.importantCount}人</Text>
+                              {/*<Text font_12 orange style={styles.sign_status_text}>重点关注考生：{row.importantCount}人</Text>*/}
+                              <Text font_12 orange style={styles.sign_status_text}>{row.importantCount}人</Text>
                             </View>
                           }
                         </View>
@@ -660,8 +661,8 @@ var styles = StyleSheet.create({
   clearStyle: {
     width: 13,
     height: 13,
-    resizeMode: 'contain',
-    paddingRight: 9,
+    resizeMode: 'cover',
+    paddingRight: 19,
   },
   //------------考试场次部分
   list_wrap: {

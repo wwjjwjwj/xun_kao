@@ -171,7 +171,6 @@ var styles = StyleSheet.create({
     flexDirection:'column',
     justifyContent:'center',
     marginRight: 36,
-
   },
   btn: {
     height: 47,

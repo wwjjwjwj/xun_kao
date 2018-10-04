@@ -6,14 +6,14 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ListView
+  ListView, Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
   Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
-import { List, WhiteSpace, DatePicker, Picker, Modal
+import { List, WhiteSpace, DatePicker, Picker
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -21,7 +21,9 @@ import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import CardModule from 'react-native-card-read';
 import ImagePicker from 'react-native-image-crop-picker';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import SchoolearnModule from 'react-native-schoolearn';
+import Orientation from "react-native-orientation";
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -54,7 +56,16 @@ class PlaceTakePhoto extends React.Component {
 
         loading: false,
         image_list: [],
-        //image: {}   //拍照图片
+        image_brower: false,
+        /*image_list: [
+          {
+            url: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2321671466,502873230&fm=26&gp=0.jpg'
+          },
+          {
+            url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1538672243881&di=907e3c61209ca5c9027b804d0708cc12&imgtype=0&src=http%3A%2F%2Faliyunzixunbucket.oss-cn-beijing.aliyuncs.com%2Fjpg%2Fa10267235b667ed0ae4c56be445fe909.jpg%3Fx-oss-process%3Dimage%2Fresize%2Cp_100%2Fauto-orient%2C1%2Fquality%2Cq_90%2Fformat%2Cjpg%2Fwatermark%2Cimage_eXVuY2VzaGk%3D%2Ct_100'
+          }
+        ],
+        image_brower: true*/
       };
       (this: any).onReturn = this.onReturn.bind(this);
       (this: any).onTakePhoto = this.onTakePhoto.bind(this);
@@ -62,6 +73,7 @@ class PlaceTakePhoto extends React.Component {
       (this: any).onUpload = this.onUpload.bind(this);
       (this: any).onViewSign = this.onViewSign.bind(this);
       (this: any).onUploadData = this.onUploadData.bind(this);
+      Orientation.addOrientationListener(this._orientationDidChange);
   };
   componentWillMount() {
     var that = this;
@@ -71,16 +83,33 @@ class PlaceTakePhoto extends React.Component {
 
     this.getLocation();
 
+    //Orientation.lockToLandscape();
+  }
+  componentWillUnmount(){
+    Orientation.removeOrientationListener(this._orientationDidChange);
+    //Orientation.lockToPortrait();
+  }
+
+  _orientationDidChange = (orientation) => {
+      if (orientation === 'LANDSCAPE') {
+      } else {
+      }
   }
 
   getLocation(){
     var that = this;
     getGeolocation(function(res){
       //alert(JSON.stringify(res));
-      var pos = res.y + ',' + res.x;
-      that.setState({
-        pos: pos
-      })
+      if(res.result){
+        var pos = res.y + ',' + res.x;
+        that.setState({
+          pos: pos
+        })
+      }else {
+        that.setState({
+          showSettingBox2: true
+        })
+      }
     })
   }
 
@@ -99,7 +128,7 @@ class PlaceTakePhoto extends React.Component {
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
-          height: 640,
+          height: 640 * YSWHs.height_window / YSWHs.width_window,
           //cropping: true,
           cropping: false,
           mediaType:'photo',
@@ -115,7 +144,7 @@ class PlaceTakePhoto extends React.Component {
               index = _l[_l.length - 1].index + 1;
             }
             var img = {
-              photo: photo,
+              url: photo,
               index: index
             }
             that.onChoosePhoto(img);
@@ -159,7 +188,7 @@ class PlaceTakePhoto extends React.Component {
       var memo ='';
       var files = [];
       that.state.image_list.map(i => {
-        files.push(encodeText(i.photo));
+        files.push(encodeText(i.url));
       })
       //var files = files.join(',');
       //className, pos, files
@@ -223,6 +252,13 @@ class PlaceTakePhoto extends React.Component {
       }
     }
   }
+  onViewImage(image, index){
+    this.setState({
+      //暂时屏蔽，等需要时再打开 2018
+//      image_brower: true,
+      image_index: index
+    })
+  }
 
   onViewSign(){
     //alert('查看本场签到');
@@ -273,10 +309,12 @@ class PlaceTakePhoto extends React.Component {
           */}
           {this.state.image_list.length > 0 && this.state.status == 1 &&
             <View style={styles.image_view}>
-              {this.state.image_list.map(image => {
+              {this.state.image_list.map((image, i) => {
                   if(image){
-                    return <View style={styles.image_outside}>
-                      <Image style={styles.image_photo} source={{uri: image.photo}} />
+                    return <View style={styles.image_outside} key={i}>
+                      <TouchableOpacity onPress={()=>this.onViewImage(image, i)}>
+                        <Image style={styles.image_photo} source={{uri: image.url}} />
+                      </TouchableOpacity>
                       <TouchableOpacity style={styles.del_outside} onPress={()=>this.onDelImage(image)}>
                         <Image source={Assets.login.icon_del} style={styles.image_del}/>
                       </TouchableOpacity>
@@ -373,6 +411,19 @@ class PlaceTakePhoto extends React.Component {
         {/*this.state.image.data && this.state.valid_status == 0 &&
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
         */}
+        <Modal visible={this.state.image_brower}
+          transparent={true}
+          onRequestClose={() => this.setState({image_brower: false})}>
+        >
+          <ImageViewer
+            imageUrls={this.state.image_list}
+            index={this.state.image_index}
+          />
+          <TouchableOpacity style={styles.touch_exit} onPress={()=>this.setState({image_brower: false})}>
+            <Image style={styles.img_exit} source={Assets.home.icon_close}/>
+          </TouchableOpacity>
+        </Modal>
+
         {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
         {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
         <YSLoaderScreen loading={this.state.loading} tips={'上传中...'}/>
@@ -561,6 +612,20 @@ var styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+
+  touch_exit: {
+    position: 'absolute',
+    right: 10,
+    top: 30,
+    height: 30,
+    width: 30,
+    //backgroundColor: '#330099'
+  },
+  img_exit: {
+    width: 20,
+    height: 20
   },
 
 })
