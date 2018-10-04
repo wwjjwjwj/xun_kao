@@ -6,6 +6,7 @@
  */
 
 #import "AppDelegate.h"
+#import "Orientation.h" // <--- import
 #import <RCTJPushModule.h>
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
@@ -91,6 +92,14 @@
 +(AppDelegate *)shareAppDelegate{
   
   return  (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  while ([[UIDevice currentDevice] isGeneratingDeviceOrientationNotifications]) {
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+  }
+  
+  return [Orientation getOrientation];
 }
 
 @end
