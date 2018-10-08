@@ -2,8 +2,12 @@ package com.examerapp;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.facebook.react.ReactActivity;
+
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -22,5 +26,16 @@ public class MainActivity extends ReactActivity {
         Intent intent = new Intent("onConfigurationChanged");
         intent.putExtra("newConfig", newConfig);
         this.sendBroadcast(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        SplashScreen.show(this);  // here
+        super.onCreate(savedInstanceState);
+        //JPushInterface.init(this);
+        //JPushInterface.setDebugMode(true);
+
     }
 }

@@ -6,8 +6,10 @@ import {
 import I18n from 'react-native-i18n'
 
 const deviceLocale = I18n.locale;
-const url = 'http://211.167.76.161:8112/';
-const url2 = 'http://211.167.76.161:8112/';
+//const url = 'http://211.167.76.161:8112/';
+//const url2 = 'http://211.167.76.161:8112/';
+const url = 'https://ois.chinaedu.net/';
+const url2 = 'https://ois.chinaedu.net/';
 
 module.exports = {
     appName: '巡考',

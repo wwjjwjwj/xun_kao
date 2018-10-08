@@ -50,6 +50,8 @@ class Home extends React.Component {
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange);
 
+    return;
+
     //消息推送
     if (Platform.OS != 'ios') {
       //JPushModule.initPush();

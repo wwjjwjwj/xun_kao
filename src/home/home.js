@@ -198,7 +198,7 @@ class Home extends React.Component {
       <View flex style={styles.container}>
         <Image style={styles.behind_bg} source={Assets.home.img_bg}/>
         <View style={styles.front0}>
-          <Text marginT-35 white text_title2>E考官</Text>
+          <Text marginT-35 white text_title2>e考官</Text>
           <Text marginT-11 blue2 label_input>欢迎来到考场巡检系统！</Text>
           <View marginL-28 marginR-28 style={styles.front_user0}>
             <View marginT-52 marginB-5 bg-white style={styles.front_user}>
