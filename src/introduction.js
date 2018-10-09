@@ -33,9 +33,12 @@ import { Constants } from 'react-native-ui-lib';
 //const IMGuide1x = require('../assets/guide01-iphone.jpg');
 //const IMGuide3x = require('../assets/guide03-iphone.jpg');
 
-const IMGuide1x = require('./assets/img_guide_1.png');
-const IMGuide3x = require('./assets/img_guide_2.png');
+//const IMGuide1x = require('./assets/img_guide_1.png');
+//const IMGuide3x = require('./assets/img_guide_2.png');
+
 const StyleSheet = require('./common/YSStyleSheet');
+var IMGuide1x = '';
+var IMGuide3x = '';
 
 class Introduction extends React.Component {
     componentDidMount() {
@@ -79,25 +82,41 @@ class Introduction extends React.Component {
             <View style={styles.container}>
                 <StatusBar hidden={true}/>
                 <Swiper style={styles.wrapper} loop={false}
-                        dot={<View style={styles.dotstyle}/>}
-                        activeDot={<View style={styles.activeDotStyle}/>} showsButtons={false}>
-                    <View style={styles.slide1}>
-                        <Image
-                            style={styles.image} source={this.loadGuidImage(1)}>
-                        </Image>
-                    </View>
-                    <View style={styles.slide3}>
-                        <ImageBackground
-                            style={[styles.image, styles.image_wrap]} source={this.loadGuidImage(3)}>
-                            <View style={styles.button_wrap}>
-                                <Button
-                                    style={styles.border_button}
-                                    onClick={() => {
-                                        this.gotoLogin();
-                                    }}>登录</Button>
-                            </View>
-                        </ImageBackground>
-                    </View>
+                  //dot={<View style={styles.dotstyle}/>}
+                  //activeDot={<View style={styles.activeDotStyle}/>}
+                  dot={<View style={{backgroundColor:'rgba(0,0,0,.5)', width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 100,}} />}
+                  activeDot={<View style={{backgroundColor: '#A5CFFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 100}} />}
+                  showsButtons={false}
+                >
+                  <View style={styles.slide1}>
+                    <Image
+                      style={styles.image} source={this.loadGuidImage(1)}>
+                    </Image>
+                    <Button
+                      type="primary"
+                      style={styles.border_button}
+                      onClick={() => { this.gotoLogin(); }}>登录</Button>
+                  </View>
+                  <View style={styles.slide3}>
+                    <Image
+                      style={styles.image} source={this.loadGuidImage(3)}>
+                    </Image>
+                    {/*<ImageBackground
+                      style={[styles.image, styles.image_wrap]}
+                      source={this.loadGuidImage(3)}>
+                      <View style={styles.button_wrap}>
+                        <Button
+                            style={styles.border_button}
+                            onClick={() => {
+                                this.gotoLogin();
+                            }}>登录</Button>
+                      </View>
+                    </ImageBackground>*/}
+                    <Button
+                      type="primary"
+                      style={styles.border_button}
+                      onClick={() => { this.gotoLogin(); }}>登录</Button>
+                  </View>
                 </Swiper>
             </View>
         );
@@ -105,9 +124,6 @@ class Introduction extends React.Component {
 };
 
 var styles = StyleSheet.create({
-    animated: {
-        flex: 1
-    },
     container: {
         flex: 1,
         backgroundColor: 'transparent',
@@ -130,7 +146,7 @@ var styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
     },
-    skip: {
+    /*skip: {
         position: 'absolute',
         bottom: 70,
         backgroundColor: 'rgba(255,255,255,0.5)',
@@ -141,7 +157,7 @@ var styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.5)',
         borderWidth: 1,
         borderRadius: 5,
-    },
+    },*/
     buttontext: {
         color: '#666',
         fontSize: 14
@@ -149,31 +165,38 @@ var styles = StyleSheet.create({
     image: {
         resizeMode: 'contain',
         flex: 1,
-        width: '100%',
-        height: YSWHs.height,
+        //width: '100%',
+        //height: YSWHs.height,
     },
     border_button: {
+        borderRadius: 24,
+        backgroundColor: '#2E66E7',
+        width: 280,
+        height: 47,
+        alignItems: 'center',
+        marginBottom: 47,
+        borderWidth: 0,
+
         ios: {
-            height: 100 * YSWHs.scale_rx,
-            width: 100 * YSWHs.scale_rx,
-            borderRadius: 99,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            alignItems: 'center'
+            //height: 100 * YSWHs.scale_rx,
+            //width: 100 * YSWHs.scale_rx,
+            //borderRadius: 24,
+            //backgroundColor: 'rgba(255,255,255,0.9)',
+            //alignItems: 'center'
         },
         ipad: {
-            height: 160 * YSWHs.scale_rx,
-            width: 160 * YSWHs.scale_rx,
-            borderRadius: 99,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            alignItems: 'center'
+            //height: 160 * YSWHs.scale_rx,
+            //width: 160 * YSWHs.scale_rx,
+            //borderRadius: 24,
+            //backgroundColor: 'rgba(255,255,255,0.9)',
+            //alignItems: 'center'
         },
         android: {
-            borderRadius: 99,
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            height: 100 * YSWHs.scale_rx,
-            width: 100 * YSWHs.scale_rx,
-            alignItems: 'center',
-
+            //borderRadius: 24,
+            //backgroundColor: 'rgba(255,255,255,0.9)',
+            //height: 100 * YSWHs.scale_rx,
+            //width: 100 * YSWHs.scale_rx,
+            //alignItems: 'center',
         }
     },
     text_caption: {
@@ -186,7 +209,6 @@ var styles = StyleSheet.create({
         ipad: {
             fontSize: 45 * YSWHs.scale_rx,
         },
-
     },
     button_wrap: {
         ios: {
@@ -218,7 +240,7 @@ var styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
-    dotstyle: {
+    /*dotstyle: {
         ios: {
             backgroundColor: 'rgba(153,153,153,.5)',
             width: 6,
@@ -282,7 +304,7 @@ var styles = StyleSheet.create({
             marginTop: 37 * YSWHs.scale_rx,
             marginBottom: 17 * YSWHs.scale_rx,
         }
-    }
+    }*/
 
 });
 
