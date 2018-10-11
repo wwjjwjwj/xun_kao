@@ -56,6 +56,8 @@ require('ErrorUtils').setGlobalHandler(function (err) {
  }, 10000);
  */
 
+import theme from './common/theme';
+
 class setup extends React.Component {
     constructor() {
         super();

@@ -2,8 +2,10 @@
 
 
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView, Platform, WebView
+import {
+  TouchableOpacity, PixelRatio,
+  ImageBackground, ScrollView, Platform,
+  WebView, Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -28,6 +30,7 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSWebView from 'YSWebView';
+const StyleSheet = require('../common/YSStyleSheet');
 //4. action
 import { logout, HideExamNotice } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
@@ -36,9 +39,9 @@ import { GetPlace, GetExamNotice, GetExamTask
 
 import {getFinger} from '../env';
 
-const TASK = [
-  '监考任务一：开考后30分钟，巡考任务内容滚动显示',
-  '监考任务二：开考后10分钟，巡考任务内容滚动显示'
+const TASK = [{
+  content: '监考任务一：开考后30分钟，巡考任务内容滚动显示'},
+  {content: '监考任务二：开考后10分钟，巡考任务内容滚动显示'}
 ];
 
 class Home extends React.Component {
@@ -124,13 +127,29 @@ class Home extends React.Component {
   }
   gotoLogout(){
     let { Toast } = this;
-    this.props.logout()
-        .then((response) => {
-          //alert(JSON.stringify(response));
-        })
-        .catch((response) => {
-          Toast.fail(response.message || YSI18n.get('loginFailed'));
-        })
+    var that = this;
+    Alert.alert('退出登录', '你确定要退出登录吗？',
+      [
+        {
+          text: '取消', onPress: () => {
+            console.log('Cancel Pressed!')
+          }
+        },
+        {
+          text: '确定', onPress: () => {
+            that.props.logout()
+              .then((response) => {
+                //alert(JSON.stringify(response));
+              })
+              .catch((response) => {
+                Toast.fail(response.message || YSI18n.get('loginFailed'));
+              })
+          }
+        },
+      ],
+      { cancelable: false }
+    )
+
   }
   onGetPlaceData(){
     let { Toast } = this;
@@ -174,15 +193,17 @@ class Home extends React.Component {
   onGetExamTaskData(){
     let { Toast } = this;
     var that = this;
-    if(!this.props.info.examId){
+    var examId = this.props.info.examId;
+    if(!examId){
       return;
     }
-    this.props.GetExamTask(this.props.info.examId)
+    //alert(examId)
+    this.props.GetExamTask(examId)
       .then((response) => {
         //alert(JSON.stringify(response))
         if(response.State == 1 && response.ReData){
             that.setState({
-              task_list: response.ReData,
+              task_list: response.ReData.dataList || [],
             })
         }
       })
@@ -198,15 +219,15 @@ class Home extends React.Component {
       <View flex style={styles.container}>
         <Image style={styles.behind_bg} source={Assets.home.img_bg}/>
         <View style={styles.front0}>
-          <Text marginT-35 white text_title2>e考官</Text>
-          <Text marginT-11 blue2 label_input>欢迎来到考场巡检系统！</Text>
+          <Text style={styles.title_e}>e考官</Text>
+          <Text style={styles.title_welcome}>欢迎来到考场巡检系统！</Text>
           <View marginL-28 marginR-28 style={styles.front_user0}>
             <View marginT-52 marginB-5 bg-white style={styles.front_user}>
               <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
                 <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
               </TouchableOpacity>
-              <Text center marginT-51 blue font_16>{this.props.school_name}</Text>
-              <Text center marginT-12 marginB-22 black2 font_16>{this.props.name} {this.props.account}</Text>
+              <Text center style={styles.u_school}>{this.props.school_name}</Text>
+              <Text center style={styles.u_name}>{this.props.name} {this.props.account}</Text>
             </View>
             <View centerH center style={styles.logo_outside}>
               <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>
@@ -232,7 +253,7 @@ class Home extends React.Component {
                 //afterChange={this.onHorizontalSelectedIndexChange}
               >
                 {this.state.task_list.map(t => {
-                  return <Text marginL-11 blue font_14 style={styles.lantern_text}>{this.state.task_list[0]}</Text>
+                  return <Text marginL-11 blue font_14 style={styles.lantern_text}>{t.content}</Text>
                 })}
               </Carousel>
               </TouchableOpacity>
@@ -241,42 +262,43 @@ class Home extends React.Component {
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>{this.props.info.examName}</Text>
-              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.props.info.studentCount}`}</Text>
+              <Text style={styles.exam_name}>{this.props.info.examName}</Text>
+              <Text style={styles.exam_num}>{`考试人数:${this.props.info.studentCount}`}</Text>
             </View>
+            <View style={styles.line}/>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.props.info.stationName}</Text>
+              <Text style={styles.station}>{this.props.info.stationName}</Text>
             </View>
             <View centerV row marginT-10 paddingL-15>
               <Image source={Assets.home.icon_addr_focus} style={styles.icon} />
-              <Text marginL-11 blue label_input>{this.props.info.placeAddress}</Text>
+              <Text style={styles.station}>{this.props.info.placeAddress}</Text>
             </View>
           </View>
           <View row center marginT-10 bg-white style={styles.bottom_2}>
             <View style={styles.bottom_2_left}>
               <View centerV row marginT-15>
                 <Image source={Assets.home.icon_branch} style={styles.icon} />
-                <Text marginL-11 gray2 label_input>考点</Text>
+                <Text style={styles.place}>考点</Text>
               </View>
               <View centerV row marginT-10>
                 <Image source={Assets.home.icon_addr} style={styles.icon} />
-                <Text marginL-11 gray2 label_input>考点地址</Text>
+                <Text style={styles.place}>考点地址</Text>
               </View>
               <View centerV row marginT-10>
                 <Image source={Assets.home.icon_contact} style={styles.icon} />
-                <Text marginL-11 gray2 label_input>考点联系人</Text>
+                <Text style={styles.place}>考点联系人</Text>
               </View>
             </View>
             <View right style={styles.bottom_2_right}>
               <View centerV marginT-15 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.props.info.placeName}</Text>
+                <Text style={styles.place_value}>{this.props.info.placeName}</Text>
               </View>
               <View centerV marginT-10 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.props.info.placeAddress}</Text>
+                <Text style={styles.place_value}>{this.props.info.placeAddress}</Text>
               </View>
               <View centerV marginT-10 style={styles.bottom_2_right_item}>
-                <Text black label_input>{this.props.info.contact}</Text>
+                <Text style={styles.place_value}>{this.props.info.contact}</Text>
               </View>
             </View>
           </View>
@@ -352,6 +374,66 @@ class Home extends React.Component {
 
 
 var styles = StyleSheet.create({
+  title_e: {
+    color: YSColors.white,
+    fontSize: 19,
+    ios: {
+      marginTop: 35
+    },
+    android: {
+      marginTop: 35 - YSWHs.android_fix
+    }
+  },
+  title_welcome: {
+    color: YSColors.blue2,
+    fontSize: 14,
+    marginTop: 11
+  },
+  u_school: {
+    marginTop: 51,
+    color: YSColors.blue,
+    fontSize: 16,
+  },
+  u_name: {
+    marginTop: 12,
+    marginBottom: 22,
+    color: YSColors.black2,
+    fontSize: 16
+  },
+  exam_name: {
+    marginLeft: 15,
+    fontSize: 18,
+    color: YSColors.black
+  },
+  exam_num: {
+    position: 'absolute',
+    top: 20,
+    right: 15,
+    color: YSColors.gray2,
+    fontSize: 14,
+  },
+  line: {
+    width: YSWHs.width_window,
+    height: 1,
+    backgroundColor: YSColors.bg,
+    marginTop: 17
+  },
+  station: {
+    marginLeft: 11,
+    color: YSColors.blue,
+    fontSize: 14,
+  },
+  place: {
+    marginLeft: 11,
+    color: YSColors.gray2,
+    fontSize: 14,
+  },
+  place_value: {
+    color: YSColors.black,
+    fontSize: 14,
+  },
+
+
   container: {
     flex: 1,
     flexDirection: 'column',

@@ -29,7 +29,6 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
 //4. action
 import { GetExamClassStat } from '../actions/exam';
 
@@ -185,8 +184,9 @@ class SignedStat extends React.Component {
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text font_18 black marginL-15>{this.props.place_info.examName}</Text>
-              <Text gray2 label_input marginL-80 marginR-15>{`考试人数:${this.props.place_info.studentCount}`}</Text>
+              <Text font_18 black marginL-15 style={{fontWeight: '500'}}>{this.props.place_info.examName}</Text>
+              <Text style={{position: 'absolute', right: 15, top: 21}}
+                gray2 label_input>{`考试人数:${this.props.place_info.studentCount}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />

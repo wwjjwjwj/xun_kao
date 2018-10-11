@@ -50,5 +50,6 @@ module.exports = {
     front_top: to_dp(120),
     front_left: to_dp(32),
 
-  }
+  },
+  android_fix: 24
 };

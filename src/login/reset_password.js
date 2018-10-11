@@ -17,7 +17,8 @@ import {
     TouchableHighlight,
     TouchableOpacity,
     Platform,
-    Keyboard
+    Keyboard,
+    //StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -219,7 +220,7 @@ async _reset() {
     let params = [];
     params.push(world_phone);
     params.push(pwd);
-    //params.push(valid_code);
+    params.push(valid_code);
 
     const { dispatch, onReggedIn } = this.props;
     this.setState({ isLoading: true });
@@ -249,7 +250,7 @@ render() {
     let block_loading = null;
     let disable = false//this.state.phone.trim() === "" || this.state.code.trim() === "";
     if(this.state.isLoading){
-      block_loading = <YSLoading loading_type={1}/>
+      //block_loading = <YSLoading loading_type={1}/>
       segment_btn = <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -332,7 +333,7 @@ render() {
         <View style={styles.container}>
           <Image source={Assets.login.img_bg}/>
           <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
-            <Text centerH center blue text_title marginT-80 style={styles.title}>找回密码</Text>
+            <Text center blue text_title marginT-80 style={styles.title2}>找回密码</Text>
             {segment_input}
             <View style={styles.button_margin}>
               {segment_btn}
@@ -353,7 +354,7 @@ var styles = StyleSheet.create({
           height: YSWHs.height_window - YSWHs.header_ios_height
       },
       android: {
-          height: YSWHs.height_window - YSWHs.header_android_height - 24
+          height: YSWHs.height_window - YSWHs.header_android_height - YSWHs.android_fix
       },
       flexDirection: 'column',
       justifyContent: 'flex-start',
@@ -378,8 +379,11 @@ var styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 5
   },
-  title: {
-    height: 25
+  title2: {
+    //height: 25,
+    fontWeight: '500',
+    color: '#2E66E7',
+    fontSize: 24
   },
   inputText: {
     color: '#333333',
@@ -401,9 +405,14 @@ var styles = StyleSheet.create({
   },
 
   button_margin: {
-    marginTop: 143,
     marginLeft: 32,
-    marginRight: 32
+    marginRight: 32,
+    ios: {
+      marginTop: 143,
+    },
+    android: {
+      marginTop: 143 - YSWHs.android_fix,
+    }
   },
   border_button: {
     borderRadius: 99,

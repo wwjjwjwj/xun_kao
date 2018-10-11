@@ -30,7 +30,6 @@ import YSI18n from 'YSI18n';
 import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
 //4. action
 import { checkPermissionReadPhoneState } from '../actions/base';
 

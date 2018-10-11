@@ -202,7 +202,7 @@ export function isValidEmail(email: string) {
 }
 
 //从app打包的图片中，获取背景图
-export function getAppBg(isInOrder: boolean) {
+/*export function getAppBg(isInOrder: boolean) {
   var length = 1;
   var list = [
     require('../../assets/1.jpg'),
@@ -216,7 +216,7 @@ export function getAppBg(isInOrder: boolean) {
     var IMG = list[tempNum];
     return IMG;
   }
-}
+}*/
 
 // 时间转换成几分钟前，几小时前，几天前
 export function formatMsgTime (comparedateTime:string) {

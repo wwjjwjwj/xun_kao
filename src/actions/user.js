@@ -84,7 +84,7 @@ export function resetPwdByMobile(params, callback: any){
         const promise = Ajax.promisePostJson("AccessManagement/ChangePwd", {
           mobile: params[0],
           password: params[1],
-          //authCode: params[2]
+          authCode: params[2]
         });
         promise.then((result) => {
             const action = {

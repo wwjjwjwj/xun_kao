@@ -88,7 +88,7 @@ Assets.loadAssetsGroup('signed', {
   img_add: require('./assets/img_add.png'),
 })
 
-Assets.loadAssetsGroup('sex', {
+/*Assets.loadAssetsGroup('sex', {
     ico1: require('../assets/small_boy.png'),
     ico2: require('../assets/small_girl.png'),
 });
@@ -132,4 +132,4 @@ Assets.loadAssetsGroup('workbench', {
     ico12: require('../assets/organization_chart.png'),
     ico13: require('../assets/franchisee_school.png'),
     ico14: require('../assets/other.png'),
-});
+});*/

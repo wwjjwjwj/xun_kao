@@ -33,7 +33,6 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
 import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';

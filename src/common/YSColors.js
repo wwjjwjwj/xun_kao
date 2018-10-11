@@ -58,6 +58,23 @@ module.exports = {
   home: {
     bg: 'rgba(241, 241, 241, 1.0)',
     border: '#000000'
-  }
+  },
+
+  gray: '#C5C5C5',
+  gray2: '#999999',
+  blue: '#2E66E7',
+  blue2: '#A5CFFF', //首页字体
+  blue3: '#CCE2FF',
+  blue4: '#EEF5FF',
+  white: '#FFFFFF',
+  white2: '#E7E7E7', //首页
+  white3: '#4B9FFF',
+  black: '#333333',
+  black2: '#666666',
+  black3: '#888888',
+  red: '#F43530',
+  orange: '#EE9500',
+  yellow: '#FFF4D5',
+  bg: '#F1F1F1',
 
 };

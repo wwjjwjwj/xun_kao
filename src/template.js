@@ -26,7 +26,6 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
-import YSLoading from 'YSLoading';
 //4. action
 import { loginWithEmail } from '../actions/user';
 import { getDeviceUuid } from '../actions/base';
