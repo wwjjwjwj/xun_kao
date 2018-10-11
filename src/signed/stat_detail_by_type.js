@@ -22,6 +22,7 @@ import Dimensions from 'Dimensions';
 import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import ImagePicker from 'react-native-image-crop-picker';
+import SchoolearnModule from 'react-native-schoolearn';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -33,9 +34,11 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
+import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';
+import YSAppSettings from "YSAppSettings";
 //4. action
 import { GetStudentByState, StudentPhotoSign,
   StudentPhotoSignAdd
@@ -73,6 +76,7 @@ class StatDetailByType extends React.Component {
       title: params.title,
       signType: params.signType,  //0 拍照签到跳来的； 1 直接从统计的未到的 跳来的。
 
+      loading: false,
       all_data_list: [],
       data_list: [],
 
@@ -88,6 +92,8 @@ class StatDetailByType extends React.Component {
   }
   componentDidMount() {
     this.getDataList();
+
+    this.getLocation();
   }
 
   getDataList(){
@@ -108,6 +114,23 @@ class StatDetailByType extends React.Component {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
+  }
+
+  getLocation(){
+    var that = this;
+    getGeolocation(function(res){
+      //alert(JSON.stringify(res));
+      if(res.result){
+        var pos = res.y + ',' + res.x;
+        that.setState({
+          pos: pos
+        })
+      }else {
+        that.setState({
+          showSettingBox2: true
+        })
+      }
+    })
   }
 
   onSearchChange(text){
@@ -182,31 +205,33 @@ class StatDetailByType extends React.Component {
   }
   onUpload(){
     //上传拍照 返回 验证 结果
-    this.onModalHide();
     var that = this;
     let { Toast } = this;
-    /*setTimeout(function(){
-      //alert('上传');
-      that.setState({
-        valid_status: 4
-      })
-    }, 1000);*/
-    if(this.state.studentId && this.state.image.photo){
-      getGeolocation(function(res){
-        //alert(JSON.stringify(res));
-        if(res.result){
-          var pos = res.y + ',' + res.x;
-          that.uploadData(pos);
-        }else {
-          Toast.info('未获取到用户位置');
-          return;
-        }
-      })
+    if(!this.state.studentId || !this.state.image.photo){
+      this.onModalHide();
+      Toast.info('参数不够，无法取场次数据');
+      return;
     }
+    if(!this.state.pos){
+      //Toast.info('参数不够，无法取场次数据');
+      this.getLocation();
+      this.setState({
+        showSettingBox2: true,
+      })
+      return;
+    }
+
+    this.onModalHide();
+    this.setState({ loading: true });
+    setTimeout(function(){
+      that.uploadData();
+    }, 100);
   }
-  uploadData(pos){
+  uploadData(){
+    var that = this;
     let { Toast } = this;
     var studentId = this.state.studentId;
+    var pos = this.state.pos;
     var photo = encodeText(this.state.image.photo);
     if(this.state.signType == 1){
       this.props.StudentPhotoSign(studentId, pos, photo)
@@ -218,9 +243,11 @@ class StatDetailByType extends React.Component {
               valid_status: 2
             })
           }, 1000);*/
+          that.setState({loading: false})
           Toast.success('拍照补签成功！');
           this.getDataList();
         }else{
+          that.setState({ loading: false });
           Toast.info(response.ReMsg);
           /*setTimeout(function(){
             that.setState({
@@ -235,6 +262,7 @@ class StatDetailByType extends React.Component {
         }
       })
       .catch((response) => {
+        that.setState({ loading: false });
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
     }else {
@@ -251,6 +279,14 @@ class StatDetailByType extends React.Component {
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
     }
+  }
+
+  openSettings() {
+    SchoolearnModule.openSettings();
+    this.setState({
+      showSettingBox: false,
+      showSettingBox2: false
+    })
   }
 
   //浏览视图
@@ -446,6 +482,9 @@ class StatDetailByType extends React.Component {
           </View>
         </Modal>
 
+        {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
+        {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
+        <YSLoaderScreen loading={this.state.loading} tips={'上传中...'}/>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )

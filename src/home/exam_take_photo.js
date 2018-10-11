@@ -175,7 +175,7 @@ class ExamTakePhoto extends React.Component {
           <View bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
               <Text font_18 black marginL-15>{this.props.place_info.examName}</Text>
-              <Text gray2 font_14_20 marginL-80 marginR-15>{`考试人数:${this.props.place_info.studentCount}`}</Text>
+              <Text style={styles.exam_num}>{`考试人数:${this.props.place_info.studentCount}`}</Text>
             </View>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
@@ -199,6 +199,14 @@ class ExamTakePhoto extends React.Component {
 
 
 var styles = StyleSheet.create({
+  exam_num: {
+    position: 'absolute',
+    top: 20,
+    right: 15,
+    color: YSColors.gray2,
+    fontSize: 14,
+  },
+
   container: {
     flex: 1,
     flexDirection: 'column',

@@ -23,6 +23,7 @@ import Dimensions from 'Dimensions';
 import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
 import ImagePicker from 'react-native-image-crop-picker';
+import SchoolearnModule from 'react-native-schoolearn';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -35,9 +36,11 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
+import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';
+import YSAppSettings from "YSAppSettings";
 //4. action
 import { GetStudentByOrder, StudentPhotoSign } from '../actions/exam';
 
@@ -46,50 +49,6 @@ const ds = new ListView.DataSource({
     sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
 });
 
-/*const DATA = [
-  {
-    userId: 1,
-    name: '李勤',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '01',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    need_notice: true,
-    need_repair: true,
-  },
-  {
-    userId: 3,
-    name: '李勤2',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '02',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    need_repair: false,
-  },
-  {
-    userId: 3,
-    name: '李勤3',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '03',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    need_repair: false,
-  },
-  {
-    userId: 4,
-    name: '李勤4',
-    card: '1112224333333',
-    stuNo: '2018000121',
-    seat: '04',
-    specialty: '工程管理',
-    course: '建筑施工技术',
-    need_repair: false,
-  },
-];*/
-
 class OtherSignedDetail extends React.Component {
   constructor(props){
     super(props);
@@ -97,6 +56,7 @@ class OtherSignedDetail extends React.Component {
     this.state = {
       exam_info: params.currentDataModel,
 
+      loading: false,
       data_list: [],
 
       valid_status: 0,  //验证是否本考点： 0 未验证； 2 通过； 3 失败（非考场范围）
@@ -113,6 +73,7 @@ class OtherSignedDetail extends React.Component {
   }
   componentDidMount() {
     this.getDataList();
+    this.getLocation();
   }
 
   getDataList(){
@@ -133,6 +94,23 @@ class OtherSignedDetail extends React.Component {
         //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
+  }
+
+  getLocation(){
+    var that = this;
+    getGeolocation(function(res){
+      //alert(JSON.stringify(res));
+      if(res.result){
+        var pos = res.y + ',' + res.x;
+        that.setState({
+          pos: pos
+        })
+      }else {
+        that.setState({
+          showSettingBox2: true
+        })
+      }
+    })
   }
 
   onReturn(){
@@ -193,24 +171,32 @@ class OtherSignedDetail extends React.Component {
     this.onModalHide();
     var that = this;
     let { Toast } = this;
-    if(this.state.studentId && this.state.image.photo){
-      getGeolocation(function(res){
-        //alert(JSON.stringify(res));
-        if(res.result){
-          var pos = res.y + ',' + res.x;
-          that.uploadData(pos);
-        }else {
-          Toast.info('未获取到用户位置');
-          return;
-        }
+    if(!this.state.studentId || !this.state.image.photo){
+      this.onModalHide();
+      Toast.info('参数不够，无法取场次数据');
+      return;
+    }
+    if(!this.state.pos){
+      //Toast.info('参数不够，无法取场次数据');
+      this.getLocation();
+      this.setState({
+        showSettingBox2: true,
       })
+      return;
     }
 
+    this.onModalHide();
+    this.setState({ loading: true });
+    setTimeout(function(){
+      that.uploadData();
+    }, 100);
+
   }
-  uploadData(pos){
+  uploadData(){
     var that = this;
     let { Toast } = this;
     var studentId = this.state.studentId;
+    var pos = this.state.pos;
     var photo = encodeText(this.state.image.photo);
     this.props.StudentPhotoSign(studentId, pos, photo)
       .then((response) => {
@@ -218,7 +204,8 @@ class OtherSignedDetail extends React.Component {
         if(response.State == 1){
           setTimeout(function(){
             that.setState({
-              valid_status: 2
+              valid_status: 2,
+              loading: false
             })
           }, 1000);
           //Toast.success('拍照补签成功！');
@@ -230,14 +217,24 @@ class OtherSignedDetail extends React.Component {
               valid_status: 3 //非本人
             })*/
             that.setState({
-              valid_status: 4 //非考场范围
+              valid_status: 4, //非考场范围
+              loading: false
             })
           }, 1000);
         }
       })
       .catch((response) => {
+        that.setState({ loading: false });
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
+  }
+
+  openSettings() {
+    SchoolearnModule.openSettings();
+    this.setState({
+      showSettingBox: false,
+      showSettingBox2: false
+    })
   }
 
   //浏览视图
@@ -439,6 +436,9 @@ class OtherSignedDetail extends React.Component {
           </View>
         </Modal>
 
+        {!!this.state.showSettingBox && <YSAppSettings hideDialog={() => this.setState({ showSettingBox: false })} type={1} callback={() => this.openSettings()} />}
+        {!!this.state.showSettingBox2 && <YSAppSettings hideDialog={() => this.setState({ showSettingBox2: false })} type={2} callback={() => this.openSettings()} />}
+        <YSLoaderScreen loading={this.state.loading} tips={'上传中...'}/>
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
     )
