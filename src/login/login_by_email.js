@@ -39,11 +39,11 @@ class LoginByEmail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            //account: props.account,
-            //password: '',
+            account: props.account,
+            password: '',
 
-            account: '18612010002',
-            password: '198693',
+            //account: '18612010002',
+            //password: '198693',
 
             school_info: {},
             loading: false,
@@ -118,8 +118,14 @@ class LoginByEmail extends React.Component {
         var school_id = this.state.school_info.value;
         var school_name = this.state.school_info.label;
         //alert(JSON.stringify(this.state.school_info))
-        if(!account || !password || !school_id){
-          Toast.info('请输入登录信息');
+        if(!account){
+          Toast.info('请输入登录账号', 2);
+          return;
+        }else if(!password){
+          Toast.info('请输入密码', 2);
+          return;
+        }else if(!school_id){
+          Toast.info('请选择院校', 2);
           return;
         }
         //登录中...提示，默认3秒
@@ -228,9 +234,9 @@ class LoginByEmail extends React.Component {
                     <View style={styles.logininput_margin}>
                       {segment}
                     </View>
+                    <YSLoaderScreen loading={this.state.loading} tips={'登录中...'}/>
+                    <YSToast ref={(toast) => this.Toast = toast} />
                 </KeyboardAwareScrollView>
-                <YSLoaderScreen loading={this.state.loading} tips={'登录中...'}/>
-                <YSToast ref={(toast) => this.Toast = toast} />
             </View>
         );
     }
@@ -269,7 +275,7 @@ var styles = StyleSheet.create({
     shadowColor: '#000000',
     shadowOpacity: 1,
     shadowRadius: 5,
-    zIndex: 0,
+    zIndex: 1,
   },
   logo: {
     width: 80,

@@ -57,7 +57,8 @@ class TaskList extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
-        data_list: TASK,
+        //data_list: TASK,
+        data_list: props.navigation.state.params.task_list,
       };
       (this: any).gotoNotice = this.gotoNotice.bind(this);
   };
@@ -83,12 +84,12 @@ class TaskList extends React.Component {
           >
               <ListItem.Part column>
                   <ListItem.Part>
-                      <Text blue font_17>{row.name}</Text>
+                      <Text blue font_17>监考任务{parseInt(id) + 1}</Text>
                   </ListItem.Part>
                   <ListItem.Part>
                     <View row marginT-23>
                         <Image source={Assets.signed.icon_task_gray}/>
-                        <Text black2 font_14 marginL-9 numberOfLines={3}>{row.desc}</Text>
+                        <Text black2 font_14 marginL-9 numberOfLines={3}>{row.content}</Text>
                       </View>
                   </ListItem.Part>
               </ListItem.Part>

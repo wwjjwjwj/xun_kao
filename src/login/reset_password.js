@@ -72,7 +72,7 @@ constructor(props: Props) {
         isCountDown: false,
         countDownSeconds: COUNT_DOWN_INIT,
         phone: props.phone || '',
-        code: '',
+        valid_code: '',
         pwd: '',
 
         step: 1,
@@ -178,18 +178,25 @@ _sendSMS(){
           });
           that._startCountDown();
         }else {
-          Toast.fail(response.ReMsg);
+          //alert(JSON.stringify(response))
+          Toast.fail(response.ReMsg, 2);
           that.setState({ loading: false })
         }
       })
       .catch(response => {
+        //alert('error:' + JSON.stringify(response))
         that.setState({ loading: false })
         //alert(JSON.stringify(response))
         Toast.fail(response.ReMsg || '找回密码失败');
       })
 }
 onNext(){
+  let { Toast } = this;
   if(this.state.step == 1){
+    if(!this.state.valid_code){
+      Toast.info("请输入验证码", 2);
+      return;
+    }
     this.setState({
       step: 2
     })
@@ -198,21 +205,26 @@ onNext(){
   }
 
 }
-async _reset() {
+_reset() {
     let { Toast } = this;
     var that = this;
     var phone = this.state.phone;
     var valid_code = this.state.valid_code;
     var pwd = this.state.pwd;
+    var pwd2 = this.state.pwd2;
     if (phone && valid_code && pwd) {
 
     } else {
         //alert(YSI18n.get('Register_tip'));
-        Toast.fail("请输入手机号、验证码和新密码");
+        Toast.info("请输入手机号、验证码和新密码", 2);
         return;
     }
     if (pwd.length < 6) {
-        Toast.fail("密码长度不能小于6");
+        Toast.fail("密码长度不能小于6", 2);
+        return;
+    }
+    if(pwd != pwd2){
+        Toast.fail("两次输入密码不一致", 2);
         return;
     }
     //var world_phone = "+" + this.props.countryCode + phone;
@@ -224,27 +236,24 @@ async _reset() {
 
     const { dispatch, onReggedIn } = this.props;
     this.setState({ isLoading: true });
-    try {
-        await Promise.all([
-            dispatch(resetPwdByMobile(params, function () {
-                that.props.navigation.goBack(null);
-                Toast.success(YSI18n.get('Reset_success'))
-            })),
-            Util.timeout(15000),
-        ])
-    } catch (e) {
-        Toast.fail(e.message || e);
-        return
-    } finally {
-        this._isMounted && this.setState({ isLoading: false });
-    }
-    onReggedIn && onReggedIn();
+    this.props.resetPwdByMobile(params)
+      .then(response => {
+        if(response.State == 1){
+          that.props.navigation.goBack(null);
+          Toast.success('重置密码成功！', 2)
+        }else {
+          Toast.fail(response.ReMsg, 2);
+          that.setState({ loading: false })
+        }
+      })
+      .catch(response => {
+        //alert('error:' + JSON.stringify(response))
+        that.setState({ loading: false })
+        Toast.fail(response.ReMsg || '找回密码失败');
+      })
 };
 
 render() {
-
-
-
     var segment_btn = "";
     var segment_input = "";
     let block_loading = null;
@@ -288,8 +297,8 @@ render() {
                 placeholderTextColor={"#C5C5C5"}
                 style={styles.inputText}
                 containerStyle={styles.inputContainer}
-                onChangeText={(text) => this.setState({code: text})}
-                value={this.state.code}
+                onChangeText={(text) => this.setState({valid_code: text})}
+                value={this.state.valid_code}
                 onFocus={()=>this.setState({isCodeFocus: true})}
                 onBlur={()=>this.setState({isCodeFocus: false})}
                 button={{
@@ -331,17 +340,17 @@ render() {
 
     return (
         <View style={styles.container}>
-          <Image source={Assets.login.img_bg}/>
+          <Image style={styles.behind_bg} source={Assets.login.img_bg}/>
           <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
             <Text center blue text_title marginT-80 style={styles.title2}>找回密码</Text>
             {segment_input}
             <View style={styles.button_margin}>
               {segment_btn}
             </View>
+            <YSToast ref={(toast) => this.Toast = toast} />
+            <YSLoaderScreen loading={this.state.loading} tips={'发送中...'}/>
           </KeyboardAwareScrollView>
           <HeaderNavigator navigation={this.props.navigation} headerTitle={""} />
-          <YSToast ref={(toast) => this.Toast = toast} />
-          <YSLoaderScreen loading={this.state.loading} tips={'发送中...'}/>
         </View>
     );
 };
@@ -360,6 +369,9 @@ var styles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'center',
       backgroundColor: YSColors.login.bg
+  },
+  behind_bg: {
+    width: '100%',
   },
   front: {
     position: 'absolute',

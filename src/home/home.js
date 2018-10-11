@@ -19,6 +19,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Dimensions from 'Dimensions';
 import { StackNavigator } from 'react-navigation';
 import _ from 'lodash';
+import MarqueeLabel from 'react-native-lahk-marquee-label';
 //2. 自定义方法
 import { dismissKeyboard, initFormValid, getFormValid,
   getTextInputValidator, loadBizDictionary
@@ -55,8 +56,9 @@ class Home extends React.Component {
       exam_notice_show: false,
       notice_text: '',
 
-      //task_list: TASK,
       task_list: [],
+      //task_list: TASK,
+      task_content: '',
 
       //university: '吉林大学',
       //name: '李老师',
@@ -123,7 +125,9 @@ class Home extends React.Component {
     this.props.navigation.navigate('blueteethTest');
   }
   onTask(){
-    this.props.navigation.navigate('taskList');
+    if(this.state.task_list.length){
+      this.props.navigation.navigate('taskList', {task_list: this.state.task_list});
+    }
   }
   gotoLogout(){
     let { Toast } = this;
@@ -202,9 +206,15 @@ class Home extends React.Component {
       .then((response) => {
         //alert(JSON.stringify(response))
         if(response.State == 1 && response.ReData){
-            that.setState({
-              task_list: response.ReData.dataList || [],
-            })
+          var _content = '';
+          var _list = response.ReData.dataList || [];
+          _list.map(t => {
+            _content += t.content + '。 ';
+          })
+          that.setState({
+            task_list: _list,
+            task_content: _content
+          })
         }
       })
       .catch((response) => {
@@ -219,15 +229,15 @@ class Home extends React.Component {
       <View flex style={styles.container}>
         <Image style={styles.behind_bg} source={Assets.home.img_bg}/>
         <View style={styles.front0}>
-          <Text style={styles.title_e}>e考官</Text>
-          <Text style={styles.title_welcome}>欢迎来到考场巡检系统！</Text>
+          <Text white text_title2 style={styles.title_e}>e考官</Text>
+          <Text blue2 label_input marginT-11>欢迎来到考场巡检系统！</Text>
           <View marginL-28 marginR-28 style={styles.front_user0}>
             <View marginT-52 marginB-5 bg-white style={styles.front_user}>
               <TouchableOpacity style={styles.touch_exit} onPress={()=>this.gotoLogout()}>
                 <Image source={Assets.home.icon_exit} style={styles.img_exit}/>
               </TouchableOpacity>
-              <Text center style={styles.u_school}>{this.props.school_name}</Text>
-              <Text center style={styles.u_name}>{this.props.name} {this.props.account}</Text>
+              <Text center blue font_16 marginT-51>{this.props.school_name}</Text>
+              <Text center black2 font_16 marginT-12 marginB-22>{this.props.name} {this.props.account}</Text>
             </View>
             <View centerH center style={styles.logo_outside}>
               <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>
@@ -242,9 +252,8 @@ class Home extends React.Component {
             text_style={styles.text_caption}
             onPress={this.onShowConnectModal}/>
           {this.state.task_list.length > 0 && <View marginT-21 centerV row style={styles.lantern_view}>
-              <TouchableOpacity onPress={()=>this.onTask()}>
               <Image source={Assets.home.icon_task} style={styles.lantern_img}/>
-              <Carousel
+              {/*<Carousel
                 style={styles.lantern_wapper}
                 selectedIndex={0}
                 autoplay
@@ -253,16 +262,34 @@ class Home extends React.Component {
                 //afterChange={this.onHorizontalSelectedIndexChange}
               >
                 {this.state.task_list.map(t => {
-                  return <Text marginL-11 blue font_14 style={styles.lantern_text}>{t.content}</Text>
+                  return <TouchableOpacity onPress={()=>this.onTask()}>
+                    <Text marginL-11 blue font_14 style={styles.lantern_text}>{t.content}</Text>
+                    <MarqueeLabel
+                      //speed={250}
+                      duration={8000}
+                      textStyle={{ fontSize: 14, color: YSColors.blue }}
+                    >
+                      {this.state.task_list.map(t => {
+                        return t.content
+                      })}
+                    </MarqueeLabel>
+                  </TouchableOpacity>
                 })}
-              </Carousel>
+              </Carousel>*/}
+              <TouchableOpacity style={styles.lantern_wapper} onPress={()=>this.onTask()}>
+                <MarqueeLabel
+                  speed={50}
+                  //duration={8000}
+                  textStyle={{ fontSize: 14, color: YSColors.blue }}
+                >{this.state.task_content}
+                </MarqueeLabel>
               </TouchableOpacity>
           </View>
           }
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text style={styles.exam_name}>{this.props.info.examName}</Text>
+              <Text black font_18 marginL-15>{this.props.info.examName}</Text>
               <Text style={styles.exam_num}>{`考试人数:${this.props.info.studentCount}`}</Text>
             </View>
             <View style={styles.line}/>
@@ -375,35 +402,14 @@ class Home extends React.Component {
 
 var styles = StyleSheet.create({
   title_e: {
-    color: YSColors.white,
-    fontSize: 19,
+    //color: YSColors.white,
+    //fontSize: 19,
     ios: {
       marginTop: 35
     },
     android: {
       marginTop: 35 - YSWHs.android_fix
     }
-  },
-  title_welcome: {
-    color: YSColors.blue2,
-    fontSize: 14,
-    marginTop: 11
-  },
-  u_school: {
-    marginTop: 51,
-    color: YSColors.blue,
-    fontSize: 16,
-  },
-  u_name: {
-    marginTop: 12,
-    marginBottom: 22,
-    color: YSColors.black2,
-    fontSize: 16
-  },
-  exam_name: {
-    marginLeft: 15,
-    fontSize: 18,
-    color: YSColors.black
   },
   exam_num: {
     position: 'absolute',

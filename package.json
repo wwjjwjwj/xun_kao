@@ -47,7 +47,8 @@
     "redux-persist": "~4.6.0",
     "redux-thunk": "~2.2.0",
     "react-native-card-read": "git+https://github.com/leeshare/react-native-card-read.git",
-    "react-navigation": "2.12.1"
+    "react-navigation": "2.12.1",
+    "react-native-lahk-marquee-label": "1.1.4"
   },
   "devDependencies": {
     "babel-jest": "23.4.0",
