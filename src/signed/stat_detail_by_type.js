@@ -6,7 +6,7 @@
 
 //
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
+import { TouchableOpacity, PixelRatio,
   ImageBackground, ScrollView, ListView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -39,6 +39,7 @@ import { checkPermissionCamera, getGeolocation,
   encodeText
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
+const StyleSheet = require('../common/YSStyleSheet');
 //4. action
 import { GetStudentByState, StudentPhotoSign,
   StudentPhotoSignAdd
@@ -75,6 +76,8 @@ class StatDetailByType extends React.Component {
       type: params.type,  //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
       title: params.title,
       signType: params.signType,  //0 拍照签到跳来的； 1 直接从统计的未到的 跳来的。
+
+      search_text: '',
 
       loading: false,
       all_data_list: [],
@@ -144,15 +147,12 @@ class StatDetailByType extends React.Component {
       });
       return;
     }
-    //触发搜索
     var _list = this.state.all_data_list.filter(a => a.studentName.indexOf(text) >= 0);
 
     this.setState({
       search_text: text,
       data_list: _list
     });
-    //this.state.search_text = text;
-
   }
   onTakePhoto(row){
     //alert(JSON.stringify(row));
@@ -394,18 +394,17 @@ class StatDetailByType extends React.Component {
             <View row>
               <YSInput ref="input_name"
                   icon={Assets.signed.icon_search}
-                  //iconstyle={styles.iconstyle}
                   placeholder={'请输入考生信息查询'}
                   placeholderTextColor={"#999999"}
                   style={styles.inputText}
-                  containerStyle={this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
+                  containerStyle={!!this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
                   onChangeText={(text) => this.onSearchChange(text)}
                   value={this.state.search_text}
-                  enableClear={this.state.search_text ? true : false}
+                  enableClear={!!this.state.search_text ? true: false}
                   clearStyle={styles.clearStyle}
                   onClear={()=>this.onSearchChange('')}
               />
-              {this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
+              {!!this.state.search_text && <TouchableOpacity onPress={()=> this.onSearchChange('')}>
                 <Text font_14 blue marginT-19>取消</Text>
               </TouchableOpacity>}
             </View>
@@ -436,7 +435,7 @@ class StatDetailByType extends React.Component {
           </View>
         }
 
-        {this.state.image.data && this.state.modal_show &&
+        {!!this.state.image.data && !!this.state.modal_show &&
             <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
         }
 
@@ -505,38 +504,51 @@ var styles = StyleSheet.create({
     fontSize: 14,
   },
   inputContainer: {
+    backgroundColor: '#F1F1F1',
+    borderRadius: 14,
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 10,
     marginTop: 10,
-    height: 30,
-    width: 345,
-    backgroundColor: '#F1F1F1',
-
-    borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
+    width: 345,
+    ios: {
+      paddingTop: 7,
+      paddingBottom: 7,
+      height: 30,
+    },
+    android: {
+      height: 38,
+    },
   },
   inputContainer2: {
+    backgroundColor: '#F1F1F1',
+    borderRadius: 14,
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
-    height: 28,
-    width: 300,
-    backgroundColor: '#F1F1F1',
-
-    borderRadius: 14,
     paddingLeft: 11,
-    paddingTop: 7,
-    paddingBottom: 7,
+
+    width: 300,
+    ios: {
+      paddingTop: 7,
+      paddingBottom: 7,
+      height: 28,
+    },
+    android: {
+      height: 36,
+    },
   },
   clearStyle: {
-    width: 13,
-    height: 13,
     resizeMode: 'contain',
-    marginRight: 69,
+    marginRight: 39,
+    ios: {
+      width: 13,
+      height: 13,
+    },
+    android: {
+    },
   },
   //------------考试场次部分
   list_wrap: {
@@ -609,12 +621,18 @@ var styles = StyleSheet.create({
     //left: 0,
     //bottom: 0,
     width: YSWHs.width_window,
+    height: '100%',
     //backgroundColor: YSColors.AppMainColor,
     backgroundColor: 'transparent',
   },
   bottom_1: {
     width: YSWHs.width_window,
-    height: 145,
+    ios: {
+      height: 145,
+    },
+    android: {
+      height: 155,
+    }
   },
   bottom_2: {
     width: YSWHs.width_window,

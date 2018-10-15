@@ -287,21 +287,20 @@ class ReadCardTest extends React.Component {
                 text_style={styles.text_caption_return}
                 disable={false}
                 onPress={this.onReturn} /> }
-            {this.state.type == 'blueteeth' && this.state.read_status <= 1 && <YSButton
+            {/*this.state.type == 'blueteeth' && this.state.read_status <= 1 && <YSButton
                 type={'bordered'}
                 style={styles.border_button}
                 caption={'获取蓝牙列表'}
                 text_style={styles.text_caption}
                 disable={false}
-                onPress={this.onTestFind} /> }
-
+                onPress={this.onTestFind} /> */}
           </View>
-          {this.state.type == 'blueteeth' && this.state.read_status <= 1 && <View style={{width: '75%', borderWidth: 1, borderColor: '#2E66E7', marginLeft: 45, marginRight: 45}}>
+          {/*this.state.type == 'blueteeth' && this.state.read_status <= 1 && <View style={{width: '75%', borderWidth: 1, borderColor: '#2E66E7', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View> }
+          </View> */}
 
 
         </KeyboardAwareScrollView>

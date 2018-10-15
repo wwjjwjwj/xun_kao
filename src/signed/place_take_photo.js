@@ -255,7 +255,7 @@ class PlaceTakePhoto extends React.Component {
   onViewImage(image, index){
     this.setState({
       //暂时屏蔽，等需要时再打开 2018
-//      image_brower: true,
+      image_brower: true,
       image_index: index
     })
   }

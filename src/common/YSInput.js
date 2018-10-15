@@ -80,22 +80,23 @@ class YSInput extends React.Component {
     }
   }
   onClear() {
-    this.refs.text.clear();
+    if(this.refs.text){
+      this.refs.text.clear();
+    }
     if(this.props.onClear){
       this.props.onClear();
     }
-    //this.props.doClearBack()
   }
   toggleEye() {
     this.setState({ ispassword: !this.state.ispassword })
   }
   render() {
-    let icon;
+    let icon = null;
     let input;
-    if (this.props.icon) {
+    if (!!this.props.icon) {
       icon = <Image source={this.props.icon} style={[styles.icon, this.props.iconstyle]} resizeMode='contain' />
     }
-    if (this.props.ispassword) {
+    if (!!this.props.ispassword) {
       input = <View style={styles.block_wrap}>
         <TextInput
           ref="text"
@@ -128,10 +129,13 @@ class YSInput extends React.Component {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
         />
-        {!!this.props.enableClear && <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}><Image source={Assets.login.icon_del} /></TouchableOpacity>}
+        {!!this.props.enableClear &&
+          <TouchableOpacity style={[styles.block_touch_wrap, this.props.clearStyle]} activeOpacity={1} onPress={() => this.onClear()}>
+            <Image source={Assets.login.icon_del} />
+          </TouchableOpacity>}
         {!!this.props.button &&
           <TouchableOpacity style={styles.btn} onPress={this.props.button.onPress}>
-            <Text center font_14_20 gray2  >{this.props.button.title}</Text>
+            <Text center font_14_20 gray2>{this.props.button.title}</Text>
           </TouchableOpacity>
         }
       </View>
@@ -148,8 +152,6 @@ var styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    //height: 47,
-    //width: 280,
   },
 
   icon: {
@@ -167,7 +169,6 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   block_touch_wrap: {
-    //height: '100%',
     flexDirection:'column',
     justifyContent:'center',
     marginRight: 36,

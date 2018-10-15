@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -58,6 +59,7 @@
 		B3854861893E4FE6AC185E52 /* libRNUploader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D4E56323B747478600AAEC /* libRNUploader.a */; };
 		B4A0E4C131464665BE479EA9 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8015AF642E434F9AB47B52 /* libresolv.tbd */; };
 		B6F46717BB614F62BCCC288C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21E03B2FB24D4D478FE017C4 /* Security.framework */; };
+		B8051A3E217056C000E706FB /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B80519FF217056B000E706FB /* libART.a */; };
 		B811879F2110951B009C34EC /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B811879E2110951B009C34EC /* QBImagePicker.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		B81F047521663B0A00B572A7 /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8118630211075C1009C34EC /* libRCTOrientation.a */; };
 		B8351CE52121AC68009C1A0F /* libCardModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8AE116721206E0A00F33AD5 /* libCardModule.a */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -337,6 +339,20 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
+		B80519FE217056B000E706FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B80519F9217056AF00E706FB /* ART.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
+			remoteInfo = ART;
+		};
+		B8051A00217056B000E706FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B80519F9217056AF00E706FB /* ART.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 323A12871E5F266B004975B8;
+			remoteInfo = "ART-tvOS";
+		};
 		B81185E2211075C0009C34EC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 263FA6A6CDA749E2A93CBAEF /* imageCropPicker.xcodeproj */;
@@ -598,6 +614,7 @@
 		AE9C1281A93C474B836DEF5F /* CoreLocation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B2D4E56323B747478600AAEC /* libRNUploader.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNUploader.a; sourceTree = "<group>"; };
 		B3E33832C4224957B40AD631 /* libRNAudio.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAudio.a; sourceTree = "<group>"; };
+		B80519F9217056AF00E706FB /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		B811879E2110951B009C34EC /* QBImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B87CC30421203A910011756D /* RSKImageCropper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8C2F1FE2121214100292DA0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -627,6 +644,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8051A3E217056C000E706FB /* libART.a in Frameworks */,
 				B81F047521663B0A00B572A7 /* libRCTOrientation.a in Frameworks */,
 				B8351CE52121AC68009C1A0F /* libCardModule.a in Frameworks */,
 				B8C2F23A2121214100292DA0 /* CoreBluetooth.framework in Frameworks */,
@@ -866,6 +884,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B80519F9217056AF00E706FB /* ART.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -941,6 +960,15 @@
 			children = (
 				ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */,
 				2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B80519FA217056AF00E706FB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B80519FF217056B000E706FB /* libART.a */,
+				B8051A01217056B000E706FB /* libART-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1194,6 +1222,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = B80519FA217056AF00E706FB /* Products */;
+					ProjectRef = B80519F9217056AF00E706FB /* ART.xcodeproj */;
+				},
 				{
 					ProductGroup = B8118613211075C0009C34EC /* Products */;
 					ProjectRef = 7799EDDFEAFC4D5594728545 /* BVLinearGradient.xcodeproj */;
@@ -1592,6 +1624,20 @@
 			fileType = archive.ar;
 			path = libRCTBlob.a;
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B80519FF217056B000E706FB /* libART.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libART.a;
+			remoteRef = B80519FE217056B000E706FB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B8051A01217056B000E706FB /* libART-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libART-tvOS.a";
+			remoteRef = B8051A00217056B000E706FB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B81185E3211075C0009C34EC /* libimageCropPicker.a */ = {
