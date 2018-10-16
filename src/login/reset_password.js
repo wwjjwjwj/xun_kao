@@ -187,7 +187,7 @@ _sendSMS(){
         //alert('error:' + JSON.stringify(response))
         that.setState({ loading: false })
         //alert(JSON.stringify(response))
-        Toast.fail(response.ReMsg || '找回密码失败');
+        Toast.fail(response.ReMsg || '重置密码失败');
       })
 }
 onNext(){
@@ -249,7 +249,7 @@ _reset() {
       .catch(response => {
         //alert('error:' + JSON.stringify(response))
         that.setState({ loading: false })
-        Toast.fail(response.ReMsg || '找回密码失败');
+        Toast.fail(response.ReMsg || '重置密码失败');
       })
 };
 
@@ -342,7 +342,7 @@ render() {
         <View style={styles.container}>
           <Image style={styles.behind_bg} source={Assets.login.img_bg}/>
           <KeyboardAwareScrollView style={styles.front} ref='scroll' keyboardShouldPersistTaps="handled">
-            <Text center blue text_title marginT-80 style={styles.title2}>找回密码</Text>
+            <Text center blue text_title marginT-80 style={styles.title2}>重置密码</Text>
             {segment_input}
             <View style={styles.button_margin}>
               {segment_btn}

@@ -312,7 +312,15 @@ class OtherSignedDetail extends React.Component {
                         <Text font_14 gray2 marginL-13>{row.courseName}</Text>
                       </View>
                     </View>
-                    {row.replenishType == 1 && <View right flex-1 centerV>
+                    {/*row.replenishType == 1 && <View right flex-1 centerV>
+                      <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
+                        <View bg-blue style={styles.list_view_touch}>
+                          <Text font_13 white>拍照签到</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>*/}
+                    {/*2018-10-16 改为 和 刷卡签到一样的验证逻辑：通过考场上的状态来判断*/}
+                    {this.state.exam_info.state == 1 && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
                           <Text font_13 white>拍照签到</Text>

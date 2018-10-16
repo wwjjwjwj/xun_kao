@@ -53,27 +53,6 @@ class SignedByCard extends React.Component {
     //this.getPlaceInfo();
   }
 
-  /*getPlaceInfo(){
-    let { Toast } = this;
-    let { examId, stationId, placeId } = this.props.place_info;
-    if(!examId || !stationId || !placeId){
-      Toast.info('参数不够，无法取场次数据');
-      return;
-    }
-    this.props.GetExamClassSign(examId, stationId, placeId)
-      .then((response) => {
-        //alert(JSON.stringify(response));
-        if(response.State == 1){
-          this.setState({
-            data_list: response.ReData.dataList
-          })
-        }
-      })
-      .catch((response) => {
-        //alert(JSON.stringify(response));
-        Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
-      })
-  }*/
   onSign(row: any){
     if(row.state == 1){
       this.props.navigation.navigate('examSign', {info: row});

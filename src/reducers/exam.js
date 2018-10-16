@@ -9,10 +9,15 @@ export type State = {
 
 const initialState = {
   place_info: {},
+  class_sign_list: [],
+  class_stat_list: []
 };
 
 function exam(state: State = initialState, action: Action): State {
   //退出登录后清空store中的数据
+  if (action.type == 'LOGGED_OUT') {
+    return initialState;
+  }
   if (action.type == 'GETTED_PLACE') {
     var place_info = action.data || {};
     return {

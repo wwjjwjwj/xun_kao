@@ -52,7 +52,8 @@ module.exports = {
       headers: {
         'Accept': 'application/json',
         //json形式
-        'Content-Type': 'application/json',
+        //'Content-Type': 'application/json',
+        'Content-Type': 'application/json.net',
         'token': getToken(),
         'locale': getLocale()//语言环境
       },
@@ -102,7 +103,8 @@ module.exports = {
       headers: {
         'Accept': 'application/json',
         //json形式
-        'Content-Type': 'application/json',
+        //'Content-Type': 'application/json',
+        'Content-Type': 'application/json.net',
         'token': getToken(),
         'locale': getLocale()//语言环境
       },

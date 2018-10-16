@@ -84,8 +84,11 @@ class ExamSign extends React.Component {
     this.getLocation();
 
 //假设读卡成功2018
-    //this.setState({read_status: 2})  //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
-    //this.onCheckUserInfo(this.state.cardInfo);
+    /*this.setState({
+      read_status: 2,
+      check_status: 1,    //验证成功
+      student_id: 999,
+    })*/
   }
 
   getLocation(){
@@ -148,9 +151,9 @@ return;*/
       a: '11',
       onReturn: (data, type) => {
         if(type < 0 || type == "-1"){
-          alert(data);
+          alert('读卡失败：' + data);
           that.setState({
-            read_status: 3
+            read_status: 0
           })
           return;
         }
@@ -260,10 +263,12 @@ return;*/
       CardModule.read_card_info({
       })
 
-      /*var that = this;
+      var that = this;
       setTimeout(function(){
-        that.setState({read_status: 3})
-      }, 2000)*/
+        if(that.state.read_status == 1){
+          that.setState({read_status: 0})
+        }
+      }, 10000);
     }else {
       Toast.info('正在读卡中...');
     }
@@ -602,17 +607,19 @@ return;*/
                 disable={false}
                 onPress={this.onTestFind} />
           </View> */}
-          {this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
+          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View> }
+          </View> */}
 
         </KeyboardAwareScrollView>
 
         {!!this.state.image.photo && this.state.valid_status == 0 &&
-            <Image style={styles.image} source={{uri: this.state.image.photo}} />
+          <TouchableOpacity style={styles.image_touch} onPress={()=>this.onModalShow()}>
+            <Image style={styles.image_full} source={{uri: this.state.image.photo}} />
+          </TouchableOpacity>
         }
 
         <Modal
@@ -744,13 +751,23 @@ var styles = StyleSheet.create({
     marginTop: 23
   },
 
-  image: {
+  image_touch: {
     //flex: 1,
     //width: YSWHs.width,
     //height: YSWHs.height,
     position: 'absolute',
     left: 0,
     top: 0,
+    width: '100%',
+    height: '100%',
+  },
+  image_full: {
+    //flex: 1,
+    //width: YSWHs.width,
+    //height: YSWHs.height,
+    //position: 'absolute',
+    //left: 0,
+    //top: 0,
     width: '100%',
     height: '100%',
     resizeMode: 'cover',

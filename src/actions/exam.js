@@ -116,6 +116,7 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
           className: className,
         });
         promise.then((result) => {
+            //alert(JSON.stringify(result));
             const action = {
                 type: 'GET_ORDER_STATISTICS',
                 data: result.data
@@ -177,6 +178,7 @@ export function GetStudentByState(examId, stationId, placeId, orderName, state, 
           examId, stationId, placeId, orderName, state, index, size
         });
         promise.then((result) => {
+            //alert(JSON.stringify(result));
             const action = {
                 type: 'GET_STUDENT',
                 data: result.data

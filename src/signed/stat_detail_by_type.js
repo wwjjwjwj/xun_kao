@@ -427,7 +427,8 @@ class StatDetailByType extends React.Component {
           </View>
         </View>
 
-        {this.state.data_list.length > 0 && block_list_view}
+        {/*this.state.data_list.length > 0 && block_list_view*/}
+        {block_list_view}
         {this.state.data_list.length == 0 &&
           <View marginT-91 centerH column>
             <Image source={Assets.signed.img_no_result}/>
@@ -621,7 +622,7 @@ var styles = StyleSheet.create({
     //left: 0,
     //bottom: 0,
     width: YSWHs.width_window,
-    height: '100%',
+    //height: '100%',
     //backgroundColor: YSColors.AppMainColor,
     backgroundColor: 'transparent',
   },
