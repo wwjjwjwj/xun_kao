@@ -3,15 +3,16 @@
 //
 import React from 'react';
 import { TouchableOpacity, PixelRatio,
-  ImageBackground, ScrollView, ListView
+  ImageBackground, ScrollView, ListView,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Button, Assets, Image, Modal, ListItem
+  Button, Assets, Image, ListItem
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker,
-  WingBlank
+  WingBlank, Modal
 } from 'antd-mobile-rn';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Dimensions from 'Dimensions';
@@ -48,6 +49,11 @@ class SignedByCard extends React.Component {
       //data_list: DATA,
     };
     //(this: any).getPlaceInfo = this.getPlaceInfo.bind(this);
+
+    (this: any).onShowConnectModal = this.onShowConnectModal.bind(this);
+    (this: any).onCloseConnectModal = this.onCloseConnectModal.bind(this);
+    (this: any).goto_otg = this.goto_otg.bind(this);
+    (this: any).goto_blueteeth = this.goto_blueteeth.bind(this);
   }
   componentDidMount() {
     //this.getPlaceInfo();
@@ -55,8 +61,46 @@ class SignedByCard extends React.Component {
 
   onSign(row: any){
     if(row.state == 1){
-      this.props.navigation.navigate('examSign', {info: row});
+      this.onShowConnectModal();
+      this.setState({
+        row: row
+      })
+      //this.props.navigation.navigate('examSign', {info: row});
     }
+  }
+
+  onShowConnectModal(e){
+    //e.preventDefault();
+    this.setState({
+      connect_show: true
+    })
+  }
+  onCloseConnectModal(){
+    this.setState({
+      connect_show: false
+    })
+  }
+  goto_otg(){
+    if(Platform.OS === 'android'){
+      this.onCloseConnectModal();
+      //this.props.navigation.navigate('otgTest');
+
+      var row = this.state.row;
+      row.conn_type = 'otg';
+      this.props.navigation.navigate('examSign', {info: row});
+    }else {
+      let { Toast } = this;
+      Toast.info('iphone不支持otg连接');
+      return;
+    }
+  }
+  goto_blueteeth(){
+    this.onCloseConnectModal();
+    //this.props.navigation.navigate('blueteethTest');
+
+    var row = this.state.row;
+    row.conn_type = 'blueteeth';
+    this.props.navigation.navigate('examSign', {info: row});
   }
 
   renderRow(row, id) {
@@ -167,6 +211,39 @@ class SignedByCard extends React.Component {
         </View>
 
         {block_list_view}
+
+        <Modal
+          popup
+          visible={this.state.connect_show}
+          onClose={()=>this.onCloseConnectModal()}
+          animationType="slide-up"
+          maskClosable={true}
+        >
+          <View centerH style={styles.modal}>
+            <Text font_18 black2 marginT-17>请选择设备连接方式</Text>
+            <TouchableOpacity style={styles.close} onPress={()=>this.onCloseConnectModal()}>
+              <Image source={Assets.home.icon_close} style={styles.icon} />
+            </TouchableOpacity>
+            <View marginT-17 style={styles.line}/>
+            <View left row marginT-15>
+              <TouchableOpacity onPress={this.goto_otg}>
+                <Image source={Assets.home.img_otg} style={styles.img}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.goto_blueteeth}>
+                <Image source={Assets.home.img_blueteeth} style={styles.img}/>
+              </TouchableOpacity>
+            </View>
+            <View left style={styles.intro_title}>
+              <Text marginT-25 black2 font_16>读卡器操作说明</Text>
+              <Text marginT-19 black2 label_input>开关机:</Text>
+              <Text gray2 label_input>长按开关机键2秒，开机。长按2秒，关机。开机后工作灯绿灯闪烁，蓝牙灯闪烁，等待配对连接。</Text>
+              <Text marginT-19 black2 label_input>有线连接:</Text>
+              <Text gray2 label_input>使用数据线与手机连接。</Text>
+              <Text marginT-19 black2 label_input>蓝牙连接:</Text>
+              <Text gray2 label_input>使开机后，设备蓝牙开启搜索，蓝牙指示灯闪烁，打开手机蓝牙连接设备，蓝牙指示灯每次闪烁两下表示蓝牙处于已连接状态。</Text>
+            </View>
+          </View>
+        </Modal>
 
         <YSToast ref={(toast) => this.Toast = toast} />
       </View>
@@ -397,7 +474,7 @@ var styles = StyleSheet.create({
     width: YSWHs.width_window,
     paddingLeft: 16,
     paddingRight: 16,
-  }
+  },
 
 
 })

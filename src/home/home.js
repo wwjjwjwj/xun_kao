@@ -657,11 +657,13 @@ function select(store) {
     var school_name = "";
     var name = '';
     var account = '';
+    var is_zhu_kao = false;
     if (store.user){
       if(store.user.schoolInfo)
         school_name = store.user.schoolInfo.label;
       name = store.user.name;
-      account = store.user.account
+      account = store.user.account;
+      is_zhu_kao = store.user.RoleName == '主考老师';
     }
     var info = {};
     if(store.exam && store.exam.place_info){
@@ -672,7 +674,8 @@ function select(store) {
         name,
         account,
         info,
-        saw_notice: store.user.saw_notice
+        saw_notice: store.user.saw_notice,
+        is_zhu_kao,  //监考老师 / 主考老师
     }
 }
 function mapDispatchToProps(dispatch) {

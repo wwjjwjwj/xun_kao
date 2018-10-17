@@ -8,6 +8,8 @@
 //import React from 'React';
 //import { Component } from 'react-native';
 
+import { getCurrentTimeStamp, dateFormat } from '../common/Util';
+
 import { serverURL, getToken, apiDebug, getLocale,
   getSchoolId, getFinger } from '../env';
 
@@ -78,7 +80,8 @@ module.exports = {
     var school = "";
     for(var index in data){
       if(data[index] instanceof Array){
-        param[index] = JSON.stringify(data[index]);
+        //param[index] = JSON.stringify(data[index]);
+        param[index] = data[index];
       }else {
         param[index] = data[index];
       }
@@ -92,7 +95,8 @@ module.exports = {
         Token: getToken(),
         Finger: getFinger(),
         clientToken: '',
-        Time: '2018-8-16 16:59:02.2222'
+        //Time: '2018-8-16 16:59:02.2222'
+        Time: dateFormat(new Date(), "yyyy-MM-dd hh:mm:ss")
       },
       ParamData: param,
       //index: 1,

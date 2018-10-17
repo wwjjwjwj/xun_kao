@@ -47,6 +47,7 @@ class LoginByEmail extends React.Component {
 
             school_info: {},
             loading: false,
+            btn_enable: false
         };
         this.message = "";
         //扩展方法用于本组件实例
@@ -55,6 +56,7 @@ class LoginByEmail extends React.Component {
         this.getFormValid = getFormValid.bind(this);
         this.getTextInputValidator = getTextInputValidator.bind(this);
         (this: any).onLogin = this.onLogin.bind(this);
+        (this: any).onTextChange = this.onTextChange.bind(this);
     };
     componentWillMount() {
         //表单验证初始化
@@ -96,9 +98,32 @@ class LoginByEmail extends React.Component {
           break;
         }
       }
+      var btn_enable = this.state.btn_enable;
+      if(id && this.state.account && this.state.password){
+        btn_enable = true;
+      }else {
+        btn_enable = false;
+      }
       this.setState({
-        school_info: {value: id, label: name}
+        school_info: {value: id, label: name},
+        btn_enable: btn_enable
       });
+    }
+    onTextChange(type, text){
+      if(type == 1)
+       this.setState({account: text})
+      if(type == 2)
+       this.setState({password: text})
+      var that = this;
+      setTimeout(function(){
+        if(that.state.account
+          && that.state.password
+          && that.state.school_info.value){
+          that.setState({ btn_enable: true })
+        }else {
+          that.setState({ btn_enable: false })
+        }
+      }, 100);
     }
     _goResetPwd(){
       this.props.navigation.navigate("resetPassword");
@@ -160,13 +185,23 @@ class LoginByEmail extends React.Component {
                 disable={disable}
                 onPress={() => { }} />
         } else {
-            segment = <YSButton
+            if(this.state.btn_enable){
+              segment = <YSButton
+                type={'bordered'}
+                style={styles.border_button_1}
+                caption={YSI18n.get('登录')}
+                disable={disable}
+                text_style={styles.text_caption}
+                onPress={this.onLogin} />
+            }else {
+              segment = <YSButton
                 type={'bordered'}
                 style={styles.border_button}
                 caption={YSI18n.get('登录')}
                 disable={disable}
                 text_style={styles.text_caption}
                 onPress={this.onLogin} />
+            }
         }
         return (
             <View flex style={styles.container}>
@@ -208,7 +243,7 @@ class LoginByEmail extends React.Component {
                         placeholderTextColor={"#C5C5C5"}
                         style={styles.inputText}
                         containerStyle={styles.inputContainer}
-                        onChangeText={(text) => this.setState({account: text})}
+                        onChangeText={(text) => this.onTextChange(1, text)}
                         value={this.state.account}
                         enableClear={this.state.account ? true : false}
                         onClear={()=>this.setState({account: ''})}
@@ -220,7 +255,7 @@ class LoginByEmail extends React.Component {
                         placeholderTextColor={"#C5C5C5"}
                         style={styles.inputText}
                         containerStyle={styles.inputContainer}
-                        onChangeText={(text) => this.setState({password: text})}
+                        onChangeText={(text) => this.onTextChange(2, text)}
                         value={this.state.password}
                         ispassword="true"
                         enableEye={this.state.password ? true : false}
@@ -231,7 +266,7 @@ class LoginByEmail extends React.Component {
                         <Text blue >{YSI18n.get('找回密码')}</Text>
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.logininput_margin}>
+                    <View style={styles.logininput_margin} centerH>
                       {segment}
                     </View>
                     <YSLoaderScreen loading={this.state.loading} tips={'登录中...'}/>
@@ -301,7 +336,8 @@ var styles = StyleSheet.create({
   listItem: {
     ios: {},
     android: {
-      marginLeft: -15
+      marginLeft: -15,
+      marginRight: -15
     }
   },
   inputContainer: {
@@ -337,12 +373,21 @@ var styles = StyleSheet.create({
   border_button: {
     borderRadius: 99,
     //backgroundColor: 'transparent'
-    backgroundColor: '#4B9FFF'
+    backgroundColor: '#4B9FFF',
+    width: 280,
+    height: 45
+  },
+  border_button_1: {
+    borderRadius: 99,
+    //backgroundColor: 'transparent'
+    backgroundColor: '#2E66E7',
+    width: 280,
+    height: 45
   },
   logininput_margin: {
     marginTop: 47,
-    marginLeft: 32,
-    marginRight: 32
+    //marginLeft: 32,
+    //marginRight: 32
   },
 
 })

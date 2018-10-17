@@ -11,7 +11,7 @@ import {
   //Text,
   Image,
   TextInput,
-  StyleSheet,
+  //StyleSheet,
   TouchableOpacity,
   Platform
 } from 'react-native';
@@ -21,6 +21,7 @@ import { Assets, Text } from 'react-native-ui-lib';
 import YSWHs from './YSWHs';
 import YSColors from 'YSColors';
 import YSFontSizes from 'YSFontSizes';
+const StyleSheet = require('../common/YSStyleSheet');
 
 export type Props = {
   icon?: number;
@@ -112,7 +113,9 @@ class YSInput extends React.Component {
           onFocus={this.onFocus}
           onBlur={this.onBlur}
         />
-        {!!this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}><Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} /></TouchableOpacity>}
+        {!!this.props.enableEye && <TouchableOpacity style={styles.block_touch_wrap} activeOpacity={1} onPress={() => this.toggleEye()}>
+          <Image style={styles.img_eye} source={this.state.ispassword ? Assets.login.icon_eye_disable : Assets.login.icon_eye_enable} />
+        </TouchableOpacity>}
       </View>
 
     } else {
@@ -171,7 +174,12 @@ var styles = StyleSheet.create({
   block_touch_wrap: {
     flexDirection:'column',
     justifyContent:'center',
-    marginRight: 36,
+    ios: {
+      marginRight: 36,
+    },
+    android: {
+      marginRight: 20,
+    }
   },
   btn: {
     height: 47,

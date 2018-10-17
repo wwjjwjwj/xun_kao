@@ -68,7 +68,8 @@ class ReadCardTest extends React.Component {
         let { Toast } = that;
         if(type < 0 || type == "-1"){
           //alert(data);
-          Toast.info(data);
+          alert('读卡失败：' + data);
+          //Toast.info(data);
           that.setState({
             read_status: 3
           })
@@ -178,8 +179,7 @@ class ReadCardTest extends React.Component {
       var that = this;
       setTimeout(function(){
         if(that.state.type == 'blueteeth'){
-          CardModule.read_card_info({
-          })
+          CardModule.read_card_info({})
         }else if(that.state.type == 'otg'){
           if(Platform.OS === 'android'){
             CardModule.read_card_info_otg({});

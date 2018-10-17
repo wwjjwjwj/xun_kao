@@ -162,7 +162,8 @@ class StatDetailByType extends React.Component {
         ImagePicker.openCamera({
           width: 640,
           height: 640 * YSWHs.height_window / YSWHs.width_window,
-          cropping: true,
+          //cropping: true,
+          cropping: false,
           mediaType:'photo',
           includeBase64: true,
           cropperChooseText: '选择',
@@ -366,13 +367,15 @@ class StatDetailByType extends React.Component {
                         <Text font_14 gray2 marginL-13>{row.courseName}</Text>
                       </View>
                     </View>
-                    {row.replenishType == 1 && <View right flex-1 centerV>
-                      <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
-                        <View bg-blue style={styles.list_view_touch}>
-                          <Text font_13 white>拍照补签</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>}
+                    {row.replenishType == 1
+                      && !this.props.is_zhu_kao
+                      && <View right flex-1 centerV>
+                        <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
+                          <View bg-blue style={styles.list_view_touch}>
+                            <Text font_13 white>拍照补签</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>}
                   </ListItem.Part>
               </ListItem.Part>
           </ListItem>
@@ -776,7 +779,12 @@ var styles = StyleSheet.create({
 })
 
 function select(store) {
+    var is_zhu_kao = false;
+    if (store.user){
+      is_zhu_kao = store.user.RoleName == '主考老师';
+    }
     return {
+      is_zhu_kao
     }
 }
 function mapDispatchToProps(dispatch) {

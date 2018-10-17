@@ -125,7 +125,8 @@ class OtherSignedDetail extends React.Component {
         ImagePicker.openCamera({
           width: 640,
           height: 640 * YSWHs.height_window / YSWHs.width_window,
-          cropping: true,
+          //cropping: true,
+          cropping: false,
           mediaType:'photo',
           includeBase64: true,
           cropperChooseText: '选择',

@@ -105,60 +105,85 @@ class Index extends React.Component {
     const barTintColor = YSColors.whiteBackground;
     const unselectedTintColor = YSColors.unselectedTintColor
     const tintColor = YSColors.AppMainColor
+    var block_content = null;
 
-    let block_content = <TabBar
-      //unselectedTintColor={unselectedTintColor}
-      //tintColor={tintColor}
-      //barTintColor={barTintColor}
-    >
-      <TabBar.Item
-        icon={Assets.home.icon_home}
-        selectedIcon={Assets.home.icon_home_focus}
-        title={YSI18n.get('首页')}
-        //badge={2}
-        selected={this.state.selectedTab === 'home'}
-        onPress={() => this.onChangeTab('home')}
+    if(this.props.is_zhu_kao){
+      block_content = <TabBar>
+        <TabBar.Item
+          icon={Assets.home.icon_home}
+          selectedIcon={Assets.home.icon_home_focus}
+          title={YSI18n.get('首页')}
+          //badge={2}
+          selected={this.state.selectedTab === 'home'}
+          onPress={() => this.onChangeTab('home')}
+        >
+          {this.renderContent('home')}
+        </TabBar.Item>
+        <TabBar.Item
+          title={YSI18n.get('签到统计')}
+          icon={Assets.home.icon_signed_query}
+          selectedIcon={Assets.home.icon_signed_query_focus}
+          selected={this.state.selectedTab === 'signedStat'}
+          onPress={() => this.onChangeTab('signedStat')}
+        >
+          {this.renderContent('signedStat')}
+        </TabBar.Item>
+      </TabBar>
+    }else {
+      block_content = <TabBar
+        //unselectedTintColor={unselectedTintColor}
+        //tintColor={tintColor}
+        //barTintColor={barTintColor}
       >
-        {this.renderContent('home')}
-      </TabBar.Item>
-      <TabBar.Item
-        icon={Assets.home.icon_signed_card}
-        selectedIcon={Assets.home.icon_signed_card_focus}
-        title={YSI18n.get('刷卡签到')}
-        selected={this.state.selectedTab === 'signedByCard'}
-        onPress={() => this.onChangeTab('signedByCard')}
-      >
-        {this.renderContent('signedByCard')}
-      </TabBar.Item>
-      <TabBar.Item
-        title={YSI18n.get('考试拍照')}
-        icon={Assets.home.icon_takephoto}
-        selectedIcon={Assets.home.icon_takephoto_focus}
-        selected={this.state.selectedTab === 'examTakePhoto'}
-        onPress={() => this.onChangeTab('examTakePhoto')}
-      >
-        {this.renderContent('examTakePhoto')}
-      </TabBar.Item>
-      <TabBar.Item
-        title={YSI18n.get('签到统计')}
-        icon={Assets.home.icon_signed_query}
-        selectedIcon={Assets.home.icon_signed_query_focus}
-        selected={this.state.selectedTab === 'signedStat'}
-        onPress={() => this.onChangeTab('signedStat')}
-      >
-        {this.renderContent('signedStat')}
-      </TabBar.Item>
-      <TabBar.Item
-        title={YSI18n.get('其他签到')}
-        icon={Assets.home.icon_signed_other}
-        selectedIcon={Assets.home.icon_signed_other_focus}
-        selected={this.state.selectedTab === 'signedByOther'}
-        onPress={() => this.onChangeTab('signedByOther')}
-      >
-        {this.renderContent('signedByOther')}
-      </TabBar.Item>
+        <TabBar.Item
+          icon={Assets.home.icon_home}
+          selectedIcon={Assets.home.icon_home_focus}
+          title={YSI18n.get('首页')}
+          //badge={2}
+          selected={this.state.selectedTab === 'home'}
+          onPress={() => this.onChangeTab('home')}
+        >
+          {this.renderContent('home')}
+        </TabBar.Item>
+        <TabBar.Item
+          icon={Assets.home.icon_signed_card}
+          selectedIcon={Assets.home.icon_signed_card_focus}
+          title={YSI18n.get('刷卡签到')}
+          selected={this.state.selectedTab === 'signedByCard'}
+          onPress={() => this.onChangeTab('signedByCard')}
+        >
+          {this.renderContent('signedByCard')}
+        </TabBar.Item>
+        <TabBar.Item
+          title={YSI18n.get('考试拍照')}
+          icon={Assets.home.icon_takephoto}
+          selectedIcon={Assets.home.icon_takephoto_focus}
+          selected={this.state.selectedTab === 'examTakePhoto'}
+          onPress={() => this.onChangeTab('examTakePhoto')}
+        >
+          {this.renderContent('examTakePhoto')}
+        </TabBar.Item>
+        <TabBar.Item
+          title={YSI18n.get('签到统计')}
+          icon={Assets.home.icon_signed_query}
+          selectedIcon={Assets.home.icon_signed_query_focus}
+          selected={this.state.selectedTab === 'signedStat'}
+          onPress={() => this.onChangeTab('signedStat')}
+        >
+          {this.renderContent('signedStat')}
+        </TabBar.Item>
+        <TabBar.Item
+          title={YSI18n.get('其他签到')}
+          icon={Assets.home.icon_signed_other}
+          selectedIcon={Assets.home.icon_signed_other_focus}
+          selected={this.state.selectedTab === 'signedByOther'}
+          onPress={() => this.onChangeTab('signedByOther')}
+        >
+          {this.renderContent('signedByOther')}
+        </TabBar.Item>
 
-    </TabBar>
+      </TabBar>
+    }
 
     return <View style={styles.container}>
       {block_content}
@@ -181,8 +206,14 @@ function select(store){
     if (store.exam && store.exam.place_info) {
         place_info = store.exam.place_info || {};
     }
+    var is_zhu_kao = false;
+    if(store.user){
+      is_zhu_kao = store.user.RoleName == '主考老师';
+      //is_zhu_kao = true;
+    }
     return {
-        place_info
+        place_info,
+        is_zhu_kao
     }
 };
 

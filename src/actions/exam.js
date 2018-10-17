@@ -130,14 +130,24 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
 //4.1	根据证件号获取考生信息，精确匹配
 export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumber) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", {
+      /*var params = {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
           orderName: orderName,
           cardNumber: cardNumber,
-        });
+        };*/
+      var params = {
+          examId: 13,
+          stationId: 12,
+          placeId: 41,
+          orderName: '第一场',
+          cardNumber: '110224199007260023',
+        };
+//alert(JSON.stringify(params))
+        const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", params);
         promise.then((result) => {
+//alert(JSON.stringify(result))
             const action = {
                 type: 'GET_STUDENT',
                 data: result.data

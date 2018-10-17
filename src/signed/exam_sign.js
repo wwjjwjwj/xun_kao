@@ -86,9 +86,13 @@ class ExamSign extends React.Component {
 //假设读卡成功2018
     /*this.setState({
       read_status: 2,
-      check_status: 1,    //验证成功
-      student_id: 999,
-    })*/
+//      check_status: 1,    //验证成功
+//      student_id: 999,
+    })
+    var that = this;
+    setTimeout(function(){
+      that.onCheckUserInfo(that.state.cardInfo);
+    }, 200);*/
   }
 
   getLocation(){
@@ -260,8 +264,14 @@ return;*/
         read_status: 1
       })
 
-      CardModule.read_card_info({
-      })
+      if(this.state.exam_info.conn_type == 'blueteeth'){
+        CardModule.read_card_info({})
+      }else if(this.state.exam_info.conn_type == 'org'){
+        CardModule.read_card_info_otg({})
+      }else {
+        alert("请选择一个读卡连接方式！");
+        return;
+      }
 
       var that = this;
       setTimeout(function(){
@@ -598,6 +608,7 @@ return;*/
                 onPress={this.onRead} />
             </View>
           }
+          {/*以下 读 蓝牙的 隐藏*/}
           {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
@@ -606,13 +617,13 @@ return;*/
                 text_style={styles.text_caption}
                 disable={false}
                 onPress={this.onTestFind} />
-          </View> */}
-          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
+          </View> }
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View style={{width: '75%', marginLeft: 45, marginRight: 45}}>
             <ListView
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View> */}
+          </View>*/}
 
         </KeyboardAwareScrollView>
 
