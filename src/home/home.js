@@ -224,6 +224,7 @@ class Home extends React.Component {
   }
 
   render(){
+    //alert(this.state.notice_text);
 
     return (
       <View flex style={styles.container}>
@@ -663,7 +664,8 @@ function select(store) {
         school_name = store.user.schoolInfo.label;
       name = store.user.name;
       account = store.user.account;
-      is_zhu_kao = store.user.RoleName == '主考老师';
+      if(store.user.userInfo)
+        is_zhu_kao = store.user.userInfo.RoleName == '主考老师';
     }
     var info = {};
     if(store.exam && store.exam.place_info){

@@ -95,11 +95,13 @@ export function GetExamClassStat(examId, stationId, placeId) {
         });
         promise.then((result) => {
             //alert(JSON.stringify(result));
-            const action = {
-                type: 'GETTED_EXAM_CLASS_STAT',
-                data: result.ReData.dataList
+            if(result.State == 1){
+              const action = {
+                  type: 'GETTED_EXAM_CLASS_STAT',
+                  data: result.ReData.dataList
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };

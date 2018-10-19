@@ -43,10 +43,11 @@ class YSWebView extends React.Component {
         <View style={styles.container}>
           <WebView
             style={{ width: width, height: height }}
-            source={{ html: this.props.source }}
+            source={{ html: this.props.source, baseUrl: '' }}
             javaScriptEnabled={true}
             domStorageEnabled={true}
             scalesPageToFit={true}
+            bounces={false}
             onLoadEnd={() => { this.setState({isLoading:false}) }}
           />
           {/*block_loading*/}

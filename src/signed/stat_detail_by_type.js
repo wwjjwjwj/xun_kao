@@ -780,8 +780,9 @@ var styles = StyleSheet.create({
 
 function select(store) {
     var is_zhu_kao = false;
-    if (store.user){
-      is_zhu_kao = store.user.RoleName == '主考老师';
+    if (store.user && store.user.userInfo){
+      is_zhu_kao = store.user.userInfo.RoleName == '主考老师';
+      //is_zhu_kao = true;
     }
     return {
       is_zhu_kao

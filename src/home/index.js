@@ -207,8 +207,9 @@ function select(store){
         place_info = store.exam.place_info || {};
     }
     var is_zhu_kao = false;
-    if(store.user){
-      is_zhu_kao = store.user.RoleName == '主考老师';
+    if(store.user && store.user.userInfo){
+//alert(JSON.stringify(store.user));
+      is_zhu_kao = store.user.userInfo.RoleName == '主考老师';
       //is_zhu_kao = true;
     }
     return {

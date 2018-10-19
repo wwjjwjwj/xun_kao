@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ListView, Modal
+  ListView, Modal, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -53,6 +53,7 @@ class PlaceTakePhoto extends React.Component {
       this.state = {
         exam_info: props.navigation.state.params.info,
         status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
+        first_hide: true,
 
         loading: false,
         image_list: [],
@@ -74,6 +75,7 @@ class PlaceTakePhoto extends React.Component {
       (this: any).onViewSign = this.onViewSign.bind(this);
       (this: any).onUploadData = this.onUploadData.bind(this);
       Orientation.addOrientationListener(this._orientationDidChange);
+      (this: any).onViewImage = this.onViewImage.bind(this);
   };
   componentWillMount() {
     var that = this;
@@ -84,6 +86,11 @@ class PlaceTakePhoto extends React.Component {
     this.getLocation();
 
     //Orientation.lockToLandscape();
+    setTimeout(function(){
+      that.setState({
+        first_hide: false
+      })
+    }, 3000);
   }
   componentWillUnmount(){
     Orientation.removeOrientationListener(this._orientationDidChange);
@@ -253,17 +260,19 @@ class PlaceTakePhoto extends React.Component {
     }
   }
   onViewImage(image, index){
-    this.setState({
-      //暂时屏蔽，等需要时再打开 2018
-      image_brower: true,
-      image_index: index
-    })
+    //android 查看图片 报错
+    if (Platform.OS == 'ios') {
+      this.setState({
+        image_brower: true,
+        image_index: index
+      })
+    }
   }
 
   onViewSign(){
     //alert('查看本场签到');
     //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: this.state.exam_info });
-    return;
+    //return;
     let { examId, stationId, placeId, orderName } = this.state.exam_info;
     if(!examId || !stationId || !placeId){
       Toast.info('参数不够，无法取场次数据');
@@ -273,7 +282,6 @@ class PlaceTakePhoto extends React.Component {
       .then((response) => {
         alert('场次统计信息：' + JSON.stringify(response));
         if(response.State == 1){
-          alert(JSON.stringify(response.ReData))
           return;
 
           //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: , signType: 0 });
@@ -394,7 +402,7 @@ class PlaceTakePhoto extends React.Component {
                 onPress={this.onViewSign} />
             </View>
           }
-          {this.state.status == 0 &&
+          {this.state.status == 0 && !!!this.state.first_hide &&
             <View centerH marginT-115 marginL-48 marginR-48>
              <YSButton
                 type={'bordered'}
@@ -408,9 +416,6 @@ class PlaceTakePhoto extends React.Component {
 
         </KeyboardAwareScrollView>
 
-        {/*this.state.image.data && this.state.valid_status == 0 &&
-            <Image style={styles.image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
-        */}
         <Modal visible={this.state.image_brower}
           transparent={true}
           onRequestClose={() => this.setState({image_brower: false})}>
