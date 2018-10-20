@@ -266,7 +266,7 @@ return;*/
 
       if(this.state.exam_info.conn_type == 'blueteeth'){
         CardModule.read_card_info({})
-      }else if(this.state.exam_info.conn_type == 'org'){
+      }else if(this.state.exam_info.conn_type == 'otg'){
         CardModule.read_card_info_otg({})
       }else {
         alert("请选择一个读卡连接方式！");
@@ -609,7 +609,7 @@ return;*/
             </View>
           }
           {/*以下 读 蓝牙的 隐藏*/}
-          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -623,7 +623,7 @@ return;*/
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View>*/}
+          </View>}
 
         </KeyboardAwareScrollView>
 

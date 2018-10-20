@@ -85,9 +85,9 @@ class Home extends React.Component {
     this.onGetPlaceData();
     this.onGetExamTaskData();
 
-    if(!this.props.saw_notice){
+    //if(!this.props.saw_notice){
       this.onGetExamNoticeData();
-    }
+    //}
   }
 
   onShowConnectModal(e){
@@ -125,8 +125,12 @@ class Home extends React.Component {
     this.props.navigation.navigate('blueteethTest');
   }
   onTask(){
+    //alert(this.state.notice_text);
     if(this.state.task_list.length){
-      this.props.navigation.navigate('taskList', {task_list: this.state.task_list});
+      this.props.navigation.navigate('taskList', {
+        task_list: this.state.task_list,
+        notice_text: this.state.notice_text
+      });
     }
   }
   gotoLogout(){
@@ -181,12 +185,16 @@ class Home extends React.Component {
       .then((response) => {
         //alert(JSON.stringify(response))
         if(response.State == 1 && response.ReData){
-          setTimeout(function(){
-            that.setState({
-              notice_text: response.ReData,
-              exam_notice_show: true
-            })
-          }, 3000); //如果不显示，那时间就再久一点
+          that.setState({
+            notice_text: response.ReData,
+          })
+          if(!this.props.saw_notice){
+            setTimeout(function(){
+              that.setState({
+                exam_notice_show: true
+              })
+            }, 3000); //如果不显示，那时间就再久一点
+          }
         }
       })
       .catch((response) => {

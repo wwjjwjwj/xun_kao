@@ -77,9 +77,9 @@ class ExamTakePhoto extends React.Component {
   }*/
   onSign(row: any){
     //2018-10-16 考试拍照此处逻辑改为：不做任何限制
-    //if(row.state == 1){
+    //if(row.state == 1)
+    if(row.uploadState == 1)
       this.props.navigation.navigate('placeTakePhoto', {info: row});
-    //}
   }
 
   renderRow(row, id) {
@@ -136,7 +136,9 @@ class ExamTakePhoto extends React.Component {
                       <Text font_14 gray2 marginL-15>{_signTime}</Text>
                       <View right flex-1>
                         {/* 2018-10-16 考试拍照此处逻辑改为：不做任何限制
-                          row.state == 1 && */}
+                          2018-10-18 做限制 通过 uploadState */}
+                        {row.uploadState == 1 &&
+//1 == 1 ||
                           <YSButton
                               type={'bordered'}
                               style={styles.btn_sign}
@@ -144,6 +146,7 @@ class ExamTakePhoto extends React.Component {
                               text_style={styles.btn_sign_text}
                               disable={false}
                               onPress={() => this.onSign(row)} />
+                        }
                       </View>
                     </View>
 

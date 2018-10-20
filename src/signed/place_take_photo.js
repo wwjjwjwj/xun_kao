@@ -40,7 +40,10 @@ import { checkPermissionCamera, getGeolocation,
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 //4. action
-import { PhotoUpload, GetOrderStatistics } from '../actions/exam';
+import { PhotoUpload,
+  //GetOrderStatistics,
+  GetExamClassStat
+} from '../actions/exam';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -52,7 +55,8 @@ class PlaceTakePhoto extends React.Component {
       super(props);
       this.state = {
         exam_info: props.navigation.state.params.info,
-        status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
+        //status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
+        //status: 2,
         first_hide: true,
 
         loading: false,
@@ -190,6 +194,7 @@ class PlaceTakePhoto extends React.Component {
     var that = this;
     var _upload = function(){
       var orderName = that.state.exam_info.orderName;
+      var className = that.state.exam_info.className;
       var pos = that.state.pos;
       var situation = 0;
       var memo ='';
@@ -199,7 +204,7 @@ class PlaceTakePhoto extends React.Component {
       })
       //var files = files.join(',');
       //className, pos, files
-      that.props.PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files)
+      that.props.PhotoUpload(examId, stationId, placeId, orderName, className, pos, situation, memo, files)
         .then((response) => {
           //alert(JSON.stringify(response));
           if(response.State == 1){
@@ -273,22 +278,34 @@ class PlaceTakePhoto extends React.Component {
     //alert('查看本场签到');
     //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: this.state.exam_info });
     //return;
-    let { examId, stationId, placeId, orderName } = this.state.exam_info;
+    let { examId, stationId, placeId, orderName, className } = this.state.exam_info;
     if(!examId || !stationId || !placeId){
       Toast.info('参数不够，无法取场次数据');
       return;
     }
-    this.props.GetOrderStatistics(examId, stationId, placeId, orderName, '')
-      .then((response) => {
-        alert('场次统计信息：' + JSON.stringify(response));
+    this.props.GetExamClassStat(examId, stationId, placeId)
+    .then((response) => {
+        //alert(JSON.stringify(response));
         if(response.State == 1){
-          return;
-
-          //this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: , signType: 0 });
+          var _list = response.ReData.dataList;
+          var currExam = null;
+          for(var i = 0; i < _list.length; i++){
+            if(_list[i].examId == examId
+              && _list[i].stationId == stationId
+              && _list[i].placeId == placeId
+              && _list[i].orderName == orderName
+              && _list[i].className == className
+            ){
+              currExam = _list[i];
+              break;
+            }
+          }
+          if(currExam){
+              this.props.navigation.navigate('oneExamSignedStat', { currentDataModel: currExam, signType: 0 });
+          }
         }
       })
       .catch((response) => {
-        //alert(JSON.stringify(response));
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
@@ -647,7 +664,8 @@ function select(store) {
 function mapDispatchToProps(dispatch) {
     return {
         PhotoUpload: bindActionCreators(PhotoUpload, dispatch),
-        GetOrderStatistics: bindActionCreators(GetOrderStatistics, dispatch),
+        //GetOrderStatistics: bindActionCreators(GetOrderStatistics, dispatch),
+        GetExamClassStat: bindActionCreators(GetExamClassStat, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(PlaceTakePhoto);

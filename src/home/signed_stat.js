@@ -135,7 +135,7 @@ class SignedStat extends React.Component {
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 &&
                             <View style={styles.sign_status} center>
-                              <Text font_12 orange style={styles.sign_status_text}>2人</Text>
+                              <Text font_12 orange style={styles.sign_status_text}>{row.importantCount}人</Text>
                             </View>
                           }
                         </View>

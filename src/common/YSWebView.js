@@ -28,7 +28,7 @@ class YSWebView extends React.Component {
       return (
         <View style={styles.container}>
           <WebView
-            style={{ width: width, height: height }}
+            style={[this.props.style,{ width: width, height: height }]}
             source={{ uri: url, method: 'GET' }}
             javaScriptEnabled={true}
             domStorageEnabled={true}

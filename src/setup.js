@@ -83,6 +83,9 @@ class setup extends React.Component {
                 SplashScreen.hide();
             });
         }, 1500);
+        setTimeout(function(){
+          SplashScreen.hide();
+        }, 5000);
     }
 
     render() {

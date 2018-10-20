@@ -56,9 +56,11 @@ const ds = new ListView.DataSource({
 class TaskList extends React.Component {
   constructor(props) {
       super(props);
+      var p = props.navigation.state.params;
       this.state = {
         //data_list: TASK,
-        data_list: props.navigation.state.params.task_list,
+        data_list: p.task_list,
+        notice_text: p.notice_text,
       };
       (this: any).gotoNotice = this.gotoNotice.bind(this);
   };
@@ -66,7 +68,7 @@ class TaskList extends React.Component {
   }
 
   gotoNotice(){
-    this.props.navigation.navigate('noticeDetail');
+    this.props.navigation.navigate('noticeDetail', {notice_text: this.state.notice_text});
   }
 
   renderRow(row, id) {

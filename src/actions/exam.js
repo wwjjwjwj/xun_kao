@@ -110,13 +110,14 @@ export function GetExamClassStat(examId, stationId, placeId) {
 //3.	场次统计信息
 export function GetOrderStatistics(examId, stationId, placeId, orderName, className) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("ExamPlan/GetOrderStatistics", {
+        var params = {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
           orderName: orderName,
           className: className,
-        });
+        };
+        const promise = Ajax.promisePostJson("ExamPlan/GetOrderStatistics", params);
         promise.then((result) => {
             //alert(JSON.stringify(result));
             const action = {
@@ -132,20 +133,20 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
 //4.1	根据证件号获取考生信息，精确匹配
 export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumber) {
     return (dispatch) => {
-      /*var params = {
+      var params = {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
           orderName: orderName,
           cardNumber: cardNumber,
-        };*/
-      var params = {
+        };
+      /*var params = {
           examId: 13,
           stationId: 12,
           placeId: 41,
           orderName: '第一场',
           cardNumber: '110224199007260023',
-        };
+        };*/
 //alert(JSON.stringify(params))
         const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", params);
         promise.then((result) => {
@@ -282,16 +283,19 @@ export function StudentPhotoSignAdd(studentId, pos, photo) {
 //3.	拍照上传
 export function PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files) {
     return (dispatch) => {
-        const promise = Ajax.promisePostJson("UserPhoto/PhotoUpload", {
+        var params = {
           examId: examId,
           stationId: stationId,
           placeId: placeId,
           orderName: orderName,
+          className: className,
           pos: pos, //test  39.94876642336431,116.4245867729187
           situation: situation,
           memo: memo,
           files: files,
-        });
+        }
+        alert(JSON.stringify(params))
+        const promise = Ajax.promisePostJson("UserPhoto/PhotoUpload", params);
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
