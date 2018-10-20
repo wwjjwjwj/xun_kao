@@ -56,7 +56,7 @@ class PlaceTakePhoto extends React.Component {
       this.state = {
         exam_info: props.navigation.state.params.info,
         //status: 0,  //步骤： 0 初始； 1 拍照完成； 2 上传成功； 3 验证不通过
-        //status: 2,
+//status: 2,
         first_hide: true,
 
         loading: false,

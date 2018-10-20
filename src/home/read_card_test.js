@@ -190,7 +190,13 @@ class ReadCardTest extends React.Component {
         }
 
         //that.setState({read_status: 3})
-      }, 500)
+      }, 500);
+      var that = this;
+      setTimeout(function(){
+        if(that.state.read_status == 1){
+          that.setState({read_status: 0})
+        }
+      }, 10000);
     }else {
       Toast.info('正在读卡中...');
     }

@@ -45,6 +45,8 @@ class LoginByEmail extends React.Component {
             //account: '18612010002',
             //password: '198693',
 
+            //13510001001 / 345677  主考
+
             school_info: {},
             loading: false,
             btn_enable: false

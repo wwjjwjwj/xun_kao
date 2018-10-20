@@ -88,7 +88,7 @@ class OneExamSignedStat extends React.Component {
       stat_info: this.state.stat_info,
       type: type,
       title: title,
-      signType: this.state.signType,  //用于判断是从哪里进来的
+      signType: this.state.signType,  //用于判断是从哪里进来的 1 从统计； 0 从拍照
     });
   }
   render(){

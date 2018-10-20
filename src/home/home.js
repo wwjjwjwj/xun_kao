@@ -199,7 +199,7 @@ class Home extends React.Component {
       })
       .catch((response) => {
         //alert(JSON.stringify(response));
-        Toast.fail(response.ReMsg || YSI18n.get('获取通知数据失败'));
+        Toast.fail("考试须知：" + response.ReMsg || YSI18n.get('获取通知数据失败'));
       })
   }
   onGetExamTaskData(){
@@ -255,11 +255,11 @@ class Home extends React.Component {
         </View>
 
         <View centerH marginT-20 style={styles.bottom}>
-          <YSButton type={'bordered'}
+          {!!!this.props.is_zhu_kao && <YSButton type={'bordered'}
             style={styles.btn}
             caption={"点击连接读卡器"}
             text_style={styles.text_caption}
-            onPress={this.onShowConnectModal}/>
+            onPress={this.onShowConnectModal}/>}
           {this.state.task_list.length > 0 && <View marginT-21 centerV row style={styles.lantern_view}>
               <Image source={Assets.home.icon_task} style={styles.lantern_img}/>
               {/*<Carousel

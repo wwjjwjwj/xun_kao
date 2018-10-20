@@ -235,7 +235,8 @@ class StatDetailByType extends React.Component {
     var pos = this.state.pos;
     var photo = encodeText(this.state.image.photo);
     if(this.state.signType == 1){
-      this.props.StudentPhotoSign(studentId, pos, photo)
+      //只有统计》未到》进来的调用这个
+      this.props.StudentPhotoSignAdd(studentId, pos, photo)
       .then((response) => {
         //alert(JSON.stringify(response));
         if(response.State == 1){
@@ -267,7 +268,7 @@ class StatDetailByType extends React.Component {
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
     }else {
-      this.props.StudentPhotoSignAdd(studentId, pos, photo)
+      this.props.StudentPhotoSign(studentId, pos, photo)
       .then((response) => {
         if(response.State == 1){
           Toast.success('拍照补签成功！');

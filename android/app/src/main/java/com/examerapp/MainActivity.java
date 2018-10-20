@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.facebook.react.ReactActivity;
 
 import org.devio.rn.splashscreen.SplashScreen;
+import com.hc.card.CardModule;
 
 public class MainActivity extends ReactActivity {
 
@@ -36,6 +37,13 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         //JPushInterface.init(this);
         //JPushInterface.setDebugMode(true);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        CardModule.setBlueAddress(requestCode, resultCode, data);
 
     }
 }

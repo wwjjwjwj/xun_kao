@@ -243,7 +243,7 @@ export function CardSign(s) {
     };
 }
 
-//2.	其他签到
+//2.	其他签到  / （从拍照签到跳转过来的 签到）
 export function StudentPhotoSign(studentId, pos, photo) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/PhotoSign", {
@@ -261,7 +261,7 @@ export function StudentPhotoSign(studentId, pos, photo) {
         return promise;
     };
 }
-//2.	其他签到（从拍照签到跳转过来的 签到）
+//2.	其他签到 统计》未到
 export function StudentPhotoSignAdd(studentId, pos, photo) {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("UserPhoto/AddSign", {
@@ -281,7 +281,7 @@ export function StudentPhotoSignAdd(studentId, pos, photo) {
 }
 
 //3.	拍照上传
-export function PhotoUpload(examId, stationId, placeId, orderName, pos, situation, memo, files) {
+export function PhotoUpload(examId, stationId, placeId, orderName, className, pos, situation, memo, files) {
     return (dispatch) => {
         var params = {
           examId: examId,
@@ -294,7 +294,7 @@ export function PhotoUpload(examId, stationId, placeId, orderName, pos, situatio
           memo: memo,
           files: files,
         }
-        alert(JSON.stringify(params))
+        //alert(JSON.stringify(params))
         const promise = Ajax.promisePostJson("UserPhoto/PhotoUpload", params);
         promise.then((result) => {
             const action = {
