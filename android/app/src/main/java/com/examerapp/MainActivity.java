@@ -40,10 +40,10 @@ public class MainActivity extends ReactActivity {
 
     }
 
-    @Override
+    /*@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
         CardModule.setBlueAddress(requestCode, resultCode, data);
 
-    }
+    }*/
 }

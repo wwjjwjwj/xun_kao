@@ -34,7 +34,7 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
-  encodeText,
+  encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 //4. action
@@ -51,13 +51,13 @@ class ExamSign extends React.Component {
       super(props);
       this.state = {
         exam_info: props.navigation.state.params.info,
-        read_status: 0,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败
-        check_status: 0,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）
+        read_status: 0,   //读卡状态： 0 未开始； 1 读卡中； 2 读卡成功； 3 读卡失败 ;  4 隐藏
+        check_status: 0,  //验证身份证是否本考场： 0 初始； 1 验证成功（需重点关注）  2 验证成功； 3 验证失败（非本考场）  ;  4 隐藏
         //need_follow: false,  //需要重点关注
         valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
 
         blues: [],
-        cardInfo: {},
+//        cardInfo: {},
         /*cardInfo: {
           cardNo: '110224199007260023',
           name: '张三',
@@ -290,7 +290,18 @@ return;*/
   }
   onTakePhoto(){
     var that = this;
-    checkPermissionCamera(function(isPermit: boolean){
+    takePhotoByCamera(function(res){
+      if(res.result){
+        that.onChoosePhoto(res.data);
+      }
+      else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
+
+    /*checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
@@ -313,7 +324,7 @@ return;*/
           showSettingBox: true
         })
       }
-    })
+    })*/
   }
   onChoosePhoto(image){
     this.setState({
@@ -375,6 +386,8 @@ return;*/
           if(response.State == 1){
             setTimeout(function(){
               that.setState({
+                read_status: 4,
+                check_status: 4,
                 valid_status: 2,
                 loading: false
               })
@@ -383,15 +396,17 @@ return;*/
             Toast.info(response.ReMsg);
             setTimeout(function(){
               that.setState({
+                read_status: 4,
+                check_status: 4,
                 valid_status: 3, //非本人
                 loading: false
               })
-              if(1==2){
+              /*if(1==2){
                 that.setState({
                   valid_status: 4, //非考场范围
                   loading: false
                 })
-              }
+              }*/
             }, 1000);
           }
         })
@@ -402,7 +417,7 @@ return;*/
           setTimeout(function(){
             that.onModalShow();
           }, 2000);
-          Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
+          Toast.fail('上传签到照片出错：' + response.ReMsg);
         })
     }, 200);
   }
@@ -415,7 +430,7 @@ return;*/
       that.onPostCardSign();
     }, 200);
     return;
-    let { Toast } = this;
+    /*let { Toast } = this;
     getGeolocation(function(res){
       //alert(JSON.stringify(res));
       if(res.result){
@@ -425,7 +440,7 @@ return;*/
         Toast.info('未获取到用户位置');
         return;
       }
-    })
+    })*/
 
   }
 
@@ -435,7 +450,7 @@ return;*/
   }
   onValidFail(){
     //确认不通过
-    alert('不通过操作');
+    //alert('不通过操作');
     this.onReturn();
   }
   openSettings() {
@@ -609,7 +624,7 @@ return;*/
             </View>
           }
           {/*以下 读 蓝牙的 隐藏*/}
-          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
+          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -623,7 +638,7 @@ return;*/
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View>}
+          </View>*/}
 
         </KeyboardAwareScrollView>
 

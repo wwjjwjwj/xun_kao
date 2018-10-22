@@ -36,7 +36,7 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
-  encodeText
+  encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 const StyleSheet = require('../common/YSStyleSheet');
@@ -157,7 +157,18 @@ class StatDetailByType extends React.Component {
   onTakePhoto(row){
     //alert(JSON.stringify(row));
     var that = this;
-    checkPermissionCamera(function(isPermit: boolean){
+    takePhotoByCamera(function(res){
+      if(res.result){
+        that.onChoosePhoto(res.data, row);
+      }
+      else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
+
+    /*checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
           width: 640,
@@ -178,7 +189,7 @@ class StatDetailByType extends React.Component {
           showSettingBox: true
         })
       }
-    })
+    })*/
   }
   onChoosePhoto(image, row){
     this.setState({

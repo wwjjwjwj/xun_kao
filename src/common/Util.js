@@ -10,8 +10,10 @@ import {
   InteractionManager,
   PermissionsAndroid
 } from 'react-native';
-import SchoolearnModule from 'react-native-schoolearn';
 import Geolocation from 'Geolocation';
+
+import SchoolearnModule from 'react-native-schoolearn';
+import ImagePicker from 'react-native-image-crop-picker';
 
 export function getDictionaryTitle(dic, value, defaultTitle) {
   dic = dic || [];
@@ -306,6 +308,7 @@ export function checkPermissionCamera(callback: any){
 export function getGeolocation(callback){
   var result = {};
   Geolocation.getCurrentPosition(val => {
+        //alert(JSON.stringify(val));
         let ValInfo = "速度：" + val.coords.speed +
             "\n经度：" + val.coords.longitude +
             "\n纬度：" + val.coords.latitude +
@@ -320,7 +323,35 @@ export function getGeolocation(callback){
         let ValInfo = '获取坐标失败：' + JSON.stringify(val);
         result = {result: false, msg : ValInfo};
         callback(result);
-    });
+    },
+    //{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+  );
+}
+
+export function takePhotoByCamera(callback: any){
+    checkPermissionCamera(function(isPermit: boolean){
+      if(isPermit){
+        ImagePicker.openCamera({
+          //width: 640,
+          //height: 640 * YSWHs.height_window / YSWHs.width_window,
+          //cropping: true,
+          cropping: false,
+          mediaType:'photo',
+          includeBase64: true,
+          cropperChooseText: '选择',
+          cropperCancelText: '取消',
+          compressImageQuality: 0.5,
+        }).then(image => {
+            //that.doUploadPhoto(image.data)
+            image.photo = `data:${image.mime};base64,${image.data}`;
+            //that.onChoosePhoto(image, row);
+            callback({result: true, data: image});
+        });
+      }else {
+        callback({result: false});
+      }
+    })
 }
 
 //------------- md5

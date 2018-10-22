@@ -119,6 +119,7 @@ module.exports = {
     try {
       let beginTime = new Date();
       let response = await fetch(serverURL + url, fetchOptions)
+      //alert(JSON.stringify(response));
       let responseText = await response.text();
       //alert(JSON.stringify(responseText));
       if (response.status == 200) {
@@ -134,6 +135,7 @@ module.exports = {
         if(json.State == 1){
           json.result = true;
         }
+        //alert(JSON.stringify(json));
         return json;
       }
       else if (response.status == 401) {
@@ -153,7 +155,9 @@ module.exports = {
   async promisePostJson(api, postData) {
     var res = await module.exports.postJsonAsync(api, postData);
     let actionPromise = new Promise(function (resolve, reject) {
-      if (res && res.result) {
+      //if (res && res.result)
+      if (res)
+      {
         resolve(res)//在异步操作成功时调用
       }
       else {

@@ -36,7 +36,7 @@ import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
-  encodeText,
+  encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 //4. action
@@ -135,11 +135,32 @@ class PlaceTakePhoto extends React.Component {
       return;
     }
     var that = this;
-    checkPermissionCamera(function(isPermit: boolean){
+    takePhotoByCamera(function(res){
+      if(res.result){
+        var photo = res.data.photo;
+        var _l = that.state.image_list;
+        var index = 0;
+        if(_l.length > 0){
+          index = _l[_l.length - 1].index + 1;
+        }
+        var img = {
+          url: photo,
+          index: index
+        }
+        that.onChoosePhoto(img);
+      }
+      else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
+
+    /*checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
-          width: 640,
-          height: 640 * YSWHs.height_window / YSWHs.width_window,
+          //width: 640,
+          //height: 640 * YSWHs.height_window / YSWHs.width_window,
           //cropping: true,
           cropping: false,
           mediaType:'photo',
@@ -166,7 +187,7 @@ class PlaceTakePhoto extends React.Component {
         })
         //Toast.info("请您在设置中，允许我们使用您手机的摄像头.");
       }
-    })
+    })*/
   }
   onChoosePhoto(image){
     var _list = this.state.image_list;
@@ -213,7 +234,13 @@ class PlaceTakePhoto extends React.Component {
               loading: false
             })
           }else {
-            that.setState({ loading: false });
+            that.setState({
+              status: 3,
+              loading: false
+            });
+            if(response.ReMsg){
+              Toast.fail(response.ReMsg);
+            }
           }
         })
         .catch((response) => {
@@ -266,12 +293,12 @@ class PlaceTakePhoto extends React.Component {
   }
   onViewImage(image, index){
     //android 查看图片 报错
-    if (Platform.OS == 'ios') {
+//    if (Platform.OS == 'ios') {
       this.setState({
         image_brower: true,
         image_index: index
       })
-    }
+//    }
   }
 
   onViewSign(){
@@ -326,16 +353,9 @@ class PlaceTakePhoto extends React.Component {
               <Text font_14 orange>请拍摄考场全景照片、试卷袋照片、缺考签到表上传</Text>
             </View>
           }
-          {/*this.state.status == 1 &&
-            <View centerH marginT-46>
-              <Image source={Assets.home.icon_read_card} />
-
-            </View>
-          */}
           {this.state.image_list.length > 0 && this.state.status == 1 &&
             <View style={styles.image_view}>
               {this.state.image_list.map((image, i) => {
-                  if(image){
                     return <View style={styles.image_outside} key={i}>
                       <TouchableOpacity onPress={()=>this.onViewImage(image, i)}>
                         <Image style={styles.image_photo} source={{uri: image.url}} />
@@ -344,7 +364,6 @@ class PlaceTakePhoto extends React.Component {
                         <Image source={Assets.login.icon_del} style={styles.image_del}/>
                       </TouchableOpacity>
                     </View>
-                  }
 
                 })
               }
@@ -435,11 +454,12 @@ class PlaceTakePhoto extends React.Component {
 
         <Modal visible={this.state.image_brower}
           transparent={true}
-          onRequestClose={() => this.setState({image_brower: false})}>
+          //onRequestClose={() => this.setState({image_brower: false})}>
         >
           <ImageViewer
             imageUrls={this.state.image_list}
             index={this.state.image_index}
+            //index={0}
           />
           <TouchableOpacity style={styles.touch_exit} onPress={()=>this.setState({image_brower: false})}>
             <Image style={styles.img_exit} source={Assets.home.icon_close}/>

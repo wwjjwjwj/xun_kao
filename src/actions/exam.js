@@ -122,7 +122,7 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
             //alert(JSON.stringify(result));
             const action = {
                 type: 'GET_ORDER_STATISTICS',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -153,7 +153,7 @@ export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumb
 //alert(JSON.stringify(result))
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -176,7 +176,7 @@ export function GetStudentByName(examId, stationId, placeId, orderName, studentI
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -194,7 +194,7 @@ export function GetStudentByState(examId, stationId, placeId, orderName, state, 
             //alert(JSON.stringify(result));
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -212,7 +212,7 @@ export function GetStudentByOrder(examId, stationId, placeId, orderName, index, 
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT_BY_ORDER',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -235,7 +235,7 @@ export function CardSign(s) {
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -254,7 +254,7 @@ export function StudentPhotoSign(studentId, pos, photo) {
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -272,7 +272,7 @@ export function StudentPhotoSignAdd(studentId, pos, photo) {
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });
@@ -299,7 +299,7 @@ export function PhotoUpload(examId, stationId, placeId, orderName, className, po
         promise.then((result) => {
             const action = {
                 type: 'GET_STUDENT',
-                data: result.data
+                data: result.ReData
             }
             dispatch(action);
         });

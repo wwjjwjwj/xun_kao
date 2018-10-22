@@ -19,7 +19,7 @@ import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.rnfs.RNFSPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import cn.jpush.reactnativejanalytics.JAnalyticsPackage;
-import cn.jpush.reactnativejpush.JPushPackage;
+//import cn.jpush.reactnativejpush.JPushPackage;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -59,8 +59,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNI18nPackage(),
             new RNFSPackage(),
             new ReactNativeAudioPackage(),
-            new JAnalyticsPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
-              new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG)
+            new JAnalyticsPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG)//,
+            //new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG)
       );
     }
 

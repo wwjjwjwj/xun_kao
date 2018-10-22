@@ -44,6 +44,7 @@ class LoginByEmail extends React.Component {
 
             //account: '18612010002',
             //password: '198693',
+            //13813138000 / a123123
 
             //13510001001 / 345677  主考
 

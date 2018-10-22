@@ -38,7 +38,7 @@ import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
 import { checkPermissionCamera, getGeolocation,
-  encodeText
+  encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
 //4. action
@@ -120,17 +120,30 @@ class OtherSignedDetail extends React.Component {
   onTakePhoto(row){
     //alert(JSON.stringify(row));
     var that = this;
-    checkPermissionCamera(function(isPermit: boolean){
+    takePhotoByCamera(function(res){
+      if(res.result){
+        //that.onChoosePhoto(image, row);
+        that.onChoosePhoto(res.data, row);
+      }
+      else {
+        that.setState({
+          showSettingBox: true
+        })
+      }
+    })
+
+    /*checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
-          width: 640,
-          height: 640 * YSWHs.height_window / YSWHs.width_window,
+          //width: 640,
+          //height: 640 * YSWHs.height_window / YSWHs.width_window,
           //cropping: true,
           cropping: false,
           mediaType:'photo',
           includeBase64: true,
           cropperChooseText: '选择',
-          cropperCancelText: '取消'
+          cropperCancelText: '取消',
+          compressImageQuality: 0.5,
         }).then(image => {
             //that.doUploadPhoto(image.data)
             image.photo = `data:${image.mime};base64,${image.data}`;
@@ -141,7 +154,7 @@ class OtherSignedDetail extends React.Component {
           showSettingBox: true
         })
       }
-    })
+    })*/
   }
   onChoosePhoto(image, row){
     this.setState({
