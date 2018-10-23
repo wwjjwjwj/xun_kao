@@ -32,7 +32,7 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import { checkPermissionCamera,
-  getGeolocation,
+  checkPermissionGeolocation, getGeolocation,
   encodeText,
   takePhotoByCamera
 } from 'Util';
@@ -191,7 +191,7 @@ class SignedByOther extends React.Component {
         })
       }
     })
-    
+
     /*checkPermissionCamera(function(isPermit: boolean){
       if(isPermit){
         ImagePicker.openCamera({
@@ -246,16 +246,23 @@ class SignedByOther extends React.Component {
     var that = this;
     let { Toast } = this;
     if(this.state.studentId && this.state.image.photo){
-      getGeolocation(function(res){
-        //alert(JSON.stringify(res));
-        if(res.result){
-          var pos = res.y + ',' + res.x;
-          that.uploadData(pos);
+      checkPermissionGeolocation(function(isOpen){
+        if(isOpen){
+          getGeolocation(function(res){
+            //alert(JSON.stringify(res));
+            if(res.result){
+              var pos = res.y + ',' + res.x;
+              that.uploadData(pos);
+            }else {
+              Toast.info('未获取到用户位置');
+              return;
+            }
+          })
         }else {
-          Toast.info('未获取到用户位置');
-          return;
+          Toast.info('手机定位权限未开启');
         }
       })
+
     }
 
   }

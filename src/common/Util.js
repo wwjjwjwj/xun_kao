@@ -259,7 +259,7 @@ export function formatMsgTime (comparedateTime:string) {
   return timeSpanStr;
 };
 
-// permissionType: 1 语音； 2 摄像头
+// permissionType: 1 语音； 2 摄像头； 3 定位
 function _checkPermissionIOS(permissionType: number, callback: any){
   if (permissionType == 2) {
     SchoolearnModule.checkPermissionCamera(function (result) {
@@ -274,9 +274,21 @@ function _checkPermissionIOS(permissionType: number, callback: any){
         //toast("请您在设置中，允许我们使用您手机的摄像头.");
       }
     })
+  } else if(permissionType == 3) {
+    SchoolearnModule.checkPermissionGeolocation(function(result){
+      if(result && result.is_success) {
+        if(callback){
+          callback(true);
+        }
+      }else {
+        if(callback){
+          callback(false);
+        }
+      }
+    })
   }
 };
-// permissionType: 1 语音； 2 摄像头
+// permissionType: 1 语音； 2 摄像头; 3 定位
 function _checkPermissionAndroid(permissionType: number, callback: any){
   //在低于Android 6.0的设备上，权限只要写在AndroidManifest.xml里就会自动获得，此情形下check和request 方法将始终返回true。
   //6.0以后的可以正确读取到是否有权限
@@ -294,6 +306,18 @@ function _checkPermissionAndroid(permissionType: number, callback: any){
         //toast("请您在设置中，允许我们使用您手机的摄像头.");
       }
     })
+  } else if(permissionType == 3) {
+    SchoolearnModule.checkPermissionGeolocation(function(result){
+      if(result && result.is_success) {
+        if(callback){
+          callback(true);
+        }
+      }else {
+        if(callback){
+          callback(false);
+        }
+      }
+    })
   }
 
 };
@@ -302,6 +326,14 @@ export function checkPermissionCamera(callback: any){
     _checkPermissionIOS(2, callback);
   } else {
     _checkPermissionAndroid(2, callback);
+  }
+}
+
+export function checkPermissionGeolocation(callback: any){
+  if(Platform.OS == 'ios'){
+    _checkPermissionIOS(3, callback);
+  } else {
+    _checkPermissionAndroid(3, callback);
   }
 }
 

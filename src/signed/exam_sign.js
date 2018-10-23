@@ -33,7 +33,8 @@ import YSColors from 'YSColors';
 import YSWHs from 'YSWHs';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
-import { checkPermissionCamera, getGeolocation,
+import { checkPermissionCamera,
+  checkPermissionGeolocation, getGeolocation,
   encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
@@ -97,20 +98,27 @@ class ExamSign extends React.Component {
 
   getLocation(){
     var that = this;
-    getGeolocation(function(res){
-      //alert(JSON.stringify(res));
-      if(res.result){
-        var pos = res.y + ',' + res.x;
-        that.setState({
-          pos: pos
+    checkPermissionGeolocation(function(isOpen){
+      if(isOpen){
+        getGeolocation(function(res){
+          //alert(JSON.stringify(res));
+          if(res.result){
+            var pos = res.y + ',' + res.x;
+            that.setState({
+              pos: pos
+            })
+          }else {
+
+          }
+
         })
       }else {
         that.setState({
           showSettingBox2: true
         })
       }
-
     })
+
   }
 
   onCheckUserInfo(cardInfo){

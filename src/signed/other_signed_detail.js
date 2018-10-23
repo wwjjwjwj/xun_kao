@@ -37,7 +37,8 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
-import { checkPermissionCamera, getGeolocation,
+import { checkPermissionCamera,
+  checkPermissionGeolocation, getGeolocation,
   encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
@@ -98,12 +99,18 @@ class OtherSignedDetail extends React.Component {
 
   getLocation(){
     var that = this;
-    getGeolocation(function(res){
-      //alert(JSON.stringify(res));
-      if(res.result){
-        var pos = res.y + ',' + res.x;
-        that.setState({
-          pos: pos
+    checkPermissionGeolocation(function(isOpen){
+      if(isOpen){
+        getGeolocation(function(res){
+          //alert(JSON.stringify(res));
+          if(res.result){
+            var pos = res.y + ',' + res.x;
+            that.setState({
+              pos: pos
+            })
+          }else {
+
+          }
         })
       }else {
         that.setState({
@@ -111,6 +118,7 @@ class OtherSignedDetail extends React.Component {
         })
       }
     })
+
   }
 
   onReturn(){
@@ -193,9 +201,6 @@ class OtherSignedDetail extends React.Component {
     if(!this.state.pos){
       //Toast.info('参数不够，无法取场次数据');
       this.getLocation();
-      this.setState({
-        showSettingBox2: true,
-      })
       return;
     }
 

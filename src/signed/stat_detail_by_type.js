@@ -35,7 +35,8 @@ import YSWHs from 'YSWHs';
 import YSInput from '../common/YSInput';
 import YSButton from 'YSButton';
 import YSLoaderScreen from 'YSLoaderScreen';
-import { checkPermissionCamera, getGeolocation,
+import { checkPermissionCamera,
+  checkPermissionGeolocation, getGeolocation,
   encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
@@ -121,12 +122,17 @@ class StatDetailByType extends React.Component {
 
   getLocation(){
     var that = this;
-    getGeolocation(function(res){
-      //alert(JSON.stringify(res));
-      if(res.result){
-        var pos = res.y + ',' + res.x;
-        that.setState({
-          pos: pos
+    checkPermissionGeolocation(function(isOpen){
+      if(isOpen){
+        getGeolocation(function(res){
+          //alert(JSON.stringify(res));
+          if(res.result){
+            var pos = res.y + ',' + res.x;
+            that.setState({
+              pos: pos
+            })
+          }else {
+          }
         })
       }else {
         that.setState({
@@ -134,6 +140,7 @@ class StatDetailByType extends React.Component {
         })
       }
     })
+
   }
 
   onSearchChange(text){
@@ -227,9 +234,6 @@ class StatDetailByType extends React.Component {
     if(!this.state.pos){
       //Toast.info('参数不够，无法取场次数据');
       this.getLocation();
-      this.setState({
-        showSettingBox2: true,
-      })
       return;
     }
 
@@ -287,8 +291,10 @@ class StatDetailByType extends React.Component {
         }else{
           Toast.info(response.ReMsg);
         }
+        that.setState({ loading: false });
       })
       .catch((response) => {
+        that.setState({ loading: false });
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
     }
