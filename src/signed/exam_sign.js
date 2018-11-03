@@ -58,7 +58,7 @@ class ExamSign extends React.Component {
         valid_status: 0,  //验证是否本人： 0 未验证； 2 通过； 3 失败（非本人）； 4 失败（非考场范围）
 
         blues: [],
-//        cardInfo: {},
+        cardInfo: {},
         /*cardInfo: {
           cardNo: '110224199007260023',
           name: '张三',
@@ -87,8 +87,8 @@ class ExamSign extends React.Component {
 //假设读卡成功2018
     /*this.setState({
       read_status: 2,
-//      check_status: 1,    //验证成功
-//      student_id: 999,
+      //check_status: 1,    //验证成功
+      //student_id: 999,
     })
     var that = this;
     setTimeout(function(){
@@ -108,7 +108,11 @@ class ExamSign extends React.Component {
               pos: pos
             })
           }else {
-
+            let { Toast } = this;
+            if(Toast){
+              //Toast.info('未获取到用户位置');
+              Toast.info(res.msg);
+            }
           }
 
         })
@@ -122,11 +126,11 @@ class ExamSign extends React.Component {
   }
 
   onCheckUserInfo(cardInfo){
-/*this.setState({
-  check_status: 1,    //验证成功
-  student_id: 999,
-})
-return;*/
+    /*this.setState({
+      check_status: 1,    //验证成功
+      student_id: 999,
+    })
+    return;*/
 
     let { Toast } = this;
     if(!cardInfo || !cardInfo.cardNo){
@@ -368,9 +372,6 @@ return;*/
     if(!this.state.pos){
       //Toast.info('参数不够，无法取场次数据');
       this.getLocation();
-      this.setState({
-        showSettingBox2: true
-      })
       return;
     }
     var that = this;
@@ -437,19 +438,6 @@ return;*/
     setTimeout(function(){
       that.onPostCardSign();
     }, 200);
-    return;
-    /*let { Toast } = this;
-    getGeolocation(function(res){
-      //alert(JSON.stringify(res));
-      if(res.result){
-        var pos = res.y + ',' + res.x;
-        that.onPostCardSign(pos);
-      }else {
-        Toast.info('未获取到用户位置');
-        return;
-      }
-    })*/
-
   }
 
   onReValid(){
@@ -632,7 +620,7 @@ return;*/
             </View>
           }
           {/*以下 读 蓝牙的 隐藏*/}
-          {/*this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
+          {this.state.read_status <= 1 && this.state.check_status == 0 && <View centerH marginT-20 marginL-48 marginR-48 center>
              <YSButton
                 type={'bordered'}
                 style={styles.border_button}
@@ -646,7 +634,7 @@ return;*/
               dataSource={dataSource}
               renderRow={(row, sectionId, rowId) => this.renderRow(row, rowId)}
             />
-          </View>*/}
+          </View>}
 
         </KeyboardAwareScrollView>
 

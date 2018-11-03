@@ -13,18 +13,20 @@ export function loginWithEmail(userName, password, school_id, school_name) {
         const promise = Ajax.promisePostJson("AccessManagement/login", { UserName: userName, Password: password, SchoolId: school_id, SchoolName: school_name });
         promise.then((result) => {
             //alert(JSON.stringify(result));
-            const action = {
-                type: 'LOGGED_IN',
-                data: {
-                    token: result.ReData.Token,
-                    id: result.ReData.UserID,
-                    name: result.ReData.RealName,
-                    userInfo: result.ReData,
-                    account: userName,  //用于下次登录时，直接在输入框中
-                    schoolInfo: {value: school_id, label: school_name}
-                }
+            if(result.State == 1){
+              const action = {
+                  type: 'LOGGED_IN',
+                  data: {
+                      token: result.ReData.Token,
+                      id: result.ReData.UserID,
+                      name: result.ReData.RealName,
+                      userInfo: result.ReData,
+                      account: userName,  //用于下次登录时，直接在输入框中
+                      schoolInfo: {value: school_id, label: school_name}
+                  }
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -34,8 +36,7 @@ export function loginWithEmail(userName, password, school_id, school_name) {
 export function logout() {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("AccessManagement/logout");
-        promise.then(
-            (result) => {
+        promise.then((result) => {
                 const action = {
                     type: 'LOGGED_OUT',
                     data: {
@@ -66,13 +67,15 @@ export function sendSMS(phone: string, type: number, callback: any){
     return (dispatch) => {
         const promise = Ajax.promisePostJson("AccessManagement/GetMessageCode", {mobile: phone});
         promise.then((result) => {
-            const action = {
-                type: 'PHONECODE_SENDED',
-                data: {
-                  account: phone,
-                }
+            if(result.State == 1){
+              const action = {
+                  type: 'PHONECODE_SENDED',
+                  data: {
+                    account: phone,
+                  }
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -87,13 +90,15 @@ export function resetPwdByMobile(params, callback: any){
           authCode: params[2]
         });
         promise.then((result) => {
-            const action = {
-                type: 'PWD_RESETTED',
-                data: {
-                    login_name: phone,  //用于下次登录时，直接在输入框中
-                }
+            if(result.State == 1){
+              const action = {
+                  type: 'PWD_RESETTED',
+                  data: {
+                      login_name: phone,  //用于下次登录时，直接在输入框中
+                  }
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -127,56 +132,6 @@ export function doAppMessage(message, actionType) {
         type: 'APP_MESSAGE_ACTION',
         actionType: actionType,//动作
         data: message//消息内容
-    };
-}
-
-//教师列表
-export function teacherListQuery(condition) {
-    return (dispatch) => {
-        const promise = Ajax.promisePostJson("sso/teacherList", condition);
-        promise.then((result) => {
-            const action = {
-                type: 'LOADED_TEACHERS',
-                data: {
-                  data_list: result.data.data_list,
-                },
-            }
-            dispatch(action);
-        });
-        return promise;
-    };
-}
-
-//教师保存
-export function teacherSave(info: Object) {
-    return (dispatch) => {
-        const promise = Ajax.promisePostJson("sso/saveTeacher", {teacher: info});
-        promise.then((result) => {
-            //需返回 新增课程Id
-            const action = {
-                type: 'SAVED_Teacher',
-                data: teacher,
-            }
-            dispatch(action);
-        });
-        return promise;
-    };
-}
-
-//盟校下全部用户
-export function allOrgUserQuery() {
-    return (dispatch) => {
-        const promise = Ajax.promisePostJson("sso/allOrgUserQuery");
-        promise.then((result) => {
-            const action = {
-                type: 'LOADED_ORG_USERS',
-                data: {
-                  data_list: result.data.data_list,
-                },
-            }
-            dispatch(action);
-        });
-        return promise;
     };
 }
 

@@ -48,6 +48,8 @@ class LoginByEmail extends React.Component {
 
             //13510001001 / 345677  主考
 
+            //17600660126 / 123456
+
             school_info: {},
             loading: false,
             btn_enable: false
@@ -163,8 +165,12 @@ class LoginByEmail extends React.Component {
           var _password = md5_32(password);
           that.props.loginWithEmail(account, _password, school_id, school_name)
             .then((response) => {
+                if(response.State == 1){
+                  Toast.success(YSI18n.get('loginSuccess'))
+                }else{
+                  Toast.fail(response.ReMsg)
+                }
                 that.setState({ loading: false });
-                Toast.success(YSI18n.get('loginSuccess'))
             })
             .catch((response) => {
                 that.setState({ loading: false });

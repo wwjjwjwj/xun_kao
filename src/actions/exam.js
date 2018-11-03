@@ -120,11 +120,13 @@ export function GetOrderStatistics(examId, stationId, placeId, orderName, classN
         const promise = Ajax.promisePostJson("ExamPlan/GetOrderStatistics", params);
         promise.then((result) => {
             //alert(JSON.stringify(result));
-            const action = {
-                type: 'GET_ORDER_STATISTICS',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_ORDER_STATISTICS',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -151,11 +153,13 @@ export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumb
         const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", params);
         promise.then((result) => {
 //alert(JSON.stringify(result))
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -174,11 +178,13 @@ export function GetStudentByName(examId, stationId, placeId, orderName, studentI
           size: size
         });
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -192,11 +198,13 @@ export function GetStudentByState(examId, stationId, placeId, orderName, state, 
         });
         promise.then((result) => {
             //alert(JSON.stringify(result));
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -210,11 +218,13 @@ export function GetStudentByOrder(examId, stationId, placeId, orderName, index, 
           examId, stationId, placeId, orderName, index, size
         });
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT_BY_ORDER',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT_BY_ORDER',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -233,11 +243,13 @@ export function CardSign(s) {
         }*/
         );
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -252,11 +264,13 @@ export function StudentPhotoSign(studentId, pos, photo) {
           photo: photo
         });
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -270,11 +284,13 @@ export function StudentPhotoSignAdd(studentId, pos, photo) {
           photo: photo
         });
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };
@@ -297,11 +313,13 @@ export function PhotoUpload(examId, stationId, placeId, orderName, className, po
         //alert(JSON.stringify(params))
         const promise = Ajax.promisePostJson("UserPhoto/PhotoUpload", params);
         promise.then((result) => {
-            const action = {
-                type: 'GET_STUDENT',
-                data: result.ReData
+            if(result.State == 1){
+              const action = {
+                  type: 'GET_STUDENT',
+                  data: result.ReData
+              }
+              dispatch(action);
             }
-            dispatch(action);
         });
         return promise;
     };

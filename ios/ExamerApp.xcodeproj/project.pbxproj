@@ -28,7 +28,6 @@
 		25943F983E19462D89545E04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF750966A8A4C5C9CA756FB /* UIKit.framework */; };
 		26D4F44C94BE4606B0A8024F /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17FF48BFF31F44A3B930E142 /* libRNImagePicker.a */; };
 		2EE4E7677FC64373BDB27DBB /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1FB63A5FD08A4586A90877F5 /* EvilIcons.ttf */; };
-		37C51CE37D89454FA458E939 /* libRNSyanImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4790EA2271BD490E8C2272F9 /* libRNSyanImagePicker.a */; };
 		39735861D1E64C618B198DF8 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60A4BBC4EFD54D6EB873B78A /* FontAwesome5_Brands.ttf */; };
 		3C4F45FD1D084D74959CAEDF /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F28BEC1ED2254B778867E0FE /* libRNVectorIcons.a */; };
 		3C891B3A8C634FE19CAF31B8 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2694EEF25BEE45F5BD2BBCB2 /* libSplashScreen.a */; };
@@ -514,13 +513,6 @@
 			remoteGlobalIDString = 8405E90F1EFE5D7D008C4FE5;
 			remoteInfo = SchoolearnModule;
 		};
-		B8F10CAD213C49AF00E3A223 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 024F964FD8744D4C83360A9D /* RNSyanImagePicker.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNSyanImagePicker;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -547,7 +539,6 @@
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ExamerAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExamerAppTests.m; sourceTree = "<group>"; };
-		024F964FD8744D4C83360A9D /* RNSyanImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSyanImagePicker.xcodeproj; path = "../node_modules/react-native-syan-image-picker/ios/RNSyanImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		0770C0BAA6C343039E8D5A84 /* CoreFoundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		0BF8BE26FE594DFD9D1E7B9D /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		1312D11E7FB1416C9C0A330E /* RNUploader.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUploader.xcodeproj; path = "../node_modules/react-native-uploader/iOS/RNUploader.xcodeproj"; sourceTree = "<group>"; };
@@ -694,7 +685,6 @@
 				A4A1EE0B22C94BF1ADCA77AB /* UserNotifications.framework in Frameworks */,
 				A1522CEF481745CDA83674E5 /* libRNSearchBar.a in Frameworks */,
 				4E21188FF7AE4EE9B750CE2E /* libSchoolearnModule.a in Frameworks */,
-				37C51CE37D89454FA458E939 /* libRNSyanImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -917,7 +907,6 @@
 				9298A9CB5D234BA3B317CF5F /* RNSearchBar.xcodeproj */,
 				1314A073F2D945D0B943974C /* CardModule.xcodeproj */,
 				DC85C57DE68A411DA4FF3CA1 /* SchoolearnModule.xcodeproj */,
-				024F964FD8744D4C83360A9D /* RNSyanImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1165,14 +1154,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B8F10CAA213C49AF00E3A223 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B8F10CAE213C49AF00E3A223 /* libRNSyanImagePicker.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1205,7 +1186,7 @@
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = VJ34UE4GZN;
+						DevelopmentTeam = R86PJGGWF5;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1333,10 +1314,6 @@
 				{
 					ProductGroup = B87CC2FC212034540011756D /* Products */;
 					ProjectRef = 9298A9CB5D234BA3B317CF5F /* RNSearchBar.xcodeproj */;
-				},
-				{
-					ProductGroup = B8F10CAA213C49AF00E3A223 /* Products */;
-					ProjectRef = 024F964FD8744D4C83360A9D /* RNSyanImagePicker.xcodeproj */;
 				},
 				{
 					ProductGroup = B811861D211075C0009C34EC /* Products */;
@@ -1801,13 +1778,6 @@
 			remoteRef = B8D6322D212A57BB00FD1A60 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B8F10CAE213C49AF00E3A223 /* libRNSyanImagePicker.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSyanImagePicker.a;
-			remoteRef = B8F10CAD213C49AF00E3A223 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1887,7 +1857,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = VJ34UE4GZN;
+				DEVELOPMENT_TEAM = R86PJGGWF5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)",
@@ -1921,12 +1891,16 @@
 				INFOPLIST_FILE = ExamerApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/ExamerApp\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hc.examerapp;
+				PRODUCT_BUNDLE_IDENTIFIER = net.chinaedu.eexamer;
 				PRODUCT_NAME = ExamerApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1942,7 +1916,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = VJ34UE4GZN;
+				DEVELOPMENT_TEAM = R86PJGGWF5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)",
@@ -1976,12 +1950,16 @@
 				INFOPLIST_FILE = ExamerApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/ExamerApp\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hc.examerapp;
+				PRODUCT_BUNDLE_IDENTIFIER = net.chinaedu.eexamer;
 				PRODUCT_NAME = ExamerApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

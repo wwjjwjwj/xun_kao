@@ -120,7 +120,10 @@ class PlaceTakePhoto extends React.Component {
               pos: pos
             })
           }else {
-
+            let { Toast } = this;
+            if(Toast){
+              Toast.info(res.msg);
+            }
           }
         })
       }else {
