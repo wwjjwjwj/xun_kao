@@ -11,6 +11,7 @@ export function GetPlace() {
     return (dispatch) => {
         const promise = Ajax.promisePostJson("ExamPlan/GetPlace");
         promise.then((result) => {
+            //alert(JSON.stringify(result));
             if(result.State == 1){
               const action = {
                   type: 'GETTED_PLACE',
@@ -153,13 +154,13 @@ export function GetStudentByCard(examId, stationId, placeId, orderName, cardNumb
         const promise = Ajax.promisePostJson("ExamPlan/GetStudentByCard", params);
         promise.then((result) => {
 //alert(JSON.stringify(result))
-            if(result.State == 1){
+            //if(result.State == 1){
               const action = {
                   type: 'GET_STUDENT',
                   data: result.ReData
               }
               dispatch(action);
-            }
+            //}
         });
         return promise;
     };
@@ -264,13 +265,14 @@ export function StudentPhotoSign(studentId, pos, photo) {
           photo: photo
         });
         promise.then((result) => {
-            if(result.State == 1){
+            //alert('action=' + JSON.stringify(result))
+            //if(result.State == 1){
               const action = {
-                  type: 'GET_STUDENT',
-                  data: result.ReData
+                  type: 'STUDENT_PHOTO_SIGN',
+                  data: {}
               }
               dispatch(action);
-            }
+            //}
         });
         return promise;
     };

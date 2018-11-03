@@ -352,10 +352,10 @@ class StatDetailByType extends React.Component {
               <ListItem.Part column>
                   <ListItem.Part containerStyle={[styles.list_item, styles.list_view_head]}>
                       <View row centerV>
-                        {this.state.type == 1 && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
-                        {this.state.type == 3 && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
-                        {this.state.type == 0 && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
-                        {this.state.type == 2 && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
+                        {(this.state.type == 1 || (this.state.type == 4 && row.state == 1) ) && <Image source={Assets.signed.icon_f} style={styles.list_icon}/>}
+                        {(this.state.type == 3 || (this.state.type == 4 && row.state == 3) ) && <Image source={Assets.signed.icon_un_sign} style={styles.list_icon}/>}
+                        {(this.state.type == 0 || (this.state.type == 4 && row.state == 0) ) && <Image source={Assets.signed.icon_pass} style={styles.list_icon}/>}
+                        {(this.state.type == 2 || (this.state.type == 4 && row.state == 2) ) && <Image source={Assets.signed.icon_repair} style={styles.list_icon}/>}
                         <Text black font_17 marginL-30 numberOfLines={1}>{row.studentName}</Text>
                         {this.state.type == 4 &&
                           <View marginL-9 bg-yellow center style={styles.list_view_notice}>

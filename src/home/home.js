@@ -183,17 +183,17 @@ class Home extends React.Component {
     }
     this.props.GetExamNotice(this.props.info.examId)
       .then((response) => {
-        //alert(JSON.stringify(response))
         if(response.State == 1 && response.ReData){
           that.setState({
             notice_text: response.ReData,
+//notice_text: 'hello world',
           })
           if(!this.props.saw_notice){
             setTimeout(function(){
               that.setState({
                 exam_notice_show: true
               })
-            }, 3000); //如果不显示，那时间就再久一点
+            }, 1000); //如果不显示，那时间就再久一点
           }
         }
       })

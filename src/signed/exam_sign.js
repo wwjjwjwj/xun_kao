@@ -127,7 +127,7 @@ class ExamSign extends React.Component {
 
   onCheckUserInfo(cardInfo){
     /*this.setState({
-      check_status: 1,    //验证成功
+      check_status: 2,    //验证成功
       student_id: 999,
     })
     return;*/
@@ -142,6 +142,7 @@ class ExamSign extends React.Component {
     let { examId, stationId, placeId } = this.props.place_info;
     this.props.GetStudentByCard(examId, stationId, placeId, this.state.exam_info.orderName, cardInfo.cardNo)
         .then((response) => {
+//alert(stringify(response))
           if(response.State == 1){
             if(!response.ReData){
               that.setState({
@@ -154,6 +155,8 @@ class ExamSign extends React.Component {
                 student_id: response.ReData.studentId,
               })
             }
+          }else {
+            Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
           }
         })
         .catch((response) => {

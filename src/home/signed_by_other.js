@@ -104,7 +104,7 @@ class SignedByOther extends React.Component {
       this.setState({search_text: '', is_search: false});
       return;
     }
-    //this.setState({search_text: text, is_search: true});
+    this.setState({search_text: text});
     //触发搜索
     this.searchDataList(text);
   }
@@ -138,6 +138,7 @@ class SignedByOther extends React.Component {
               }
             }
             if(!exist){
+              _oc.stu_list = [];
               _list.push(_oc);
             }
             _oc.stu_list = _oc.stu_list || [];
@@ -157,7 +158,7 @@ class SignedByOther extends React.Component {
           }
           this.setState({
             search_data_list: _list,
-            search_text: text,
+            //search_text: text,
             is_search: true
           })
         }
@@ -245,7 +246,7 @@ class SignedByOther extends React.Component {
     this.onModalHide();
     var that = this;
     let { Toast } = this;
-    if(this.state.studentId && this.state.image.photo){
+    if(!!this.state.studentId && !!this.state.image.photo){
       checkPermissionGeolocation(function(isOpen){
         if(isOpen){
           getGeolocation(function(res){
@@ -289,12 +290,15 @@ class SignedByOther extends React.Component {
               valid_status: 3 //非本人
             })*/
             that.setState({
-              valid_status: 4 //非考场范围
+              valid_status: 3 //非考场范围
             })
           }, 1000);
         }
       })
       .catch((response) => {
+        this.setState({
+          valid_status: 3 //非考场范围
+        })
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
@@ -358,7 +362,7 @@ class SignedByOther extends React.Component {
                       <View row marginL-20>
                         <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
-                          {row.state == 1 && row.importantCount &&
+                          {row.state == 1 && row.importantCount > 0 &&
                             <View style={styles.sign_status} center>
                               {/*<Text font_12 orange style={styles.sign_status_text}>重点关注考生：{row.importantCount}人</Text>*/}
                               <Text font_12 orange style={styles.sign_status_text}>{row.importantCount}人</Text>
@@ -498,10 +502,10 @@ class SignedByOther extends React.Component {
                 placeholder={'请输入考生信息查询'}
                 placeholderTextColor={"#999999"}
                 style={styles.inputText}
-                containerStyle={this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
+                containerStyle={!!this.state.search_text ? styles.inputContainer2 : styles.inputContainer}
                 onChangeText={(text) => this.onSearchChange(text)}
                 value={this.state.search_text}
-                enableClear={this.state.search_text ? true : false}
+                enableClear={!!this.state.search_text ? true : false}
                 clearStyle={styles.clearStyle}
                 onClear={()=>this.onSearchChange('')}
             />
@@ -565,7 +569,7 @@ class SignedByOther extends React.Component {
               onPress={this.onReturn} />
           </View>
         }
-        {this.state.image.data && this.state.valid_status == 0 &&
+        {!!this.state.image.data && this.state.valid_status == 0 &&
           <TouchableOpacity style={styles.full_image_touch} onPress={()=>{this.setState({modal_show:true})}}>
             <Image style={styles.full_image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
           </TouchableOpacity>

@@ -78,11 +78,6 @@ class OneExamSignedStat extends React.Component {
   }
   gotoDetail(type, title){
     //0: 通过 1: 未通过 2: 补签 3: 未到 4: 重点关注
-    switch (type) {
-      case 1:
-        break;
-      default:
-    }
     this.props.navigation.navigate('statDetailByType', {
       exam_info: this.state.exam_info,
       stat_info: this.state.stat_info,

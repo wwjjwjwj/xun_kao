@@ -239,14 +239,14 @@ class OtherSignedDetail extends React.Component {
               valid_status: 3 //非本人
             })*/
             that.setState({
-              valid_status: 4, //非考场范围
+              valid_status: 3,
               loading: false
             })
           }, 1000);
         }
       })
       .catch((response) => {
-        that.setState({ loading: false });
+        that.setState({ loading: false, valid_status: 3 });
         Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
       })
   }
@@ -418,7 +418,7 @@ class OtherSignedDetail extends React.Component {
           </View>
         }
 
-        {this.state.image.data && this.state.valid_status == 0 &&
+        {!!this.state.image.data && this.state.valid_status == 0 &&
           <TouchableOpacity style={styles.full_image_touch} onPress={()=>{this.setState({modal_show:true})}}>
             <Image style={styles.full_image} source={{uri: `data:${this.state.image.mime};base64,${this.state.image.data}`}} />
           </TouchableOpacity>
