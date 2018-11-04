@@ -114,7 +114,8 @@ class ExamTakePhoto extends React.Component {
               <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
                   <ListItem.Part containerStyle={{ marginBottom: 0 }}>
                       <View row marginL-20>
-                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>
+                        {row.uploadState == 1 && <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>}
+                        {row.uploadState != 1 &&<Text black2 font_17 marginT-17 numberOfLines={1}>{row.orderName}</Text>}
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 &&
                             <View style={styles.sign_status} center>

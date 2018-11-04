@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { StyleSheet, TouchableOpacity, PixelRatio,
+import { TouchableOpacity, PixelRatio,
   ListView, Modal, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -40,6 +40,7 @@ import { checkPermissionCamera,
   encodeText, takePhotoByCamera
 } from 'Util';
 import YSAppSettings from "YSAppSettings";
+const StyleSheet = require('../common/YSStyleSheet');
 //4. action
 import { PhotoUpload,
   //GetOrderStatistics,
@@ -617,18 +618,23 @@ var styles = StyleSheet.create({
     width: '100%',
     height: 225,
     marginTop: 31,
-    paddingLeft: 16,
-    paddingRight: 2,
+    ios: {
+      paddingLeft: 16,
+      paddingRight: 2,
+    },
+    android: {
+      paddingLeft: 6
+    },
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
 
   },
   image_outside: {
-    width: 112,
-    height: 112,
-    marginTop: 15 - 7,
-    marginRight: 14 - 7,
+    width: 111,
+    height: 111,
+    marginTop: 8,
+    marginRight: 6,
     //borderWidth: 1,
     //borderColor: '#FF0000'
   },

@@ -119,41 +119,41 @@ class OneExamSignedStat extends React.Component {
           </View>
           <TouchableOpacity onPress={()=>this.gotoDetail(1, '未通过')}>
             <View bg-white centerV row style={styles.center1}>
-              <Image source={Assets.signed.icon_f} style={styles.icon2}/>
+              <Image source={Assets.signed.icon_f} style={styles.icon25}/>
               <Text marginL-10 font_17 black>未通过</Text>
               <View flex-1 right row centerV>
                 <Text marginR-8 font_14 gray2>{row.notPassCount}人</Text>
-                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+                <Image source={Assets.signed.icon_next} style={styles.icon20}/>
               </View>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.gotoDetail(3, '未到')}>
             <View bg-white centerV row style={styles.center1}>
-              <Image source={Assets.signed.icon_un_sign} style={styles.icon2}/>
+              <Image source={Assets.signed.icon_un_sign} style={styles.icon25}/>
               <Text marginL-10 font_17 black>未到</Text>
               <View flex-1 right row centerV>
                 <Text marginR-8 font_14 gray2>{row.missCount}人</Text>
-                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+                <Image source={Assets.signed.icon_next} style={styles.icon20}/>
               </View>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.gotoDetail(0, '通过')}>
             <View bg-white centerV row style={styles.center1}>
-              <Image source={Assets.signed.icon_pass} style={styles.icon2}/>
+              <Image source={Assets.signed.icon_pass} style={styles.icon25}/>
               <Text marginL-10 font_17 black>通过</Text>
               <View flex-1 right row centerV>
                 <Text marginR-8 font_14 gray2>{row.passCount}人</Text>
-                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+                <Image source={Assets.signed.icon_next} style={styles.icon20}/>
               </View>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>this.gotoDetail(2, '补签')}>
             <View bg-white centerV row style={styles.center1}>
-              <Image source={Assets.signed.icon_repair} style={styles.icon2}/>
+              <Image source={Assets.signed.icon_repair} style={styles.icon25}/>
               <Text marginL-10 font_17 black>补签</Text>
               <View flex-1 right row centerV>
                 <Text marginR-8 font_14 gray2>{row.replenishCount}人</Text>
-                <Image source={Assets.signed.icon_next} style={styles.icon2}/>
+                <Image source={Assets.signed.icon_next} style={styles.icon20}/>
               </View>
             </View>
           </TouchableOpacity>
@@ -163,11 +163,11 @@ class OneExamSignedStat extends React.Component {
           </View>
           <TouchableOpacity onPress={()=>this.gotoDetail(4, '重点关注')}>
           <View bg-white centerV row style={styles.center1}>
-            <Image source={Assets.signed.icon_notice} style={styles.icon2}/>
+            <Image source={Assets.signed.icon_notice} style={styles.icon25}/>
             <Text marginL-10 font_17 black>重点关注</Text>
             <View flex-1 right row centerV>
               <Text marginR-8 font_14 orange>{row.importantCount}人</Text>
-              <Image source={Assets.signed.icon_next_orange} style={styles.icon2}/>
+              <Image source={Assets.signed.icon_next_orange} style={styles.icon20}/>
             </View>
           </View>
           </TouchableOpacity>
@@ -233,15 +233,20 @@ var styles = StyleSheet.create({
     height: 15,
     borderRadius: 2
   },
-  icon2: {
+  icon25: {
     width: 25,
     height: 25,
+  },
+  icon20: {
+    width: 20,
+    height: 20,
   },
   center1: {
     height: 60,
     paddingLeft: 10,
     paddingRight: 5,
-    marginTop: 10
+    marginTop: 10,
+    borderRadius: 5
   },
 
 })

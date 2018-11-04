@@ -131,7 +131,7 @@ class SignedStat extends React.Component {
               <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
                   <ListItem.Part containerStyle={{ marginBottom: 0 }}>
                       <View row marginL-20>
-                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
+                        <Text black2 font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 &&
                             <View style={styles.sign_status} center>
@@ -188,6 +188,7 @@ class SignedStat extends React.Component {
               <Text style={{position: 'absolute', right: 15, top: 21}}
                 gray2 label_input>{`考试人数:${this.props.place_info.studentCount}`}</Text>
             </View>
+            <View style={styles.line}/>
             <View centerV row marginT-15 paddingL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
               <Text marginL-11 blue label_input>{this.props.place_info.stationName}</Text>
@@ -333,7 +334,6 @@ var styles = StyleSheet.create({
     height: 25,
   },
 
-
   //拍照后 确认modal
   modal: {
     width: YSWHs.width_window,
@@ -353,7 +353,7 @@ var styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F1F1F1'
   },
-  line2: {
+  /*line2: {
     width: YSWHs.width_window,
     height: 10,
     backgroundColor: '#F1F1F1'
@@ -362,7 +362,7 @@ var styles = StyleSheet.create({
     width: YSWHs.width_window,
     height: 1,
     backgroundColor: '#D6D6D6'
-  },
+  },*/
   btn_upload: {
     backgroundColor: '#FFFFFF',
   },

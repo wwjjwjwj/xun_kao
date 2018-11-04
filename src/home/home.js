@@ -249,7 +249,8 @@ class Home extends React.Component {
               <Text center black2 font_16 marginT-12 marginB-22>{this.props.name} {this.props.account}</Text>
             </View>
             <View centerH center style={styles.logo_outside}>
-              <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>
+              {!this.props.is_zhu_kao && <Image source={Assets.home.img_avatar_jk} style={styles.logo_jk} resizeMode='contain'/>}
+              {!!this.props.is_zhu_kao && <Image source={Assets.home.img_avatar_zk} style={styles.logo_jk} resizeMode='contain'/>}
             </View>
           </View>
         </View>
@@ -298,11 +299,11 @@ class Home extends React.Component {
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           <View marginT-19 bg-white style={styles.bottom_1}>
             <View centerV row style={styles.bottom_1_top}>
-              <Text black font_18 marginL-15>{this.props.info.examName}</Text>
+              <Text black font_18>{this.props.info.examName}</Text>
               <Text style={styles.exam_num}>{`考试人数:${this.props.info.studentCount}`}</Text>
             </View>
             <View style={styles.line}/>
-            <View centerV row marginT-15 paddingL-15>
+            <View centerV row marginT-15 marginL-15>
               <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
               <Text style={styles.station}>{this.props.info.stationName}</Text>
             </View>
@@ -311,22 +312,22 @@ class Home extends React.Component {
               <Text style={styles.station}>{this.props.info.placeAddress}</Text>
             </View>
           </View>
-          <View row center marginT-10 bg-white style={styles.bottom_2}>
-            <View style={styles.bottom_2_left}>
+          <View row marginT-10 bg-white style={styles.bottom_2}>
+            <View left style={styles.bottom_2_left}>
               <View centerV row marginT-15>
                 <Image source={Assets.home.icon_branch} style={styles.icon} />
-                <Text style={styles.place}>考点</Text>
+                <Text style={styles.place}>考点: {this.props.info.placeName}</Text>
               </View>
               <View centerV row marginT-10>
                 <Image source={Assets.home.icon_addr} style={styles.icon} />
-                <Text style={styles.place}>考点地址</Text>
+                <Text style={styles.place}>考点地址: {this.props.info.placeAddress}</Text>
               </View>
               <View centerV row marginT-10>
                 <Image source={Assets.home.icon_contact} style={styles.icon} />
-                <Text style={styles.place}>考点联系人</Text>
+                <Text style={styles.place}>考点联系人: {this.props.info.contact}</Text>
               </View>
             </View>
-            <View right style={styles.bottom_2_right}>
+            {/*<View right style={styles.bottom_2_right}>
               <View centerV marginT-15 style={styles.bottom_2_right_item}>
                 <Text style={styles.place_value}>{this.props.info.placeName}</Text>
               </View>
@@ -336,7 +337,7 @@ class Home extends React.Component {
               <View centerV marginT-10 style={styles.bottom_2_right_item}>
                 <Text style={styles.place_value}>{this.props.info.contact}</Text>
               </View>
-            </View>
+            </View>*/}
           </View>
           </KeyboardAwareScrollView>
         </View>
@@ -348,18 +349,19 @@ class Home extends React.Component {
           onClose={()=>this.onCloseConnectModal()}
           animationType="slide-up"
           maskClosable={true}
+          style={styles.modal}
         >
-          <View centerH style={styles.modal}>
+          <View centerH style={styles.modal_view}>
             <Text font_18 black2 marginT-17>请选择设备连接方式</Text>
             <TouchableOpacity style={styles.close} onPress={()=>this.onCloseConnectModal()}>
               <Image source={Assets.home.icon_close} style={styles.icon} />
             </TouchableOpacity>
             <View marginT-17 style={styles.line}/>
-            <View left row marginT-15>
-              <TouchableOpacity onPress={this.goto_otg}>
+            <View centerH row marginT-15>
+              <TouchableOpacity onPress={this.goto_otg} style={styles.img_out}>
                 <Image source={Assets.home.img_otg} style={styles.img}/>
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.goto_blueteeth}>
+              <TouchableOpacity onPress={this.goto_blueteeth} style={styles.img_out}>
                 <Image source={Assets.home.img_blueteeth} style={styles.img}/>
               </TouchableOpacity>
             </View>
@@ -381,8 +383,9 @@ class Home extends React.Component {
           onClose={()=>this.onCloseExamNoticeModal()}
           animationType="slide-up"
           maskClosable={true}
+          style={styles.modal}
         >
-          <View centerH style={styles.modal}>
+          <View centerH style={styles.modal_view}>
             <Text font_18 black2 marginT-17>监考须知</Text>
             <TouchableOpacity style={styles.close} onPress={()=>this.onCloseExamNoticeModal()}>
               <Image source={Assets.home.icon_close} style={styles.icon} />
@@ -607,13 +610,15 @@ var styles = StyleSheet.create({
   bottom_1_top: {
     width: YSWHs.width_window,
     height: 50,
+    paddingLeft: 15,
+    paddingRight: 15
   },
   icon: {
     width: 25,
     height: 25
   },
   bottom_2_left: {
-    width: '50%',
+    //width: '50%',
     height: 176,
     marginLeft: 15
   },
@@ -629,10 +634,22 @@ var styles = StyleSheet.create({
   modal: {
     width: YSWHs.width_window,
     height: 480,
-    borderRadius: 10,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0
+  },
+  modal_view: {
+    width: '100%',
+    height: '100%',
+    //borderRadius: 10,
     backgroundColor: '#FFFFFF',
     paddingLeft: 16,
     paddingRight: 16,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0
   },
   close: {
     position: 'absolute',
@@ -644,12 +661,16 @@ var styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F1F1F1'
   },
+  img_out: {
+    width: '50%',
+    paddingRight: 10
+  },
   img: {
     width: 164,
     height: 100,
     borderRadius: 5,
     resizeMode: 'contain',
-    marginRight: 10
+    //marginRight: 10,
   },
   intro_title: {
     width: YSWHs.width_window,

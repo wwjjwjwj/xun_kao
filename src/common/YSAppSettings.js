@@ -113,9 +113,9 @@ class YSAppSettings extends React.Component {
           </TouchableWithoutFeedback>
           <View style={styles.block_dialogConten_wrap}>
             {this.props.type == 1 && <Text style={styles.text_header_android}>{YSI18n.get("相机权限未打开")}</Text>}
-            {this.props.type == 1 && <Text style={styles.text_small_android}>{YSI18n.get("您好,您的相机权限未打开,请前往手机“设置”允许E考官访问相机.")}</Text>}
+            {this.props.type == 1 && <Text style={styles.text_small_android}>{YSI18n.get("您好,您的相机权限未打开,请前往手机“设置”允许e考官访问相机.")}</Text>}
             {this.props.type == 2 && <Text style={styles.text_header_android}>{YSI18n.get("定位权限未打开")}</Text>}
-            {this.props.type == 2 && <Text style={styles.text_small_android}>{YSI18n.get("您好,您的定位权限未打开,请前往手机“设置”允许E考官访问定位.")}</Text>}
+            {this.props.type == 2 && <Text style={styles.text_small_android}>{YSI18n.get("您好,您的定位权限未打开,请前往手机“设置”允许e考官访问定位.")}</Text>}
             {block_button}
           </View>
         </Animated.View >

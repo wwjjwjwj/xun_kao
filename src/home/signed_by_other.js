@@ -360,7 +360,7 @@ class SignedByOther extends React.Component {
               <ListItem.Part middle column containerStyle={[styles.border, { paddingRight: 17 }]}>
                   <ListItem.Part containerStyle={{ marginBottom: 0 }}>
                       <View row marginL-20>
-                        <Text blue font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
+                        <Text black2 font_17 marginT-17 numberOfLines={1}>{row.orderName} {row.className}</Text>
                         <View right flex-1 paddingT-10 paddingR-10>
                           {row.state == 1 && row.importantCount > 0 &&
                             <View style={styles.sign_status} center>
@@ -464,7 +464,7 @@ class SignedByOther extends React.Component {
             </View>
             <View bg-white2 style={styles.line}/>
             <View centerV row marginT-16 paddingL-15>
-              <Image source={Assets.signed.icon_user_num} style={styles.icon} />
+              <Image source={Assets.signed.icon_user_num} style={styles.icon_16} />
               <Text font_14 gray2>签到人数</Text>
               <Text font_14 blue marginL-15>{row.signCount}</Text>
               <Text font_14 gray2 >/{row.totalStudent}人</Text>
@@ -498,7 +498,6 @@ class SignedByOther extends React.Component {
           <View row>
             <YSInput ref="input_name"
                 icon={Assets.signed.icon_search}
-                //iconstyle={styles.iconstyle}
                 placeholder={'请输入考生信息查询'}
                 placeholderTextColor={"#999999"}
                 style={styles.inputText}
@@ -520,12 +519,13 @@ class SignedByOther extends React.Component {
               <Text font_18 black marginL-15>{this.props.place_info.examName}</Text>
               <Text style={styles.exam_num}>{`考试人数:${this.props.place_info.studentCount}`}</Text>
             </View>
+            <View style={styles.line}/>
             <View centerV row marginT-15 paddingL-15>
-              <Image source={Assets.home.icon_branch_focus} style={styles.icon} />
+              <Image source={Assets.home.icon_branch_focus} style={styles.icon_25} />
               <Text marginL-11 blue label_input>{this.props.place_info.stationName}</Text>
             </View>
             <View centerV row marginT-10 paddingL-15>
-              <Image source={Assets.home.icon_addr_focus} style={styles.icon} />
+              <Image source={Assets.home.icon_addr_focus} style={styles.icon_25} />
               <Text marginL-11 blue label_input>{this.props.place_info.placeAddress}</Text>
             </View>
           </View>
@@ -585,7 +585,7 @@ class SignedByOther extends React.Component {
           <View centerH style={styles.modal}>
             <Text font_18 black2 marginT-18>请确认照片是否符合要求</Text>
             <TouchableOpacity style={styles.close} onPress={()=>this.onModalHide()}>
-              <Image source={Assets.home.icon_close} style={styles.icon} />
+              <Image source={Assets.home.icon_close} style={styles.icon_25} />
             </TouchableOpacity>
             <View marginT-17 style={styles.line}/>
             <View left marginT-15>
@@ -655,22 +655,23 @@ var styles = StyleSheet.create({
     fontSize: 14,
   },
   inputContainer: {
-    marginLeft: 15,
-    marginRight: 15,
+    //marginLeft: 15,
+    //marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
     ios: {
       height: 28,
       paddingTop: 7,
       paddingBottom: 7,
+      borderRadius: 14,
     },
     android: {
-      height: 40
+      height: 40,
+      borderRadius: 99,
     },
     width: 345,
     backgroundColor: '#FFFFFF',
 
-    borderRadius: 14,
     paddingLeft: 11,
   },
   inputContainer2: {
@@ -682,14 +683,15 @@ var styles = StyleSheet.create({
       height: 28,
       paddingTop: 7,
       paddingBottom: 7,
+      borderRadius: 14,
     },
     android: {
-      height: 40
+      height: 40,
+      borderRadius: 99,
     },
     width: 300,
     backgroundColor: '#FFFFFF',
 
-    borderRadius: 14,
     paddingLeft: 11,
   },
   clearStyle: {
@@ -749,7 +751,11 @@ var styles = StyleSheet.create({
     width: YSWHs.width_window,
     height: 50,
   },
-  icon: {
+  icon_16: {
+    width: 16,
+    height: 16
+  },
+  icon_25: {
     width: 25,
     height: 25
   },

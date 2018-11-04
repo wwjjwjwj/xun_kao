@@ -341,7 +341,7 @@ class StatDetailByType extends React.Component {
           <ListItem
               activeBackgroundColor={Colors.dark60}
               activeOpacity={0.3}
-              height={200}
+              height={185}
               //onPress={(item) => this.onLookView('View', item)}
               animation="fadeIn"
               easing="ease-out-expo"
@@ -370,9 +370,9 @@ class StatDetailByType extends React.Component {
                   <ListItem.Part>
                     <View style={styles.list_line}/>
                   </ListItem.Part>
-                  <ListItem.Part containerStyle={styles.list_item}>
+                  <ListItem.Part containerStyle={[styles.list_item, styles.list_body]}>
                     <View column>
-                      <View row marginT-17>
+                      <View row>
                         <Text font_14 gray2>证件号</Text>
                         <Text font_14 gray2 marginL-13>{row.cardNumber}</Text>
                       </View>
@@ -416,7 +416,7 @@ class StatDetailByType extends React.Component {
       <View flex style={styles.container}>
         <View centerH style={styles.bottom}>
           <View bg-white style={styles.bottom_1}>
-            <View row>
+            <View row centerH>
               <YSInput ref="input_name"
                   icon={Assets.signed.icon_search}
                   placeholder={'请输入考生信息查询'}
@@ -452,8 +452,7 @@ class StatDetailByType extends React.Component {
           </View>
         </View>
 
-        {/*this.state.data_list.length > 0 && block_list_view*/}
-        {block_list_view}
+        {this.state.data_list.length > 0 && block_list_view}
         {this.state.data_list.length == 0 &&
           <View marginT-91 centerH column>
             <Image source={Assets.signed.img_no_result}/>
@@ -531,9 +530,8 @@ var styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: '#F1F1F1',
-    borderRadius: 14,
-    marginLeft: 15,
-    marginRight: 15,
+    //marginLeft: 15,
+    //marginRight: 15,
     marginBottom: 10,
     marginTop: 10,
     paddingLeft: 11,
@@ -542,16 +540,17 @@ var styles = StyleSheet.create({
       paddingTop: 7,
       paddingBottom: 7,
       height: 30,
+      borderRadius: 14,
     },
     android: {
       height: 38,
+      borderRadius: 99,
     },
   },
   inputContainer2: {
     backgroundColor: '#F1F1F1',
-    borderRadius: 14,
-    marginLeft: 15,
-    marginRight: 15,
+    //marginLeft: 15,
+    //marginRight: 15,
     marginBottom: 10,
     marginTop: 12,
     paddingLeft: 11,
@@ -561,9 +560,11 @@ var styles = StyleSheet.create({
       paddingTop: 7,
       paddingBottom: 7,
       height: 28,
+      borderRadius: 14,
     },
     android: {
       height: 36,
+      borderRadius: 99,
     },
   },
   clearStyle: {
@@ -601,6 +602,9 @@ var styles = StyleSheet.create({
     height: 1,
     width: '100%',
     backgroundColor:'#F1F1F1'
+  },
+  list_body: {
+    height: 135,
   },
   list_icon: {
     width: 25,
