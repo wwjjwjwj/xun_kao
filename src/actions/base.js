@@ -95,3 +95,10 @@ export function getDeviceUuid(){
         })
   };
 }
+
+export function SetConnectedDevice(_flag){
+  return {
+      type: 'SET_CONNECTED_DEVICE',
+      data: {flag: _flag}
+  };
+}

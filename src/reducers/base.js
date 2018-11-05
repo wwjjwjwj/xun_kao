@@ -54,6 +54,13 @@ function base(state: State = initialState, action: Action): State {
       deviceInfo: action.data
     }
   }
+  else if(action.type == 'SET_CONNECTED_DEVICE'){
+    var flag = action.data.flag;
+    return {
+      ...state,
+      connect_flag: flag
+    }
+  }
 
   return state;
 }

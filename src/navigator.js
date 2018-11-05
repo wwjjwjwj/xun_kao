@@ -90,11 +90,12 @@ const navigator = StackNavigator(
         examSign: {
           screen: require('ExamSign'),
             navigationOptions: ({ navigation }) => ({
-                title: YSI18n.get('本场考试签到'),
+                header: null,
+                /*title: YSI18n.get('本场考试签到'),
                 gesturesEnabled: true,
                 gestureResponseDistance: { horizontal: 20 },
                 headerTitleStyle: { alignSelf: 'center', fontWeight: 'normal', color: YSColors.whiteBackground, fontSize: 19 },
-                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }
+                headerStyle: { borderBottomWidth: 0, borderColor: YSColors.splitlineColor, backgroundColor: '#4499FF' }*/
             })
         },
         //-------------------3 考场拍照

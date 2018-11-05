@@ -6,12 +6,12 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, PixelRatio,
-  ListView
+  ListView, Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Colors, View, Text, TextInput, TextArea,
-  Button, Assets, Image, ListItem
+  Button, Assets, Image, ListItem, Constants,
 } from 'react-native-ui-lib';
 import { List, WhiteSpace, DatePicker, Picker, Modal
 } from 'antd-mobile-rn';
@@ -40,7 +40,7 @@ import { checkPermissionCamera,
 import YSAppSettings from "YSAppSettings";
 //4. action
 import { GetStudentByCard, CardSign } from '../actions/exam';
-import { checkPermissionReadPhoneState } from '../actions/base';
+import { checkPermissionReadPhoneState, SetConnectedDevice } from '../actions/base';
 
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2,
@@ -124,6 +124,19 @@ class ExamSign extends React.Component {
     })
 
   }
+  goBack(){
+    if(this.state.valid_status != 0){
+      this.setState({
+        read_status: 0,
+        check_status: 0,
+        valid_status: 0,
+        cardInfo: {},
+        image: {}
+      })
+    }else {
+      this.props.navigation.goBack(null);
+    }
+  }
 
   onCheckUserInfo(cardInfo){
     /*this.setState({
@@ -174,6 +187,7 @@ class ExamSign extends React.Component {
           that.setState({
             read_status: 0
           })
+          that.props.SetConnectedDevice(false);
           return;
         }
 
@@ -232,6 +246,7 @@ class ExamSign extends React.Component {
             read_status: 2, //读卡成功
           })
           this.onCheckUserInfo(c);
+          that.props.SetConnectedDevice(true);
       }else if(type == "30"){
           //ios 读取身份证信息
           if(typeof data == 'string'){
@@ -252,6 +267,7 @@ class ExamSign extends React.Component {
                 read_status: 2, //成功
               })
               this.onCheckUserInfo(c);
+              that.props.SetConnectedDevice(true);
             }
 
           }
@@ -489,6 +505,16 @@ class ExamSign extends React.Component {
     let dataSource = ds.cloneWithRows(this.state.blues);
     return (
       <View flex style={this.state.read_status <= 1 ? styles.container : styles.container_result}>
+        <View row spread centerV style={styles.block_navigator}>
+          <TouchableOpacity onPress={() => this.goBack()} style={{ width: 56, height: '100%', flexDirection: 'column', alignItems:'center',justifyContent: 'center' }}>
+            <Image source={Assets.signed.icon_back} />
+          </TouchableOpacity>
+          <View flex-1 center>
+            <Text black style={{ fontSize: 19, fontWeight: '400', color: YSColors.whiteBackground }}>
+              {YSI18n.get('本场考试签到')}</Text>
+          </View>
+          <View style={{ width: 56, height: '100%' }}></View>
+        </View>
         <KeyboardAwareScrollView ref='scroll' keyboardShouldPersistTaps="handled">
           {this.state.read_status == 0 && this.state.check_status == 0 && <View flex-1 bg-blue3 center row style={styles.tip}>
               <Image source={Assets.signed.icon_error}/>
@@ -838,6 +864,14 @@ var styles = StyleSheet.create({
     color: '#666666'
   },
 
+  block_navigator: {
+    paddingTop: Constants.isIphoneX ? 29 : Platform.OS == 'ios' ? 24 : 0,
+    height: Constants.isIphoneX ? 81 : Platform.OS == 'ios' ? 62 : 56,
+    borderBottomWidth: 1,
+    borderColor: Colors.dark70,
+    backgroundColor: '#4499FF',
+  },
+
 })
 
 function select(store) {
@@ -853,7 +887,8 @@ function mapDispatchToProps(dispatch) {
     return {
         GetStudentByCard: bindActionCreators(GetStudentByCard, dispatch),
         CardSign: bindActionCreators(CardSign, dispatch),
-        checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch)
+        checkPermissionReadPhoneState: bindActionCreators(checkPermissionReadPhoneState, dispatch),
+        SetConnectedDevice: bindActionCreators(SetConnectedDevice, dispatch),
     };
 }
 module.exports = connect(select, mapDispatchToProps)(ExamSign);

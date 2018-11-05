@@ -61,11 +61,14 @@ class SignedByCard extends React.Component {
 
   onSign(row: any){
     if(row.state == 1){
-      this.onShowConnectModal();
-      this.setState({
-        row: row
-      })
-      //this.props.navigation.navigate('examSign', {info: row});
+      if(this.props.is_connected_success){
+        this.props.navigation.navigate('examSign', {info: row});
+      }else {
+        this.onShowConnectModal();
+        this.setState({
+          row: row
+        })
+      }
     }
   }
 
@@ -507,9 +510,14 @@ function select(store) {
     if(store.exam && store.exam.class_sign_list){
       class_sign_list = store.exam.class_sign_list
     }
+    var is_connected_success = false;
+    if(store.base){
+      is_connected_success = store.base.connect_flag;
+    }
     return {
         place_info,
-        class_sign_list
+        class_sign_list,
+        is_connected_success
     }
 }
 function mapDispatchToProps(dispatch) {

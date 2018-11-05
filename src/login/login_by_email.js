@@ -51,6 +51,7 @@ class LoginByEmail extends React.Component {
             //17600660126 / 123456
 
             //17600660121 / 123456 正式
+            //15510689223 / 170040 正式
 
             school_info: {},
             loading: false,
