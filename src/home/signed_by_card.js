@@ -509,6 +509,7 @@ function select(store) {
     }
     if(store.exam && store.exam.class_sign_list){
       class_sign_list = store.exam.class_sign_list
+      //alert(JSON.stringify(class_sign_list))
     }
     var is_connected_success = false;
     if(store.base){

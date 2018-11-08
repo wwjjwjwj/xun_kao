@@ -342,7 +342,7 @@ class OtherSignedDetail extends React.Component {
                       </TouchableOpacity>
                     </View>*/}
                     {/*2018-10-16 改为 和 刷卡签到一样的验证逻辑：通过考场上的状态来判断*/}
-                    {this.state.exam_info.state == 1 && <View right flex-1 centerV>
+                    {this.state.exam_info.state == 1 && row.checkType == 1 && <View right flex-1 centerV>
                       <TouchableOpacity onPress={()=>this.onTakePhoto(row)}>
                         <View bg-blue style={styles.list_view_touch}>
                           <Text font_13 white>拍照签到</Text>
@@ -439,7 +439,7 @@ class OtherSignedDetail extends React.Component {
             <View marginT-17 style={styles.line}/>
             <View left marginT-15>
               <Text font_16 black2>其他拍照说明</Text>
-              <Text font_14 black2 marginT-23>1.请持有效证件和当场考试试卷进行补签拍照认证； </Text>
+              <Text font_14 black2 marginT-23>1.请考生持有效证件和当场考试试卷进行补签拍照认证； </Text>
               <Text font_14 black2 marginT-23>2.请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
             </View>
             <View marginT-21 style={styles.line2}/>

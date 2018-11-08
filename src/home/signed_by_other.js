@@ -590,7 +590,7 @@ class SignedByOther extends React.Component {
             <View marginT-17 style={styles.line}/>
             <View left marginT-15>
               <Text font_16 black2>其他拍照说明</Text>
-              <Text font_14 black2 marginT-23>1.请持有效证件和当场考试试卷进行补签拍照认证； </Text>
+              <Text font_14 black2 marginT-23>1.请考生持有效证件和当场考试试卷进行补签拍照认证； </Text>
               <Text font_14 black2 marginT-23>2.请拍照时点击有效证件聚焦，保证有效证件信息及考试科目清晰可见，如上传的照片无法识别证件信息，则签到无效。</Text>
             </View>
             <View marginT-21 style={styles.line2}/>

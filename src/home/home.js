@@ -309,7 +309,7 @@ class Home extends React.Component {
             </View>
             <View centerV row marginT-10 paddingL-15>
               <Image source={Assets.home.icon_addr_focus} style={styles.icon} />
-              <Text style={styles.station}>{this.props.info.placeAddress}</Text>
+              <Text style={styles.station}>{this.props.info.stationAddress}</Text>
             </View>
           </View>
           <View row marginT-10 bg-white style={styles.bottom_2}>

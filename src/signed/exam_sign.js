@@ -160,13 +160,21 @@ class ExamSign extends React.Component {
             if(!response.ReData){
               that.setState({
                 check_status: 3,    //3 验证失败（非本考场）
+                check_msg: '非本场考生，信息有误'
               })
             }else {
               //alert(JSON.stringify(response.ReData));
-              that.setState({
-                check_status: response.ReData.important == 1 ? 1 : 2,    //验证成功
-                student_id: response.ReData.studentId,
-              })
+              if(response.checkType == 1){
+                that.setState({
+                  check_status: response.ReData.important == 1 ? 1 : 2,    //验证成功
+                  student_id: response.ReData.studentId,
+                })
+              }else {
+                that.setState({
+                  check_status: 3,    //3 验证失败（非本考场）
+                  check_msg: '巡考老师已确认考生状态，不能签到'
+                })
+              }
             }
           }else {
             Toast.fail(response.ReMsg || YSI18n.get('调用数据失败'));
